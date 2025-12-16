@@ -16,6 +16,7 @@ public class ApplicationDbContext : DbContext
     // Lookup entities
     public DbSet<Governorate> Governorates { get; set; }
     public DbSet<LandOwner> LandOwner { get; set; }
+    public DbSet<LandOwnership> LandOwnerships { get; set; }
     public DbSet<District> District { get; set; }
     public DbSet<Village> Villages { get; set; }
     public DbSet<VillagesContinue> VillagesContinue { get; set; }

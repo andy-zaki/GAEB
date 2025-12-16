@@ -29,8 +29,8 @@ public class User
     
     public DateTime? LastLoginDate { get; set; }
     
-    public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
-    public DateTime UpdatedAt { get; set; } = DateTime.UtcNow;
+    public DateTime CreatedAt { get; set; } = DateTime.Now;
+    public DateTime UpdatedAt { get; set; } = DateTime.Now;
     
     // Foreign Keys for login selections
     [ForeignKey("UserProgram")]
@@ -62,7 +62,7 @@ public class UserProgram
     
     public bool IsActive { get; set; } = true;
     
-    public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
+    public DateTime CreatedAt { get; set; } = DateTime.Now;
     
     // Navigation property
     public ICollection<User> Users { get; set; } = new List<User>();
@@ -82,7 +82,7 @@ public class UserMenu
     
     public bool IsActive { get; set; } = true;
     
-    public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
+    public DateTime CreatedAt { get; set; } = DateTime.Now;
     
     // Navigation property
     public ICollection<User> Users { get; set; } = new List<User>();
@@ -105,7 +105,7 @@ public class UserLibrary
     
     public bool IsActive { get; set; } = true;
     
-    public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
+    public DateTime CreatedAt { get; set; } = DateTime.Now;
     
     // Navigation property
     public ICollection<User> Users { get; set; } = new List<User>();

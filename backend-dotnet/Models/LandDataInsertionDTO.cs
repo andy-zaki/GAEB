@@ -3,7 +3,7 @@ namespace AngularProjectApi.Models
   public class LandDataInsertionDTO
   {
     public Guid? Id { get; set; }
-    public string? LandCode { get; set; }
+    public int? LandCode { get; set; }
     public int GovernorateCode { get; set; }
     public string? LandAddress { get; set; }
     public string? OwnerName { get; set; }
@@ -40,8 +40,8 @@ namespace AngularProjectApi.Models
     public string? LegalResponsible { get; set; }
     public DateTime InspectionDate { get; set; }
     public DateTime CommitteeDate { get; set; }
-    public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
-    public DateTime UpdatedAt { get; set; } = DateTime.UtcNow;
+    public DateTime CreatedAt { get; set; } = DateTime.Now;
+    public DateTime UpdatedAt { get; set; } = DateTime.Now;
 
   }
 }

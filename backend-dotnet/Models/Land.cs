@@ -8,8 +8,7 @@ public class Land
     [Key]
     public Guid Id { get; set; } = Guid.NewGuid();
     
-    [MaxLength(50)]
-    public string? ReferenceNumber { get; set; } = string.Empty;
+    public int? ReferenceNumber { get; set; }
     
     [MaxLength(50)]
     public string? UsageStatus { get; set; }
@@ -47,8 +46,7 @@ public class Land
     [MaxLength(255)]
     public string? SaleNegotiations { get; set; }
     
-    [MaxLength(50)]
-    public string? LandCode { get; set; }
+    public int? LandCode { get; set; }
     
     [MaxLength(100)]
     public string? Village { get; set; }
@@ -116,8 +114,8 @@ public class Land
     
     public string? LandReviewCommittees { get; set; }
     
-    public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
-    public DateTime UpdatedAt { get; set; } = DateTime.UtcNow;
+    public DateTime CreatedAt { get; set; } = DateTime.Now;
+    public DateTime UpdatedAt { get; set; } = DateTime.Now;
     
     [ForeignKey("EducationalBuilding")]
     public Guid? EducationalBuildingId { get; set; }
@@ -150,7 +148,7 @@ public class LandCoordinate
     [Column(TypeName = "decimal(10,2)")]
     public decimal? Elevation { get; set; }
     
-    public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
+    public DateTime CreatedAt { get; set; } = DateTime.Now;
     
     // Navigation property
     [ForeignKey("LandId")]
@@ -183,7 +181,7 @@ public class BuildingLocation
     [MaxLength(255)]
     public string? NeighborDescription { get; set; }
     
-    public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
+    public DateTime CreatedAt { get; set; } = DateTime.Now;
     
     // Navigation property
     [ForeignKey("LandId")]

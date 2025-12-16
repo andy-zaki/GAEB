@@ -49,259 +49,149 @@
         </h3>
       </div>
 
-      <div class="form-row">
-
-        <div class="form-wrapper">
-          <div class="form-section">
-            <h2 class="section-title">معلومات الأرض الأساسية</h2>
-            <div class="form-row">
-
-              <!-- كود قطعة الأرض -->
-              <div class="form-group">
-                <label for="landCode">كود قطعة الأرض:</label>
-                <label id="landCode">{{this.selectedLandTechnicalInspection()?.landCode}}</label>
-              </div>
-
-              <!-- كود المحافظة -->
-              <div class="form-group">
-                <label for="governorateCode">كود المحافظة:</label>
-                <label id="landCode">{{this.selectedLandTechnicalInspection()?.governorate}}</label>
-              </div>
-
-              <!-- عنوان قطعة الأرض -->
-              <div class="form-group">
-                <label for="landAddress">عنوان قطعة الأرض:</label>
-                <span id="landAddress">{{this.selectedLandTechnicalInspection()?.landAddress}}</span>
-              </div>
-
-              <!-- اسم مالك الأرض -->
-              <div class="form-group">
-                <label for="landOwnerName">اسم مالك الأرض:</label>
-                <span id="landOwnerName">{{this.selectedLandTechnicalInspection()?.landOwnerName}}</span>
-              </div>
-
-              <!-- عنوان مالك الأرض -->
-              <div class="form-group">
-                <label for="landOwnerAddress">عنوان مالك الأرض:</label>
-                <span id="landOwnerAddress">{{this.selectedLandTechnicalInspection()?.landOwnerAddress}}</span>
-              </div>
-
-              <!-- مساحة الأرض -->
-              <div class="form-group">
-                <label for="totalArea">مساحة الأرض:</label>
-                <span id="totalArea">{{this.selectedLandTechnicalInspection()?.totalArea}}</span>
-              </div>
-
-              <!-- طبيعة الأرض -->
-              <div class="form-group">
-                <label for="landNature">طبيعة الأرض:</label>
-                <span id="landNature">{{this.selectedLandTechnicalInspection()?.landNature}}</span>
-              </div>
-
-              <!-- كود الملكية-->
-              <div class="form-group">
-                <label for="landOwnershipCode">كود الملكية:</label>
-                <span id="landOwnershipCode">{{this.selectedLandTechnicalInspection()?.landOwnerShipName}}</span>
-              </div>
+      <div class="card-content">
+        <div class="info-section">
+          <h3>معلومات الأرض الأساسية</h3>
+          <div class="info-row">
+            <div class="info-item">
+              <label for="landCode">كود قطعة الأرض:</label>
+              <span id="landCode">{{this.selectedLandTechnicalInspection()?.landCode}}</span>
+            </div>
+            <div class="info-item">
+              <label for="governorate">كود المحافظة:</label>
+              <span id="governorate">{{this.selectedLandTechnicalInspection()?.governorate}}</span>
+            </div>
+            <div class="info-item">
+              <label for="landAddress">عنوان قطعة الأرض:</label>
+              <span id="landAddress">{{this.selectedLandTechnicalInspection()?.landAddress}}</span>
+            </div>
+            <div class="info-item">
+              <label for="landOwnerName">اسم مالك الأرض:</label>
+              <span id="landOwnerName">{{this.selectedLandTechnicalInspection()?.landOwnerName}}</span>
             </div>
           </div>
-
-          <!-- الإحداثيات وأطوال الحدود -->
-          <div class="form-section">
-            <h2 class="section-title">الحدود واطوال الحدود</h2>
-            <div class="form-row">
-
-              <!-- الحد الشمالي -->
-              <div class="form-group">
-                <label for="northernBoundary">الحد الشمالي</label>
-                <span id="northernBoundary">{{this.selectedLandTechnicalInspection()?.northernBoundary}}</span>
-              </div>
-
-              <!-- طول الحد الشمالي -->
-              <div class="form-group">
-                <label for="northernBoundaryLength">طول الحد الشمالي</label>
-                <span
-                  id="northernBoundaryLength">{{this.selectedLandTechnicalInspection()?.northernBoundaryLength}}</span>
-              </div>
-              <div class="form-group">
-                <div class="form-row"></div>
-                <div class="col-md-4"></div>
-                <div class="col-md-4"></div>
-                <div>م</div>
-              </div>
-
-              <!-- الحد الجنوبي -->
-              <div class="form-group">
-                <label for="southernBoundary">الحد الجنوبي</label>
-                <span id="southernBoundary">{{this.selectedLandTechnicalInspection()?.southernBoundary}}</span>
-              </div>
-
-              <!-- طول الحد الجنوبي -->
-              <div class="form-group">
-                <label for="southernBoundaryLength">طول الحد الجنوبي</label>
-                <span
-                  id="southernBoundaryLength">{{this.selectedLandTechnicalInspection()?.southernBoundaryLength}}</span>
-              </div>
-              <div class="form-group">
-                <div class="form-row"></div>
-                <div class="col-md-4"></div>
-                <div class="col-md-4"></div>
-                <div>م</div>
-              </div>
-
-              <!-- الحد الشرقي -->
-              <div class="form-group">
-                <label for="easternBoundary">الحد الشرقي</label>
-                <span id="easternBoundary">{{this.selectedLandTechnicalInspection()?.easternBoundary}}</span>
-              </div>
-
-              <!-- طول الحد الشرقي -->
-              <div class="form-group">
-                <label for="easternBoundaryLength">طول الحد الشرقي</label>
-                <span
-                  id="easternBoundaryLength">{{this.selectedLandTechnicalInspection()?.easternBoundaryLength}}</span>
-              </div>
-              <div class="form-group">
-                <div class="form-row"></div>
-                <div class="col-md-4"></div>
-                <div class="col-md-4"></div>
-                <div>م</div>
-              </div>
-
-              <!-- الحد الغربي -->
-              <div class="form-group">
-                <label for="westernBoundary">الحد الغربي</label>
-                <span id="westernBoundary">{{this.selectedLandTechnicalInspection()?.westernBoundary}}</span>
-              </div>
-
-              <!-- طول الحد الغربي -->
-              <div class="form-group">
-                <label for="westernBoundaryLength">طول الحد الغربي</label>
-                <span
-                  id="westernBoundaryLength">{{this.selectedLandTechnicalInspection()?.westernBoundaryLength}}</span>
-              </div>
-              <div class="form-group">
-                <div class="form-row"></div>
-                <div class="col-md-4"></div>
-                <div class="col-md-4"></div>
-                <div>م</div>
-              </div>
-
-              <!-- الحد الشمال الشرقي -->
-              <div class="form-group">
-                <label for="northeastBoundary">الحد الشمال الشرقي</label>
-                <span id="northeastBoundary">{{this.selectedLandTechnicalInspection()?.northeastBoundary}}</span>
-              </div>
-
-              <!-- طول الحد الشمال الشرقي -->
-              <div class="form-group">
-                <label for="northeastBoundaryLength">طول الحد الشمال الشرقي</label>
-                <span
-                  id="northeastBoundaryLength">{{this.selectedLandTechnicalInspection()?.northeastBoundaryLength}}</span>
-              </div>
-              <div class="form-group">
-                <div class="form-row"></div>
-                <div class="col-md-4"></div>
-                <div class="col-md-4"></div>
-                <div>م</div>
-              </div>
-
-              <!-- الحد الشمال الغربي -->
-              <div class="form-group">
-                <label for="northwestBoundary">الحد الشمال الغربي</label>
-                <span id="northwestBoundary">{{this.selectedLandTechnicalInspection()?.northwestBoundary}}</span>
-              </div>
-
-              <!-- طول الحد الشمال الغربي -->
-              <div class="form-group">
-                <label for="northwestBoundaryLength">طول الحد الشمال الغربي</label>
-                <span
-                  id="northwestBoundaryLength">{{this.selectedLandTechnicalInspection()?.northwestBoundaryLength}}</span>
-              </div>
-              <div class="form-group">
-                <div class="form-row"></div>
-                <div class="col-md-4"></div>
-                <div class="col-md-4"></div>
-                <div>م</div>
-              </div>
-
-              <!-- الحد الجنوب شرقي -->
-              <div class="form-group">
-                <label for="southeastBoundary">الحد الجنوب الشرقي</label>
-                <span id="southeastBoundary">{{this.selectedLandTechnicalInspection()?.southeastBoundary}}</span>
-              </div>
-
-              <!-- طول الحد الجنوب الشرقي -->
-              <div class="form-group">
-                <label for="southeastBoundaryLength">طول الحد الجنوب الشرقي</label>
-                <span
-                  id="southeastBoundaryLength">{{this.selectedLandTechnicalInspection()?.southeastBoundaryLength}}</span>
-              </div>
-              <div class="form-group">
-                <div class="form-row"></div>
-                <div class="col-md-4"></div>
-                <div class="col-md-4"></div>
-                <div>م</div>
-              </div>
-
-              <!-- الحد الجنوب الغربي -->
-              <div class="form-group">
-                <label for="southwestBoundary">الحد الجنوب الغربي</label>
-                <span id="southwestBoundary">{{this.selectedLandTechnicalInspection()?.southwestBoundary}}</span>
-              </div>
-
-              <!-- طول الحد الجنوب الغربي -->
-              <div class="form-group">
-                <label for="southwestBoundaryLength">طول الحد الجنوب الغربي</label>
-                <span
-                  id="southwestBoundaryLength">{{this.selectedLandTechnicalInspection()?.southwestBoundaryLength}}</span>
-              </div>
-              <div class="form-group">
-                <div class="form-row"></div>
-                <div class="col-md-4"></div>
-                <div class="col-md-4"></div>
-                <div>م</div>
-              </div>
+          <div class="info-row">
+            <div class="info-item">
+              <label for="landOwnerAddress">عنوان مالك الأرض:</label>
+              <span id="landOwnerAddress">{{this.selectedLandTechnicalInspection()?.landOwnerAddress}}</span>
+            </div>
+            <div class="info-item">
+              <label for="totalArea">مساحة الأرض:</label>
+              <span id="totalArea">{{this.selectedLandTechnicalInspection()?.totalArea}}</span>
+            </div>
+            <div class="info-item">
+              <label for="landNature">طبيعة الأرض:</label>
+              <span id="landNature">{{this.selectedLandTechnicalInspection()?.landNature}}</span>
+            </div>
+            <div class="info-item">
+              <label for="landOwnerShipName">كود الملكية:</label>
+              <span id="landOwnerShipName">{{this.selectedLandTechnicalInspection()?.landOwnerShipName}}</span>
             </div>
           </div>
+        </div>
 
-          <!-- المسؤول الفني -->
-          <div class="form-section">
-            <h2 class="section-title">بيانات المسؤولين وتاريخ المعاينة</h2>
-            <div class="form-row">
-              <!-- بيانات المسؤول الفني -->
-              <div class="form-group">
-                <label for="technicalResponsiblePersonId">رقم المسؤول الفني:</label>
-                <span
-                  id="technicalResponsiblePersonId">{{selectedLandTechnicalInspection()?.technicalResponsiblePersonNameAndId}}</span>
-              </div>
-
-              <!-- بيانات المسؤول القانوني -->
-              <div class="form-group">
-                <label for="legalResponsiblePersonId">رقم المسؤول القانوني:</label>
-                <span
-                  id="legalResponsiblePersonId">{{this.selectedLandTechnicalInspection()?.legalResponsiblePersonId}}</span>
-              </div>
+        <div class="info-section">
+          <h3>الحدود واطوال الحدود</h3>
+          <div class="info-row">
+            <div class="info-item">
+              <label for="northernBoundary">الحد الشمالي</label>
+              <span id="northernBoundary">{{this.selectedLandTechnicalInspection()?.northernBoundary}}</span>
             </div>
-            <div class="form-row">
-              <!-- تاريخ المعاينة الفنية -->
-              <div class="form-group">
-                <label for="technicalInspectionDate">تاريخ المعاينة الفنية</label>
-                <span id="technicalInspectionDate">{{this.selectedLandTechnicalInspection()?.technicalInspectionDate|
-                  date:'fullDate'}}</span>
-              </div>
+            <div class="info-item">
+              <label for="northernBoundaryLength">طول الحد الشمالي</label>
+              <span
+                id="northernBoundaryLength">{{this.selectedLandTechnicalInspection()?.northernBoundaryLength}} م</span>
+            </div>
+            <div class="info-item">
+              <label for="southernBoundary">الحد الجنوبي</label>
+              <span id="southernBoundary">{{this.selectedLandTechnicalInspection()?.southernBoundary}}</span>
+            </div>
+            <div class="info-item">
+              <label for="southernBoundaryLength">طول الحد الجنوبي</label>
+              <span
+                id="southernBoundaryLength">{{this.selectedLandTechnicalInspection()?.southernBoundaryLength}} م</span>
+            </div>
+            <div class="info-item">
+              <label for="easternBoundary">الحد الشرقي</label>
+              <span id="easternBoundary">{{this.selectedLandTechnicalInspection()?.easternBoundary}}</span>
+            </div>
+            <div class="info-item">
+              <label for="easternBoundaryLength">طول الحد الشرقي</label>
+              <span id="easternBoundaryLength">{{this.selectedLandTechnicalInspection()?.easternBoundaryLength}} م</span>
+            </div>
+            <div class="info-item">
+              <label for="westernBoundary">الحد الغربي</label>
+              <span id="westernBoundary">{{this.selectedLandTechnicalInspection()?.westernBoundary}}</span>
+            </div>
+            <div class="info-item">
+              <label for="westernBoundaryLength">طول الحد الغربي</label>
+              <span id="westernBoundaryLength">{{this.selectedLandTechnicalInspection()?.westernBoundaryLength}} م</span>
+            </div>
+            <div class="info-item">
+              <label for="northeastBoundary">الحد الشمال الشرقي</label>
+              <span id="northeastBoundary">{{this.selectedLandTechnicalInspection()?.northeastBoundary}}</span>
+            </div>
+            <div class="info-item">
+              <label for="northeastBoundaryLength">طول الحد الشمال الشرقي</label>
+              <span
+                id="northeastBoundaryLength">{{this.selectedLandTechnicalInspection()?.northeastBoundaryLength}} م</span>
+            </div>
+            <div class="info-item">
+              <label for="northwestBoundary">الحد الشمال الغربي</label>
+              <span id="northwestBoundary">{{this.selectedLandTechnicalInspection()?.northwestBoundary}}</span>
+            </div>
+            <div class="info-item">
+              <label for="northwestBoundaryLength">طول الحد الشمال الغربي</label>
+              <span
+                id="northwestBoundaryLength">{{this.selectedLandTechnicalInspection()?.northwestBoundaryLength}} م</span>
+            </div>
+            <div class="info-item">
+              <label for="southeastBoundary">الحد الجنوب الشرقي</label>
+              <span id="southeastBoundary">{{this.selectedLandTechnicalInspection()?.southeastBoundary}}</span>
+            </div>
+            <div class="info-item">
+              <label for="southeastBoundaryLength">طول الحد الجنوب الشرقي</label>
+              <span
+                id="southeastBoundaryLength">{{this.selectedLandTechnicalInspection()?.southeastBoundaryLength}} م</span>
+            </div>
+            <div class="info-item">
+              <label for="southwestBoundary">الحد الجنوب الغربي</label>
+              <span id="southwestBoundary">{{this.selectedLandTechnicalInspection()?.southwestBoundary}}</span>
+            </div>
+            <div class="info-item">
+              <label for="southwestBoundaryLength">طول الحد الجنوب الغربي</label>
+              <span
+                id="southwestBoundaryLength">{{this.selectedLandTechnicalInspection()?.southwestBoundaryLength}} م</span>
+            </div>
+          </div>
+        </div>
 
-              <!-- تاريخ لجنة الاحتياج -->
-              <div class="form-group">
-                <label for="needsCommitteeDate">تاريخ لجنة الاحتياج:</label>
-                <span id="needsCommitteeDate">{{this.selectedLandTechnicalInspection()?.needsCommitteeDate |
-                  date:'fullDate'}}</span>
-              </div>
+        <div class="info-section">
+          <h3>بيانات المسؤولين وتاريخ المعاينة</h3>
+          <div class="info-row">
+            <div class="info-item">
+              <label for="technicalResponsiblePersonId">رقم المسؤول الفني:</label>
+              <span
+                id="technicalResponsiblePersonId">{{this.selectedLandTechnicalInspection()?.technicalResponsiblePersonId}}</span>
+            </div>
+            <div class="info-item">
+              <label for="legalResponsiblePersonId">رقم المسؤول القانوني:</label>
+              <span
+                id="legalResponsiblePersonId">{{this.selectedLandTechnicalInspection()?.legalResponsiblePersonId}}</span>
+            </div>
+            <div class="info-item">
+              <label for="technicalInspectionDate">تاريخ المعاينة الفنية:</label>
+              <span id="technicalInspectionDate">{{this.selectedLandTechnicalInspection()?.technicalInspectionDate |
+                date:'fullDate'}}</span>
+            </div>
+            <div class="info-item">
+              <label for="needsCommitteeDate">تاريخ لجنة الاحتياج:</label>
+              <span id="needsCommitteeDate">{{this.selectedLandTechnicalInspection()?.needsCommitteeDate |
+                date:'fullDate'}}</span>
             </div>
           </div>
         </div>
       </div>
-
       }
     </div>
     }

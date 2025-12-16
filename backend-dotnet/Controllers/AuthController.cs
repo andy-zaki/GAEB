@@ -30,7 +30,7 @@ public class AuthController : ControllerBase
         if (!user.IsActive)
             return Unauthorized(new { message = "الحساب غير نشط" });
 
-        user.LastLoginDate = DateTime.UtcNow;
+        user.LastLoginDate = DateTime.Now;
         await _context.SaveChangesAsync();
 
         return new LoginResponse
@@ -106,7 +106,7 @@ public class AuthController : ControllerBase
         user.ProgramId = request.ProgramId;
         user.MenuId = request.MenuId;
         user.LibraryId = request.LibraryId;
-        user.UpdatedAt = DateTime.UtcNow;
+        user.UpdatedAt = DateTime.Now;
 
         await _context.SaveChangesAsync();
         return NoContent();

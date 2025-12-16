@@ -237,18 +237,18 @@ export class ErrorHandlerService {
     if (error && typeof error === 'object') {
       const details = error as ErrorDetails;
       let formatted = details.message;
-      
+
       if (details.suggestion) {
         formatted += `\n\nالحل المقترح: ${details.suggestion}`;
       }
-      
+
       if (details.technicalDetails && console) {
         console.error('Technical Details:', details.technicalDetails);
       }
-      
+
       return formatted;
     }
-    
+
     return error?.message || error?.error?.message || 'حدث خطأ غير متوقع';
   }
 
@@ -257,15 +257,18 @@ export class ErrorHandlerService {
    */
   getUserFriendlyMessage(error: any, operation?: string): string {
     let message = '';
-    
+
     if (operation) {
-      message = `خطأ أثناء ${operation}\n\n`;
+      message = `خطأ أثناء ${operation}\n`;
     }
-    
+
     if (error && typeof error === 'object' && 'message' in error) {
       const details = error as ErrorDetails;
-      message += details.message;
-      message += `\n\n${details.error}`;
+
+      if (typeof (details.error) == 'object')
+        message += details.message;
+      else
+        message += `\n${details.error}`;
 
       if (details.suggestion) {
         message += `\n\n💡 ${details.suggestion}`;
@@ -274,7 +277,7 @@ export class ErrorHandlerService {
       message += error?.message || 'حدث خطأ غير متوقع';
       message += '\n\n💡 الرجاء المحاولة مرة أخرى أو الاتصال بالدعم الفني';
     }
-    
+
     return message;
   }
 
@@ -283,7 +286,7 @@ export class ErrorHandlerService {
    */
   logAndShowError(error: any, context: string): void {
     console.error(`Error in ${context}:`, error);
-    
+
     const message = this.getUserFriendlyMessage(error, context);
     alert(message);
   }

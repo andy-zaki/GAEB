@@ -47,11 +47,18 @@ public class LandTechnicalInspectionController : ControllerBase
 
     public async Task<ActionResult<LandTechnicalInspectionDTO>> GetByLandCode(int landCode)
     {
+        var land = await _context.Lands.FirstOrDefaultAsync(l => l.LandCode == landCode);
+
+        if (land == null)
+        {
+            return NotFound("لا يوجد أرض بهذا الكود");
+        }
+
         var landTechnicalInspection = await _context.LandTechnicalInspection.FirstOrDefaultAsync(l => l.LandCode == landCode);
 
         if (landTechnicalInspection == null)
         {
-            return NotFound();
+            return NotFound("لا يوجد معاينة فنية لكود الأرض الذي أدخلته");
         }
 
         LandTechnicalInspectionDTO landTechnicalInspectionDTO = _mapper.Map<LandTechnicalInspectionDTO>(landTechnicalInspection);
@@ -79,7 +86,7 @@ public class LandTechnicalInspectionController : ControllerBase
         }
 
         // Verify the land exists in the Lands table
-        if (!await _context.Lands.AnyAsync(l => l.LandCode == landTechnicalInspection.LandCode.ToString()))
+        if (!await _context.Lands.AnyAsync(l => l.LandCode == landTechnicalInspection.LandCode))
         {
             return BadRequest("لا توجد قطعة أرض بهذا الكود في جدول الأراضي.");
         }

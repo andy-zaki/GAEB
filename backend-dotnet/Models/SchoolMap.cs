@@ -30,8 +30,8 @@ public class StudyPeriod
     [MaxLength(100)]
     public string? EducationalLevel { get; set; }
 
-    public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
-    public DateTime UpdatedAt { get; set; } = DateTime.UtcNow;
+    public DateTime CreatedAt { get; set; } = DateTime.Now;
+    public DateTime UpdatedAt { get; set; } = DateTime.Now;
 
     // Navigation property
     public EducationalBuilding? EducationalBuilding { get; set; }
@@ -64,7 +64,7 @@ public class SchoolRoad
     [MaxLength(50)]
     public string? Condition { get; set; }
 
-    public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
+    public DateTime CreatedAt { get; set; } = DateTime.Now;
 
     // Navigation property
     public EducationalBuilding? EducationalBuilding { get; set; }
@@ -96,8 +96,8 @@ public class SchoolAnnex
     [MaxLength(255)]
     public string? Purpose { get; set; }
 
-    public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
-    public DateTime UpdatedAt { get; set; } = DateTime.UtcNow;
+    public DateTime CreatedAt { get; set; } = DateTime.Now;
+    public DateTime UpdatedAt { get; set; } = DateTime.Now;
 
     // Navigation property
     public EducationalBuilding? EducationalBuilding { get; set; }
@@ -129,8 +129,8 @@ public class SchoolSpace
     [MaxLength(255)]
     public string? Usage { get; set; }
 
-    public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
-    public DateTime UpdatedAt { get; set; } = DateTime.UtcNow;
+    public DateTime CreatedAt { get; set; } = DateTime.Now;
+    public DateTime UpdatedAt { get; set; } = DateTime.Now;
 
     // Navigation property
     public EducationalBuilding? EducationalBuilding { get; set; }
@@ -223,8 +223,8 @@ public class EducationalBuilding
     public decimal? TotalArea { get; set; }
     public string? BuildingName { get; set; }
 
-    public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
-    public DateTime UpdatedAt { get; set; } = DateTime.UtcNow;
+    public DateTime CreatedAt { get; set; } = DateTime.Now;
+    public DateTime UpdatedAt { get; set; } = DateTime.Now;
 
     // Navigation properties
     public ICollection<StudyPeriod> StudyPeriods { get; set; } = new List<StudyPeriod>();

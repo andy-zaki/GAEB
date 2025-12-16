@@ -54,7 +54,7 @@ export class DocumentsData {
   selectionErrors: boolean[] = [];
 
   protected goBack(): void {
-    this.router.navigate(['/map-integration-with-land-system']);
+    this.router.navigate(['/recording-data-for-impactful-oceans']);
   }
 
   protected goHome(): void {

@@ -142,8 +142,8 @@ public class RentalBuilding
     
     public int? ComplementarySpacesCount { get; set; }
     
-    public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
-    public DateTime UpdatedAt { get; set; } = DateTime.UtcNow;
+    public DateTime CreatedAt { get; set; } = DateTime.Now;
+    public DateTime UpdatedAt { get; set; } = DateTime.Now;
     
     [ForeignKey("EducationalBuilding")]
     public Guid? EducationalBuildingId { get; set; }
@@ -190,8 +190,8 @@ public class RentalBuildingLocation
     [Column(TypeName = "decimal(11,8)")]
     public decimal? Longitude { get; set; }
     
-    public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
-    public DateTime UpdatedAt { get; set; } = DateTime.UtcNow;
+    public DateTime CreatedAt { get; set; } = DateTime.Now;
+    public DateTime UpdatedAt { get; set; } = DateTime.Now;
     
     // Navigation property
     [ForeignKey("BuildingId")]
@@ -216,7 +216,7 @@ public class RentalStatusFlag
     
     public bool IsActive { get; set; } = true;
     
-    public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
+    public DateTime CreatedAt { get; set; } = DateTime.Now;
     
     // Navigation property
     public ICollection<RentalBuilding> RentalBuildings { get; set; } = new List<RentalBuilding>();
@@ -245,7 +245,7 @@ public class RentalDecision
     
     public string? Notes { get; set; }
     
-    public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
+    public DateTime CreatedAt { get; set; } = DateTime.Now;
     
     // Navigation property
     [ForeignKey("BuildingId")]

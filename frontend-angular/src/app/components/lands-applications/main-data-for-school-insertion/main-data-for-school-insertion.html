@@ -56,11 +56,8 @@
       </div>
 
       <div class="form-group">
-        <label>تابع قرية / شياخة <span class="required">*</span></label>
+        <label>تابع قرية / شياخة</label>
         <input type="text" formControlName="subVillage" />
-        <div class="error" *ngIf="landForm.get('subVillage')?.touched && landForm.get('subVillage')?.invalid">
-          يرجى ادخال التابع للقرية / الشياخة
-        </div>
       </div>
 
       <div class="form-group">

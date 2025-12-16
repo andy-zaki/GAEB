@@ -41,7 +41,7 @@ public class LandsController : ControllerBase
 
   // GET: api/lands/by-reference/{referenceNumber}
   [HttpGet("by-reference/{referenceNumber}")]
-  public async Task<ActionResult<Land>> GetLandByReference(string referenceNumber)
+  public async Task<ActionResult<Land>> GetLandByReference(int referenceNumber)
   {
     var land = await _context.Lands.FirstOrDefaultAsync(l => l.ReferenceNumber == referenceNumber);
 
@@ -79,8 +79,8 @@ public class LandsController : ControllerBase
   public async Task<ActionResult<Land>> CreateLand(Land land)
   {
     land.Id = Guid.NewGuid();
-    land.CreatedAt = DateTime.UtcNow;
-    land.UpdatedAt = DateTime.UtcNow;
+    land.CreatedAt = DateTime.Now;
+    land.UpdatedAt = DateTime.Now;
 
     _context.Lands.Add(land);
     await _context.SaveChangesAsync();
@@ -111,7 +111,7 @@ public class LandsController : ControllerBase
       Coordinates = land.LengthNorth,
       Status = "يوجد",
       RequiredStatus = "مطلوب",
-      CreatedAt = DateTime.UtcNow
+      CreatedAt = DateTime.Now
     };
     _context.Add(buildingLocation);
 
@@ -124,7 +124,7 @@ public class LandsController : ControllerBase
       Coordinates = land.LengthNe,
       Status = "يوجد",
       RequiredStatus = "مطلوب",
-      CreatedAt = DateTime.UtcNow
+      CreatedAt = DateTime.Now
     };
     _context.Add(buildingLocation);
 
@@ -137,7 +137,7 @@ public class LandsController : ControllerBase
       Coordinates = land.LengthSe,
       Status = "يوجد",
       RequiredStatus = "مطلوب",
-      CreatedAt = DateTime.UtcNow
+      CreatedAt = DateTime.Now
     };
     _context.Add(buildingLocation);
 
@@ -150,7 +150,7 @@ public class LandsController : ControllerBase
       Coordinates = land.LengthNw,
       Status = "يوجد",
       RequiredStatus = "مطلوب",
-      CreatedAt = DateTime.UtcNow
+      CreatedAt = DateTime.Now
     };
     _context.Add(buildingLocation);
 
@@ -163,7 +163,7 @@ public class LandsController : ControllerBase
       Coordinates = land.LengthSw,
       Status = "يوجد",
       RequiredStatus = "مطلوب",
-      CreatedAt = DateTime.UtcNow
+      CreatedAt = DateTime.Now
     };
     _context.Add(buildingLocation);
 
@@ -176,7 +176,7 @@ public class LandsController : ControllerBase
       Coordinates = land.LengthSouth,
       Status = "يوجد",
       RequiredStatus = "مطلوب",
-      CreatedAt = DateTime.UtcNow
+      CreatedAt = DateTime.Now
     };
     _context.Add(buildingLocation);
 
@@ -189,7 +189,7 @@ public class LandsController : ControllerBase
       Coordinates = land.LengthEast,
       Status = "يوجد",
       RequiredStatus = "مطلوب",
-      CreatedAt = DateTime.UtcNow
+      CreatedAt = DateTime.Now
     };
     _context.Add(buildingLocation);
 
@@ -202,7 +202,7 @@ public class LandsController : ControllerBase
       Coordinates = land.LengthWest,
       Status = "يوجد",
       RequiredStatus = "مطلوب",
-      CreatedAt = DateTime.UtcNow
+      CreatedAt = DateTime.Now
     };
     _context.Add(buildingLocation);
 
@@ -238,7 +238,7 @@ public class LandsController : ControllerBase
       return BadRequest();
     }
 
-    land.UpdatedAt = DateTime.UtcNow;
+    land.UpdatedAt = DateTime.Now;
     _context.Entry(land).State = EntityState.Modified;
 
     try
@@ -311,7 +311,7 @@ public class LandsController : ControllerBase
   {
     coordinate.Id = Guid.NewGuid();
     coordinate.LandId = landId;
-    coordinate.CreatedAt = DateTime.UtcNow;
+    coordinate.CreatedAt = DateTime.Now;
 
     _context.LandCoordinates.Add(coordinate);
     await _context.SaveChangesAsync();

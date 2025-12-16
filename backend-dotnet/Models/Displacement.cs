@@ -31,8 +31,8 @@ public class DisplacementRecord
     
     public string? Notes { get; set; }
     
-    public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
-    public DateTime UpdatedAt { get; set; } = DateTime.UtcNow;
+    public DateTime CreatedAt { get; set; } = DateTime.Now;
+    public DateTime UpdatedAt { get; set; } = DateTime.Now;
     
     [ForeignKey("EducationalBuilding")]
     public Guid? EducationalBuildingId { get; set; }
@@ -67,7 +67,7 @@ public class DisplacementCompensation
     
     public string? Notes { get; set; }
     
-    public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
+    public DateTime CreatedAt { get; set; } = DateTime.Now;
     
     // Navigation property
     [ForeignKey("DisplacementId")]
@@ -95,7 +95,7 @@ public class CouncilApproval
     
     public string? DecisionDetails { get; set; }
     
-    public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
+    public DateTime CreatedAt { get; set; } = DateTime.Now;
     
     // Navigation property
     [ForeignKey("DisplacementId")]

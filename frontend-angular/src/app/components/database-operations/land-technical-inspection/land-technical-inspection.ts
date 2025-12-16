@@ -68,7 +68,7 @@ export class LandTechnicalInspectionComponent {
     landOwnerName: ['', Validators.required],
     landOwnerAddress: ['', Validators.required],
     totalArea: ['', Validators.required],
-    landNature: ['', Validators.required],
+    landNature: ['مباني', Validators.required],
     landOwnershipCode: ['', Validators.required],
 
     // الحدود
@@ -161,7 +161,7 @@ export class LandTechnicalInspectionComponent {
         console.error('Error creating building:', error);
         const errorMessage = this.errorHandler.getUserFriendlyMessage(
           error,
-          'إضافة المبنى'
+          'إضافة معاينة فنية للأرض'
         );
         alert(`❌ فشل في  إضافة معاينة فنية للأرض:\n${errorMessage}`);
       }

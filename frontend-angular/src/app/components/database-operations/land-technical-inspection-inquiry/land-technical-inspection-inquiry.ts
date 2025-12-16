@@ -71,7 +71,7 @@ export class LandTechnicalInspectionInquiryComponent {
       error: (error) => {
         const errorMessage = this.errorHandler.getUserFriendlyMessage(
           error,
-          'البحث عن المبنى'
+          'البحث عن معاينه فنية لأرض بواسطة كود الأرض'
         );
         alert(errorMessage);
       }

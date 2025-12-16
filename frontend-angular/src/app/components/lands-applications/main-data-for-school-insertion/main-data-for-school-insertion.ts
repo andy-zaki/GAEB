@@ -51,7 +51,7 @@ export class MainDataForSchoolInsertion {
       buildingName: ['', Validators.required],
       districtId: ['', Validators.required],
       villageId: ['', Validators.required],
-      subVillage: ['', Validators.required],
+      subVillage: [''],
       totalArea: ['', Validators.required],
       landOwnership: ['', Validators.required],
     });

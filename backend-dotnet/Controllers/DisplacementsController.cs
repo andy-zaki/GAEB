@@ -45,7 +45,7 @@ public class DisplacementsController : ControllerBase
     public async Task<ActionResult<DisplacementRecord>> CreateDisplacement(DisplacementRecord displacement)
     {
         displacement.Id = Guid.NewGuid();
-        displacement.CreatedAt = displacement.UpdatedAt = DateTime.UtcNow;
+        displacement.CreatedAt = displacement.UpdatedAt = DateTime.Now;
         _context.DisplacementRecords.Add(displacement);
         await _context.SaveChangesAsync();
         return CreatedAtAction(nameof(GetDisplacement), new { id = displacement.Id }, displacement);
@@ -55,7 +55,7 @@ public class DisplacementsController : ControllerBase
     public async Task<IActionResult> UpdateDisplacement(Guid id, DisplacementRecord displacement)
     {
         if (id != displacement.Id) return BadRequest();
-        displacement.UpdatedAt = DateTime.UtcNow;
+        displacement.UpdatedAt = DateTime.Now;
         _context.Entry(displacement).State = EntityState.Modified;
         try { await _context.SaveChangesAsync(); }
         catch (DbUpdateConcurrencyException) { if (!_context.DisplacementRecords.Any(e => e.Id == id)) return NotFound(); throw; }
@@ -85,7 +85,7 @@ public class DisplacementsController : ControllerBase
     {
         compensation.Id = Guid.NewGuid();
         compensation.DisplacementId = displacementId;
-        compensation.CreatedAt = DateTime.UtcNow;
+        compensation.CreatedAt = DateTime.Now;
         _context.DisplacementCompensations.Add(compensation);
         await _context.SaveChangesAsync();
         return CreatedAtAction(nameof(GetCompensation), new { displacementId }, compensation);
@@ -96,7 +96,7 @@ public class DisplacementsController : ControllerBase
     {
         approval.Id = Guid.NewGuid();
         approval.DisplacementId = displacementId;
-        approval.CreatedAt = DateTime.UtcNow;
+        approval.CreatedAt = DateTime.Now;
         _context.CouncilApprovals.Add(approval);
         await _context.SaveChangesAsync();
         return CreatedAtAction(nameof(GetCouncilApprovals), new { displacementId }, approval);

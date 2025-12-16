@@ -54,7 +54,7 @@ public class BuildingsController : ControllerBase
     public async Task<ActionResult<Building>> CreateBuilding(Building building)
     {
         building.Id = Guid.NewGuid();
-        building.CreatedAt = building.UpdatedAt = DateTime.UtcNow;
+        building.CreatedAt = building.UpdatedAt = DateTime.Now;
         _context.Buildings.Add(building);
         await _context.SaveChangesAsync();
         return CreatedAtAction(nameof(GetBuilding), new { id = building.Id }, building);
@@ -64,7 +64,7 @@ public class BuildingsController : ControllerBase
     public async Task<IActionResult> UpdateBuilding(Guid id, Building building)
     {
         if (id != building.Id) return BadRequest();
-        building.UpdatedAt = DateTime.UtcNow;
+        building.UpdatedAt = DateTime.Now;
         _context.Entry(building).State = EntityState.Modified;
         try { await _context.SaveChangesAsync(); }
         catch (DbUpdateConcurrencyException) { if (!_context.Buildings.Any(e => e.Id == id)) return NotFound(); throw; }
@@ -105,7 +105,7 @@ public class BuildingsController : ControllerBase
     {
         data.Id = Guid.NewGuid();
         data.BuildingNumber = buildingNumber;
-        data.CreatedAt = data.UpdatedAt = DateTime.UtcNow;
+        data.CreatedAt = data.UpdatedAt = DateTime.Now;
         _context.BuildingBasicData.Add(data);
         await _context.SaveChangesAsync();
         return CreatedAtAction(nameof(GetBuildingBasicData), new { buildingNumber }, data);
@@ -116,7 +116,7 @@ public class BuildingsController : ControllerBase
     {
         annex.Id = Guid.NewGuid();
         annex.BuildingId = buildingId;
-        annex.CreatedAt = DateTime.UtcNow;
+        annex.CreatedAt = DateTime.Now;
         _context.BuildingAnnexes.Add(annex);
         await _context.SaveChangesAsync();
         return CreatedAtAction(nameof(GetBuildingAnnexes), new { buildingId }, annex);
@@ -127,7 +127,7 @@ public class BuildingsController : ControllerBase
     {
         cost.Id = Guid.NewGuid();
         cost.BuildingId = buildingId;
-        cost.CreatedAt = cost.UpdatedAt = DateTime.UtcNow;
+        cost.CreatedAt = cost.UpdatedAt = DateTime.Now;
         _context.NetworkCosts.Add(cost);
         await _context.SaveChangesAsync();
         return CreatedAtAction(nameof(GetNetworkCosts), new { buildingId }, cost);

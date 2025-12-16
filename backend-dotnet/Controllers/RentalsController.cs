@@ -45,7 +45,7 @@ public class RentalsController : ControllerBase
     public async Task<ActionResult<RentalBuilding>> CreateRentalBuilding(RentalBuilding rental)
     {
         rental.Id = Guid.NewGuid();
-        rental.CreatedAt = rental.UpdatedAt = DateTime.UtcNow;
+        rental.CreatedAt = rental.UpdatedAt = DateTime.Now;
         _context.RentalBuildings.Add(rental);
         await _context.SaveChangesAsync();
         return CreatedAtAction(nameof(GetRentalBuilding), new { id = rental.Id }, rental);
@@ -55,7 +55,7 @@ public class RentalsController : ControllerBase
     public async Task<ActionResult<RentalBuilding>> UpdateRentalBuilding(Guid id, RentalBuilding rental)
     {
         if (id != rental.Id) return BadRequest();
-        rental.UpdatedAt = DateTime.UtcNow;
+        rental.UpdatedAt = DateTime.Now;
         _context.Entry(rental).State = EntityState.Modified;
         try { await _context.SaveChangesAsync(); }
         catch (DbUpdateConcurrencyException) { if (!_context.RentalBuildings.Any(e => e.Id == id)) return NotFound(); throw; }
@@ -92,7 +92,7 @@ public class RentalsController : ControllerBase
     {
         location.Id = Guid.NewGuid();
         location.BuildingId = buildingId;
-        location.CreatedAt = location.UpdatedAt = DateTime.UtcNow;
+        location.CreatedAt = location.UpdatedAt = DateTime.Now;
         _context.RentalBuildingLocations.Add(location);
         await _context.SaveChangesAsync();
         return CreatedAtAction(nameof(GetLocation), new { buildingId }, location);

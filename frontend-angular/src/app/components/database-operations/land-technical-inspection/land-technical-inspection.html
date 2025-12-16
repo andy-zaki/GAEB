@@ -108,13 +108,17 @@
 
             <!-- طبيعة الأرض -->
             <div class="form-group">
-              <label for="landNature">طبيعة الأرض:<span class="required">*</span></label>
-              <select formControlName="landNature"
-                [class.error]="form.get('landNature')?.invalid && form.get('landNature')?.touched">
-                <option value="">اختر</option>
-                <option value="زراعي">زراعي</option>
-                <option value="مباني">مباني</option>
-              </select>
+              <label>طبيعة الأرض:<span class="required">*</span></label>
+              <div class="radio-group">
+                <label>
+                  <input type="radio" formControlName="landNature" value="زراعي" />
+                  زراعي
+                </label>
+                <label>
+                  <input type="radio" formControlName="landNature" value="مباني" />
+                  مباني
+                </label>
+              </div>
               @if (form.get('landNature')?.invalid && form.get('landNature')?.touched) {
               <span class="error-message">طبيعة الأرض مطلوبة</span>
               }

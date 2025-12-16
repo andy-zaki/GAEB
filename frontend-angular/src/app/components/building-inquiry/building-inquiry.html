@@ -1,706 +1,619 @@
-<app-header 
-  [pageTitle]="'استعلام عن مبنى تعليمي'"
-  [showBackButton]="true"
-  [showHomeButton]="true"
-  (backClicked)="navigateBack()"
-  (homeClicked)="goHome()"
-  (logoutClicked)="logout()"
-></app-header>
+<app-header [pageTitle]="'استعلام عن مبنى تعليمي'" [showBackButton]="true" [showHomeButton]="true"
+  (backClicked)="navigateBack()" (homeClicked)="goHome()" (logoutClicked)="logout()"></app-header>
 
 <div class="container">
   <div class="page-content">
     <!-- Search Mode -->
     @if (viewMode() === 'search') {
-      <h1>استعلام عن مبنى تعليمي</h1>
-      <p class="subtitle">البحث والاستعلام عن بيانات المباني التعليمية</p>
+    <h1>استعلام عن مبنى تعليمي</h1>
+    <p class="subtitle">البحث والاستعلام عن بيانات المباني التعليمية</p>
 
-      <div class="form-wrapper">
-        <form [formGroup]="searchForm" (ngSubmit)="onSearch()">
-          <div class="form-row">
-            <div class="form-group">
-              <label for="buildingNumber">رقم المبنى</label>
-              <input 
-                type="text" 
-                id="buildingNumber" 
-                formControlName="buildingNumber"
-                placeholder="أدخل رقم المبنى"
-              />
-            </div>
-
-            <div class="form-group">
-              <label for="schoolName">بحث عام</label>
-              <input 
-                type="text" 
-                id="schoolName" 
-                formControlName="schoolName"
-                placeholder="ابحث بالرقم أو الشارع"
-              />
-            </div>
+    <div class="form-wrapper">
+      <form [formGroup]="searchForm" (ngSubmit)="onSearch()">
+        <div class="form-row">
+          <div class="form-group">
+            <label for="buildingNumber">رقم المبنى</label>
+            <input type="text" id="buildingNumber" formControlName="buildingNumber" placeholder="أدخل رقم المبنى" />
           </div>
 
-          <div class="form-actions">
-            <button type="submit" class="btn btn-primary">
-              <span>🔍</span>
-              بحث
-            </button>
-            <button type="button" class="btn btn-success" (click)="onCreateNew()">
-              <span>➕</span>
-              إضافة مبنى جديد
-            </button>
+          <div class="form-group">
+            <label for="schoolName">بحث عام</label>
+            <input type="text" id="schoolName" formControlName="schoolName" placeholder="ابحث بالرقم أو الشارع" />
           </div>
-        </form>
-      </div>
+        </div>
+
+        <div class="form-actions">
+          <button type="submit" class="btn btn-primary">
+            <span>🔍</span>
+            بحث
+          </button>
+          <button type="button" class="btn btn-success" (click)="onCreateNew()">
+            <span>➕</span>
+            إضافة مبنى جديد
+          </button>
+        </div>
+      </form>
+    </div>
     }
 
     <!-- View Mode -->
     @if (viewMode() === 'view' && selectedBuilding()) {
-      <h1>بيانات المبنى التعليمي</h1>
-      
-      <div class="building-card">
-        <div class="card-header">
-          <h2>مبنى رقم: {{ selectedBuilding()?.buildingNumber }}</h2>
+    <h1>بيانات المبنى التعليمي</h1>
+
+    <div class="building-card">
+      <div class="card-header">
+        <h2>مبنى رقم: {{ selectedBuilding()?.buildingNumber }}</h2>
+      </div>
+
+      <div class="card-content">
+        <div class="info-section">
+          <h3>المعلومات الأساسية</h3>
+          <div class="info-row">
+            <div class="info-item">
+              <label>رقم المبنى:</label>
+              <span>{{ selectedBuilding()?.buildingNumber }}</span>
+            </div>
+            <div class="info-item">
+              <label>موقف الاستخدام:</label>
+              <span>{{ selectedBuilding()?.usageStatus }}</span>
+            </div>
+            <div class="info-item">
+              <label>رقم التليفون:</label>
+              <span>{{ selectedBuilding()?.phoneNumber }}</span>
+            </div>
+          </div>
         </div>
 
-        <div class="card-content">
-          <div class="info-section">
-            <h3>المعلومات الأساسية</h3>
-            <div class="info-row">
-              <div class="info-item">
-                <label>رقم المبنى:</label>
-                <span>{{ selectedBuilding()?.buildingNumber }}</span>
-              </div>
-              <div class="info-item">
-                <label>موقف الاستخدام:</label>
-                <span>{{ selectedBuilding()?.usageStatus }}</span>
-              </div>
-              <div class="info-item">
-                <label>رقم التليفون:</label>
-                <span>{{ selectedBuilding()?.phoneNumber }}</span>
-              </div>
+        <div class="info-section">
+          <h3>العنوان</h3>
+          <div class="info-row">
+            <div class="info-item">
+              <label>رقم:</label>
+              <span>{{ selectedBuilding()?.addressNumber }}</span>
+            </div>
+            <div class="info-item">
+              <label>شارع:</label>
+              <span>{{ selectedBuilding()?.street }}</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="info-section">
+          <h3>الملكية</h3>
+          <div class="info-row">
+            <div class="info-item">
+              <label>ملكية الأرض:</label>
+              <span>{{ selectedBuilding()?.landOwnership }}</span>
+            </div>
+            <div class="info-item">
+              <label>ملكية المبنى:</label>
+              <span>{{ selectedBuilding()?.buildingOwnership }}</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="info-section">
+          <h3>الأسوار</h3>
+          <div class="info-row">
+            <div class="info-item">
+              <label>كود السور:</label>
+              <span>{{ selectedBuilding()?.fenceCode }}</span>
+            </div>
+            <div class="info-item">
+              <label>الارتفاع:</label>
+              <span>{{ selectedBuilding()?.fenceHeight }} متر</span>
+            </div>
+            <div class="info-item">
+              <label>حالة السور:</label>
+              <span>{{ selectedBuilding()?.fenceCondition }}</span>
+            </div>
+            <div class="info-item">
+              <label>الحالة:</label>
+              <span>{{ selectedBuilding()?.buildingMaterial }}</span>
             </div>
           </div>
 
-          <div class="info-section">
-            <h3>العنوان</h3>
-            <div class="info-row">
-              <div class="info-item">
-                <label>رقم:</label>
-                <span>{{ selectedBuilding()?.addressNumber }}</span>
-              </div>
-              <div class="info-item">
-                <label>شارع:</label>
-                <span>{{ selectedBuilding()?.street }}</span>
-              </div>
+          <h4>الأضلاع</h4>
+          <div class="info-row">
+            <div class="info-item">
+              <label>شمال:</label>
+              <span>{{ selectedBuilding()?.northSide }} متر</span>
+            </div>
+            <div class="info-item">
+              <label>جنوب:</label>
+              <span>{{ selectedBuilding()?.southSide }} متر</span>
+            </div>
+            <div class="info-item">
+              <label>شرق:</label>
+              <span>{{ selectedBuilding()?.eastSide }} متر</span>
+            </div>
+            <div class="info-item">
+              <label>غرب:</label>
+              <span>{{ selectedBuilding()?.westSide }} متر</span>
             </div>
           </div>
-
-          <div class="info-section">
-            <h3>الملكية</h3>
-            <div class="info-row">
-              <div class="info-item">
-                <label>ملكية الأرض:</label>
-                <span>{{ selectedBuilding()?.landOwnership }}</span>
-              </div>
-              <div class="info-item">
-                <label>ملكية المبنى:</label>
-                <span>{{ selectedBuilding()?.buildingOwnership }}</span>
-              </div>
+          <div class="info-row">
+            <div class="info-item">
+              <label>شمال شرق:</label>
+              <span>{{ selectedBuilding()?.northEast }} متر</span>
+            </div>
+            <div class="info-item">
+              <label>جنوب شرق:</label>
+              <span>{{ selectedBuilding()?.southEast }} متر</span>
+            </div>
+            <div class="info-item">
+              <label>شمال غرب:</label>
+              <span>{{ selectedBuilding()?.northWest }} متر</span>
+            </div>
+            <div class="info-item">
+              <label>جنوب غرب:</label>
+              <span>{{ selectedBuilding()?.southWest }} متر</span>
             </div>
           </div>
+        </div>
 
-          <div class="info-section">
-            <h3>الأسوار</h3>
-            <div class="info-row">
-              <div class="info-item">
-                <label>كود السور:</label>
-                <span>{{ selectedBuilding()?.fenceCode }}</span>
-              </div>
-              <div class="info-item">
-                <label>الارتفاع:</label>
-                <span>{{ selectedBuilding()?.fenceHeight }} متر</span>
-              </div>
-              <div class="info-item">
-                <label>حالة السور:</label>
-                <span>{{ selectedBuilding()?.fenceCondition }}</span>
-              </div>
-              <div class="info-item">
-                <label>الحالة:</label>
-                <span>{{ selectedBuilding()?.buildingMaterial }}</span>
-              </div>
+        <div class="info-section">
+          <h3>الإحداثيات</h3>
+          <div class="info-row">
+            <div class="info-item">
+              <label>X:</label>
+              <span>{{ selectedBuilding()?.coordinateX }}</span>
             </div>
-
-            <h4>الأضلاع</h4>
-            <div class="info-row">
-              <div class="info-item">
-                <label>شمال:</label>
-                <span>{{ selectedBuilding()?.northSide }} متر</span>
-              </div>
-              <div class="info-item">
-                <label>جنوب:</label>
-                <span>{{ selectedBuilding()?.southSide }} متر</span>
-              </div>
-              <div class="info-item">
-                <label>شرق:</label>
-                <span>{{ selectedBuilding()?.eastSide }} متر</span>
-              </div>
-              <div class="info-item">
-                <label>غرب:</label>
-                <span>{{ selectedBuilding()?.westSide }} متر</span>
-              </div>
+            <div class="info-item">
+              <label>Y:</label>
+              <span>{{ selectedBuilding()?.coordinateY }}</span>
             </div>
-            <div class="info-row">
-              <div class="info-item">
-                <label>شمال شرق:</label>
-                <span>{{ selectedBuilding()?.northEast }} متر</span>
-              </div>
-              <div class="info-item">
-                <label>جنوب شرق:</label>
-                <span>{{ selectedBuilding()?.southEast }} متر</span>
-              </div>
-              <div class="info-item">
-                <label>شمال غرب:</label>
-                <span>{{ selectedBuilding()?.northWest }} متر</span>
-              </div>
-              <div class="info-item">
-                <label>جنوب غرب:</label>
-                <span>{{ selectedBuilding()?.southWest }} متر</span>
-              </div>
+            <div class="info-item">
+              <label>Z:</label>
+              <span>{{ selectedBuilding()?.coordinateZ }}</span>
             </div>
           </div>
+        </div>
 
-          <div class="info-section">
-            <h3>الإحداثيات</h3>
-            <div class="info-row">
-              <div class="info-item">
-                <label>X:</label>
-                <span>{{ selectedBuilding()?.coordinateX }}</span>
-              </div>
-              <div class="info-item">
-                <label>Y:</label>
-                <span>{{ selectedBuilding()?.coordinateY }}</span>
-              </div>
-              <div class="info-item">
-                <label>Z:</label>
-                <span>{{ selectedBuilding()?.coordinateZ }}</span>
-              </div>
+        <div class="info-section">
+          <h3>محيطات مؤثرة</h3>
+          <div class="info-row">
+            <div class="info-item">
+              <label>الإيجابي:</label>
+              <span>{{ selectedBuilding()?.positiveEnvironment }}</span>
             </div>
-          </div>
-
-          <div class="info-section">
-            <h3>محيطات مؤثرة</h3>
-            <div class="info-row">
-              <div class="info-item">
-                <label>الإيجابي:</label>
-                <span>{{ selectedBuilding()?.positiveEnvironment }}</span>
-              </div>
-              <div class="info-item">
-                <label>السلبي:</label>
-                <span>{{ selectedBuilding()?.negativeEnvironment }}</span>
-              </div>
+            <div class="info-item">
+              <label>السلبي:</label>
+              <span>{{ selectedBuilding()?.negativeEnvironment }}</span>
             </div>
           </div>
         </div>
       </div>
+    </div>
 
-      <div class="form-actions">
-        <button type="button" class="btn btn-primary" (click)="onEdit()">
-          <span>✏️</span>
-          تعديل
-        </button>
-        <button type="button" class="btn btn-secondary" (click)="onBackToSearch()">
-          <span>🔙</span>
-          رجوع للبحث
-        </button>
-      </div>
+    <div class="form-actions">
+      <button type="button" class="btn btn-primary" (click)="onEdit()">
+        <span>✏️</span>
+        تعديل
+      </button>
+      <button type="button" class="btn btn-secondary" (click)="onBackToSearch()">
+        <span>🔙</span>
+        رجوع للبحث
+      </button>
+    </div>
     }
 
     <!-- Create/Edit Mode -->
     @if (viewMode() === 'create' || viewMode() === 'edit') {
-      <h1>{{ viewMode() === 'create' ? 'إضافة مبنى تعليمي جديد' : 'تعديل بيانات المبنى' }}</h1>
+    <h1>{{ viewMode() === 'create' ? 'إضافة مبنى تعليمي جديد' : 'تعديل بيانات المبنى' }}</h1>
 
-      <!-- Form Validation Summary -->
-      @if (buildingForm.invalid && buildingForm.touched) {
-        <div class="alert alert-error">
-          <strong>⚠️ يرجى تصحيح الأخطاء التالية:</strong>
-          <ul>
-            @if (buildingForm.get('buildingNumber')?.invalid && buildingForm.get('buildingNumber')?.touched) {
-              <li>رقم المبني مطلوب</li>
-            }
-            @if (buildingForm.get('usageStatus')?.invalid && buildingForm.get('usageStatus')?.touched) {
-              <li>موقف الاستخدام مطلوب</li>
-            }
-            @if (buildingForm.get('phoneNumber')?.invalid && buildingForm.get('phoneNumber')?.touched) {
-              <li>رقم التليفون مطلوب</li>
-            }
-            @if (buildingForm.get('addressNumber')?.invalid && buildingForm.get('addressNumber')?.touched) {
-              <li>رقم العنوان مطلوب</li>
-            }
-            @if (buildingForm.get('street')?.invalid && buildingForm.get('street')?.touched) {
-              <li>الشارع مطلوب</li>
-            }
-            @if (buildingForm.get('landOwnership')?.invalid && buildingForm.get('landOwnership')?.touched) {
-              <li>ملكية الأرض مطلوبة</li>
-            }
-            @if (buildingForm.get('buildingOwnership')?.invalid && buildingForm.get('buildingOwnership')?.touched) {
-              <li>ملكية المبني مطلوبة</li>
-            }
-            @if (buildingForm.get('fenceCode')?.invalid && buildingForm.get('fenceCode')?.touched) {
-              <li>كود السور مطلوب</li>
-            }
-            @if (buildingForm.get('fenceHeight')?.invalid && buildingForm.get('fenceHeight')?.touched) {
-              <li>ارتفاع السور مطلوب</li>
-            }
-            @if (buildingForm.get('fenceCondition')?.invalid && buildingForm.get('fenceCondition')?.touched) {
-              <li>حالة السور مطلوبة</li>
-            }
-            @if (buildingForm.get('buildingMaterial')?.invalid && buildingForm.get('buildingMaterial')?.touched) {
-              <li>الحالة مطلوبة</li>
-            }
-            @if (buildingForm.get('positiveEnvironment')?.invalid && buildingForm.get('positiveEnvironment')?.touched) {
-              <li>المحيط الإيجابي مطلوب</li>
-            }
-            @if (buildingForm.get('negativeEnvironment')?.invalid && buildingForm.get('negativeEnvironment')?.touched) {
-              <li>المحيط السلبي مطلوب</li>
-            }
-          </ul>
+    <!-- Form Validation Summary -->
+    @if (buildingForm.invalid && buildingForm.touched) {
+    <div class="alert alert-error">
+      <strong>⚠️ يرجى تصحيح الأخطاء التالية:</strong>
+      <ul>
+        @if (buildingForm.get('buildingNumber')?.invalid && buildingForm.get('buildingNumber')?.touched) {
+        <li>رقم المبني مطلوب</li>
+        }
+        @if (buildingForm.get('usageStatus')?.invalid && buildingForm.get('usageStatus')?.touched) {
+        <li>موقف الاستخدام مطلوب</li>
+        }
+        @if (buildingForm.get('phoneNumber')?.invalid && buildingForm.get('phoneNumber')?.touched) {
+        <li>رقم التليفون مطلوب</li>
+        }
+        @if (buildingForm.get('addressNumber')?.invalid && buildingForm.get('addressNumber')?.touched) {
+        <li>رقم العنوان مطلوب</li>
+        }
+        @if (buildingForm.get('street')?.invalid && buildingForm.get('street')?.touched) {
+        <li>الشارع مطلوب</li>
+        }
+        @if (buildingForm.get('landOwnership')?.invalid && buildingForm.get('landOwnership')?.touched) {
+        <li>ملكية الأرض مطلوبة</li>
+        }
+        @if (buildingForm.get('buildingOwnership')?.invalid && buildingForm.get('buildingOwnership')?.touched) {
+        <li>ملكية المبني مطلوبة</li>
+        }
+        @if (buildingForm.get('fenceCode')?.invalid && buildingForm.get('fenceCode')?.touched) {
+        <li>كود السور مطلوب</li>
+        }
+        @if (buildingForm.get('fenceHeight')?.invalid && buildingForm.get('fenceHeight')?.touched) {
+        <li>ارتفاع السور مطلوب</li>
+        }
+        @if (buildingForm.get('fenceCondition')?.invalid && buildingForm.get('fenceCondition')?.touched) {
+        <li>حالة السور مطلوبة</li>
+        }
+        @if (buildingForm.get('buildingMaterial')?.invalid && buildingForm.get('buildingMaterial')?.touched) {
+        <li>الحالة مطلوبة</li>
+        }
+        @if (buildingForm.get('positiveEnvironment')?.invalid && buildingForm.get('positiveEnvironment')?.touched) {
+        <li>المحيط الإيجابي مطلوب</li>
+        }
+        @if (buildingForm.get('negativeEnvironment')?.invalid && buildingForm.get('negativeEnvironment')?.touched) {
+        <li>المحيط السلبي مطلوب</li>
+        }
+      </ul>
+    </div>
+    }
+
+    <div class="form-wrapper">
+      <form [formGroup]="buildingForm" (ngSubmit)="onSave()">
+
+        <!-- Basic Information Section -->
+        <div class="form-section">
+          <h2 class="section-title">المعلومات الأساسية</h2>
+          <div class="form-row">
+            <div class="form-group">
+              <label>رقم المبني <span class="required">*</span></label>
+              <input type="text" formControlName="buildingNumber"
+                [class.error]="buildingForm.get('buildingNumber')?.invalid && buildingForm.get('buildingNumber')?.touched"
+                placeholder="أدخل رقم المبني" />
+              @if (buildingForm.get('buildingNumber')?.invalid && buildingForm.get('buildingNumber')?.touched) {
+              @if (buildingForm.get('buildingNumber')?.hasError('required')) {
+              <span class="error-message">رقم المبني مطلوب</span>
+              }
+              @if (buildingForm.get('buildingNumber')?.hasError('maxlength')) {
+              <span class="error-message">رقم المبني يجب أن يكون أقل من 50 حرف</span>
+              }
+              }
+            </div>
+
+            <div class="form-group">
+              <label>موقف الاستخدام <span class="required">*</span></label>
+              <input type="text" formControlName="usageStatus"
+                [class.error]="buildingForm.get('usageStatus')?.invalid && buildingForm.get('usageStatus')?.touched"
+                placeholder="أدخل موقف الاستخدام" />
+              @if (buildingForm.get('usageStatus')?.invalid && buildingForm.get('usageStatus')?.touched) {
+              <span class="error-message">موقف الاستخدام مطلوب</span>
+              }
+            </div>
+
+            <div class="form-group">
+              <label>رقم التليفون <span class="required">*</span></label>
+              <input type="tel" formControlName="phoneNumber"
+                [class.error]="buildingForm.get('phoneNumber')?.invalid && buildingForm.get('phoneNumber')?.touched"
+                placeholder="أدخل رقم التليفون" />
+              @if (buildingForm.get('phoneNumber')?.invalid && buildingForm.get('phoneNumber')?.touched) {
+              <span class="error-message">رقم التليفون مطلوب</span>
+              }
+            </div>
+          </div>
         </div>
-      }
 
-      <div class="form-wrapper">
-        <form [formGroup]="buildingForm" (ngSubmit)="onSave()">
-          
-          <!-- Basic Information Section -->
-          <div class="form-section">
-            <h2 class="section-title">المعلومات الأساسية</h2>
-            <div class="form-row">
-              <div class="form-group">
-                <label>رقم المبني <span class="required">*</span></label>
-                <input 
-                  type="text" 
-                  formControlName="buildingNumber"
-                  [class.error]="buildingForm.get('buildingNumber')?.invalid && buildingForm.get('buildingNumber')?.touched"
-                  placeholder="أدخل رقم المبني"
-                />
-                @if (buildingForm.get('buildingNumber')?.invalid && buildingForm.get('buildingNumber')?.touched) {
-                  @if (buildingForm.get('buildingNumber')?.hasError('required')) {
-                    <span class="error-message">رقم المبني مطلوب</span>
-                  }
-                  @if (buildingForm.get('buildingNumber')?.hasError('maxlength')) {
-                    <span class="error-message">رقم المبني يجب أن يكون أقل من 50 حرف</span>
-                  }
-                }
-              </div>
+        <!-- Address Section -->
+        <div class="form-section">
+          <h2 class="section-title">العنوان</h2>
+          <div class="form-row">
+            <div class="form-group">
+              <label>رقم <span class="required">*</span></label>
+              <input type="text" formControlName="addressNumber"
+                [class.error]="buildingForm.get('addressNumber')?.invalid && buildingForm.get('addressNumber')?.touched"
+                placeholder="أدخل رقم العنوان" />
+              @if (buildingForm.get('addressNumber')?.invalid && buildingForm.get('addressNumber')?.touched) {
+              <span class="error-message">رقم العنوان مطلوب</span>
+              }
+            </div>
 
-              <div class="form-group">
-                <label>موقف الاستخدام <span class="required">*</span></label>
-                <input 
-                  type="text" 
-                  formControlName="usageStatus"
-                  [class.error]="buildingForm.get('usageStatus')?.invalid && buildingForm.get('usageStatus')?.touched"
-                  placeholder="أدخل موقف الاستخدام"
-                />
-                @if (buildingForm.get('usageStatus')?.invalid && buildingForm.get('usageStatus')?.touched) {
-                  <span class="error-message">موقف الاستخدام مطلوب</span>
-                }
-              </div>
+            <div class="form-group">
+              <label>شارع <span class="required">*</span></label>
+              <input type="text" formControlName="street"
+                [class.error]="buildingForm.get('street')?.invalid && buildingForm.get('street')?.touched"
+                placeholder="أدخل اسم الشارع" />
+              @if (buildingForm.get('street')?.invalid && buildingForm.get('street')?.touched) {
+              <span class="error-message">اسم الشارع مطلوب</span>
+              }
+            </div>
+          </div>
+        </div>
 
-              <div class="form-group">
-                <label>رقم التليفون <span class="required">*</span></label>
-                <input 
-                  type="tel" 
-                  formControlName="phoneNumber"
-                  [class.error]="buildingForm.get('phoneNumber')?.invalid && buildingForm.get('phoneNumber')?.touched"
-                  placeholder="أدخل رقم التليفون"
-                />
-                @if (buildingForm.get('phoneNumber')?.invalid && buildingForm.get('phoneNumber')?.touched) {
-                  <span class="error-message">رقم التليفون مطلوب</span>
-                }
-              </div>
+        <!-- Ownership Section -->
+        <div class="form-section">
+          <h2 class="section-title">الملكية</h2>
+          <div class="form-row">
+            <div class="form-group">
+              <label>ملكية الأرض <span class="required">*</span></label>
+              <input type="text" formControlName="landOwnership"
+                [class.error]="buildingForm.get('landOwnership')?.invalid && buildingForm.get('landOwnership')?.touched"
+                placeholder="أدخل ملكية الأرض" />
+              @if (buildingForm.get('landOwnership')?.invalid && buildingForm.get('landOwnership')?.touched) {
+              <span class="error-message">ملكية الأرض مطلوبة</span>
+              }
+            </div>
+
+            <div class="form-group">
+              <label>ملكية المبني <span class="required">*</span></label>
+              <input type="text" formControlName="buildingOwnership"
+                [class.error]="buildingForm.get('buildingOwnership')?.invalid && buildingForm.get('buildingOwnership')?.touched"
+                placeholder="أدخل ملكية المبني" />
+              @if (buildingForm.get('buildingOwnership')?.invalid && buildingForm.get('buildingOwnership')?.touched) {
+              <span class="error-message">ملكية المبني مطلوبة</span>
+              }
+            </div>
+          </div>
+        </div>
+
+        <!-- Fence Section -->
+        <div class="form-section">
+          <h2 class="section-title">الأسوار</h2>
+          <div class="form-row">
+            <div class="form-group">
+              <label>كود السور <span class="required">*</span></label>
+              <input type="text" formControlName="fenceCode"
+                [class.error]="buildingForm.get('fenceCode')?.invalid && buildingForm.get('fenceCode')?.touched"
+                placeholder="أدخل كود السور" />
+              @if (buildingForm.get('fenceCode')?.invalid && buildingForm.get('fenceCode')?.touched) {
+              <span class="error-message">كود السور مطلوب</span>
+              }
+            </div>
+
+            <div class="form-group">
+              <label>الارتفاع <span class="required">*</span></label>
+              <input type="number" formControlName="fenceHeight"
+                [class.error]="buildingForm.get('fenceHeight')?.invalid && buildingForm.get('fenceHeight')?.touched"
+                placeholder="أدخل الارتفاع (متر)" />
+              @if (buildingForm.get('fenceHeight')?.invalid && buildingForm.get('fenceHeight')?.touched) {
+              <span class="error-message">الارتفاع مطلوب</span>
+              }
+            </div>
+
+            <div class="form-group">
+              <label>حالة السور <span class="required">*</span></label>
+              <input type="text" formControlName="fenceCondition"
+                [class.error]="buildingForm.get('fenceCondition')?.invalid && buildingForm.get('fenceCondition')?.touched"
+                placeholder="أدخل حالة السور" />
+              @if (buildingForm.get('fenceCondition')?.invalid && buildingForm.get('fenceCondition')?.touched) {
+              <span class="error-message">حالة السور مطلوبة</span>
+              }
+            </div>
+
+            <div class="form-group">
+              <label>الحالة <span class="required">*</span></label>
+              <input type="text" formControlName="buildingMaterial"
+                [class.error]="buildingForm.get('buildingMaterial')?.invalid && buildingForm.get('buildingMaterial')?.touched"
+                placeholder="أدخل الحالة" />
+              @if (buildingForm.get('buildingMaterial')?.invalid && buildingForm.get('buildingMaterial')?.touched) {
+              <span class="error-message">الحالة مطلوبة</span>
+              }
             </div>
           </div>
 
-          <!-- Address Section -->
-          <div class="form-section">
-            <h2 class="section-title">العنوان</h2>
-            <div class="form-row">
-              <div class="form-group">
-                <label>رقم <span class="required">*</span></label>
-                <input 
-                  type="text" 
-                  formControlName="addressNumber"
-                  [class.error]="buildingForm.get('addressNumber')?.invalid && buildingForm.get('addressNumber')?.touched"
-                  placeholder="أدخل رقم العنوان"
-                />
-                @if (buildingForm.get('addressNumber')?.invalid && buildingForm.get('addressNumber')?.touched) {
-                  <span class="error-message">رقم العنوان مطلوب</span>
-                }
-              </div>
-
-              <div class="form-group">
-                <label>شارع <span class="required">*</span></label>
-                <input 
-                  type="text" 
-                  formControlName="street"
-                  [class.error]="buildingForm.get('street')?.invalid && buildingForm.get('street')?.touched"
-                  placeholder="أدخل اسم الشارع"
-                />
-                @if (buildingForm.get('street')?.invalid && buildingForm.get('street')?.touched) {
-                  <span class="error-message">اسم الشارع مطلوب</span>
-                }
-              </div>
-            </div>
-          </div>
-
-          <!-- Ownership Section -->
-          <div class="form-section">
-            <h2 class="section-title">الملكية</h2>
-            <div class="form-row">
-              <div class="form-group">
-                <label>ملكية الأرض <span class="required">*</span></label>
-                <input 
-                  type="text" 
-                  formControlName="landOwnership"
-                  [class.error]="buildingForm.get('landOwnership')?.invalid && buildingForm.get('landOwnership')?.touched"
-                  placeholder="أدخل ملكية الأرض"
-                />
-                @if (buildingForm.get('landOwnership')?.invalid && buildingForm.get('landOwnership')?.touched) {
-                  <span class="error-message">ملكية الأرض مطلوبة</span>
-                }
-              </div>
-
-              <div class="form-group">
-                <label>ملكية المبني <span class="required">*</span></label>
-                <input 
-                  type="text" 
-                  formControlName="buildingOwnership"
-                  [class.error]="buildingForm.get('buildingOwnership')?.invalid && buildingForm.get('buildingOwnership')?.touched"
-                  placeholder="أدخل ملكية المبني"
-                />
-                @if (buildingForm.get('buildingOwnership')?.invalid && buildingForm.get('buildingOwnership')?.touched) {
-                  <span class="error-message">ملكية المبني مطلوبة</span>
-                }
-              </div>
-            </div>
-          </div>
-
-          <!-- Fence Section -->
-          <div class="form-section">
-            <h2 class="section-title">الأسوار</h2>
-            <div class="form-row">
-              <div class="form-group">
-                <label>كود السور <span class="required">*</span></label>
-                <input 
-                  type="text" 
-                  formControlName="fenceCode"
-                  [class.error]="buildingForm.get('fenceCode')?.invalid && buildingForm.get('fenceCode')?.touched"
-                  placeholder="أدخل كود السور"
-                />
-                @if (buildingForm.get('fenceCode')?.invalid && buildingForm.get('fenceCode')?.touched) {
-                  <span class="error-message">كود السور مطلوب</span>
-                }
-              </div>
-
-              <div class="form-group">
-                <label>الارتفاع <span class="required">*</span></label>
-                <input 
-                  type="number" 
-                  formControlName="fenceHeight"
-                  [class.error]="buildingForm.get('fenceHeight')?.invalid && buildingForm.get('fenceHeight')?.touched"
-                  placeholder="أدخل الارتفاع (متر)"
-                />
-                @if (buildingForm.get('fenceHeight')?.invalid && buildingForm.get('fenceHeight')?.touched) {
-                  <span class="error-message">الارتفاع مطلوب</span>
-                }
-              </div>
-
-              <div class="form-group">
-                <label>حالة السور <span class="required">*</span></label>
-                <input 
-                  type="text" 
-                  formControlName="fenceCondition"
-                  [class.error]="buildingForm.get('fenceCondition')?.invalid && buildingForm.get('fenceCondition')?.touched"
-                  placeholder="أدخل حالة السور"
-                />
-                @if (buildingForm.get('fenceCondition')?.invalid && buildingForm.get('fenceCondition')?.touched) {
-                  <span class="error-message">حالة السور مطلوبة</span>
-                }
-              </div>
-
-              <div class="form-group">
-                <label>الحالة <span class="required">*</span></label>
-                <input 
-                  type="text" 
-                  formControlName="buildingMaterial"
-                  [class.error]="buildingForm.get('buildingMaterial')?.invalid && buildingForm.get('buildingMaterial')?.touched"
-                  placeholder="أدخل الحالة"
-                />
-                @if (buildingForm.get('buildingMaterial')?.invalid && buildingForm.get('buildingMaterial')?.touched) {
-                  <span class="error-message">الحالة مطلوبة</span>
-                }
-              </div>
+          <h3 class="subsection-title">الأضلاع</h3>
+          <div class="form-row">
+            <div class="form-group">
+              <label>ضلع شمال <span class="required">*</span></label>
+              <input type="number" formControlName="northSide"
+                [class.error]="buildingForm.get('northSide')?.invalid && buildingForm.get('northSide')?.touched"
+                placeholder="أدخل طول الضلع (متر)" />
+              @if (buildingForm.get('northSide')?.invalid && buildingForm.get('northSide')?.touched) {
+              <span class="error-message">ضلع شمال مطلوب</span>
+              }
             </div>
 
-            <h3 class="subsection-title">الأضلاع</h3>
-            <div class="form-row">
-              <div class="form-group">
-                <label>ضلع شمال <span class="required">*</span></label>
-                <input 
-                  type="number" 
-                  formControlName="northSide"
-                  [class.error]="buildingForm.get('northSide')?.invalid && buildingForm.get('northSide')?.touched"
-                  placeholder="أدخل طول الضلع (متر)"
-                />
-                @if (buildingForm.get('northSide')?.invalid && buildingForm.get('northSide')?.touched) {
-                  <span class="error-message">ضلع شمال مطلوب</span>
-                }
-              </div>
+            <div class="form-group">
+              <label>ضلع جنوب <span class="required">*</span></label>
+              <input type="number" formControlName="southSide"
+                [class.error]="buildingForm.get('southSide')?.invalid && buildingForm.get('southSide')?.touched"
+                placeholder="أدخل طول الضلع (متر)" />
+              @if (buildingForm.get('southSide')?.invalid && buildingForm.get('southSide')?.touched) {
+              <span class="error-message">ضلع جنوب مطلوب</span>
+              }
+            </div>
 
-              <div class="form-group">
-                <label>ضلع جنوب <span class="required">*</span></label>
-                <input 
-                  type="number" 
-                  formControlName="southSide"
-                  [class.error]="buildingForm.get('southSide')?.invalid && buildingForm.get('southSide')?.touched"
-                  placeholder="أدخل طول الضلع (متر)"
-                />
-                @if (buildingForm.get('southSide')?.invalid && buildingForm.get('southSide')?.touched) {
-                  <span class="error-message">ضلع جنوب مطلوب</span>
-                }
-              </div>
+            <div class="form-group">
+              <label>ضلع شرق <span class="required">*</span></label>
+              <input type="number" formControlName="eastSide"
+                [class.error]="buildingForm.get('eastSide')?.invalid && buildingForm.get('eastSide')?.touched"
+                placeholder="أدخل طول الضلع (متر)" />
+              @if (buildingForm.get('eastSide')?.invalid && buildingForm.get('eastSide')?.touched) {
+              <span class="error-message">ضلع شرق مطلوب</span>
+              }
+            </div>
 
-              <div class="form-group">
-                <label>ضلع شرق <span class="required">*</span></label>
-                <input 
-                  type="number" 
-                  formControlName="eastSide"
-                  [class.error]="buildingForm.get('eastSide')?.invalid && buildingForm.get('eastSide')?.touched"
-                  placeholder="أدخل طول الضلع (متر)"
-                />
-                @if (buildingForm.get('eastSide')?.invalid && buildingForm.get('eastSide')?.touched) {
-                  <span class="error-message">ضلع شرق مطلوب</span>
-                }
-              </div>
+            <div class="form-group">
+              <label>ضلع غرب <span class="required">*</span></label>
+              <input type="number" formControlName="westSide"
+                [class.error]="buildingForm.get('westSide')?.invalid && buildingForm.get('westSide')?.touched"
+                placeholder="أدخل طول الضلع (متر)" />
+              @if (buildingForm.get('westSide')?.invalid && buildingForm.get('westSide')?.touched) {
+              <span class="error-message">ضلع غرب مطلوب</span>
+              }
+            </div>
 
-              <div class="form-group">
-                <label>ضلع غرب <span class="required">*</span></label>
-                <input 
-                  type="number" 
-                  formControlName="westSide"
-                  [class.error]="buildingForm.get('westSide')?.invalid && buildingForm.get('westSide')?.touched"
-                  placeholder="أدخل طول الضلع (متر)"
-                />
-                @if (buildingForm.get('westSide')?.invalid && buildingForm.get('westSide')?.touched) {
-                  <span class="error-message">ضلع غرب مطلوب</span>
-                }
-              </div>
+            <div class="form-group">
+              <label>شمال شرق <span class="required">*</span></label>
+              <input type="number" formControlName="northEast"
+                [class.error]="buildingForm.get('northEast')?.invalid && buildingForm.get('northEast')?.touched"
+                placeholder="أدخل طول الضلع (متر)" />
+              @if (buildingForm.get('northEast')?.invalid && buildingForm.get('northEast')?.touched) {
+              <span class="error-message">شمال شرق مطلوب</span>
+              }
+            </div>
 
-              <div class="form-group">
-                <label>شمال شرق <span class="required">*</span></label>
-                <input 
-                  type="number" 
-                  formControlName="northEast"
-                  [class.error]="buildingForm.get('northEast')?.invalid && buildingForm.get('northEast')?.touched"
-                  placeholder="أدخل طول الضلع (متر)"
-                />
-                @if (buildingForm.get('northEast')?.invalid && buildingForm.get('northEast')?.touched) {
-                  <span class="error-message">شمال شرق مطلوب</span>
-                }
-              </div>
+            <div class="form-group">
+              <label>جنوب شرق <span class="required">*</span></label>
+              <input type="number" formControlName="southEast"
+                [class.error]="buildingForm.get('southEast')?.invalid && buildingForm.get('southEast')?.touched"
+                placeholder="أدخل طول الضلع (متر)" />
+              @if (buildingForm.get('southEast')?.invalid && buildingForm.get('southEast')?.touched) {
+              <span class="error-message">جنوب شرق مطلوب</span>
+              }
+            </div>
 
-              <div class="form-group">
-                <label>جنوب شرق <span class="required">*</span></label>
-                <input 
-                  type="number" 
-                  formControlName="southEast"
-                  [class.error]="buildingForm.get('southEast')?.invalid && buildingForm.get('southEast')?.touched"
-                  placeholder="أدخل طول الضلع (متر)"
-                />
-                @if (buildingForm.get('southEast')?.invalid && buildingForm.get('southEast')?.touched) {
-                  <span class="error-message">جنوب شرق مطلوب</span>
-                }
-              </div>
+            <div class="form-group">
+              <label>شمال غرب <span class="required">*</span></label>
+              <input type="number" formControlName="northWest"
+                [class.error]="buildingForm.get('northWest')?.invalid && buildingForm.get('northWest')?.touched"
+                placeholder="أدخل طول الضلع (متر)" />
+              @if (buildingForm.get('northWest')?.invalid && buildingForm.get('northWest')?.touched) {
+              <span class="error-message">شمال غرب مطلوب</span>
+              }
+            </div>
 
-              <div class="form-group">
-                <label>شمال غرب <span class="required">*</span></label>
-                <input 
-                  type="number" 
-                  formControlName="northWest"
-                  [class.error]="buildingForm.get('northWest')?.invalid && buildingForm.get('northWest')?.touched"
-                  placeholder="أدخل طول الضلع (متر)"
-                />
-                @if (buildingForm.get('northWest')?.invalid && buildingForm.get('northWest')?.touched) {
-                  <span class="error-message">شمال غرب مطلوب</span>
-                }
-              </div>
-
-              <div class="form-group">
-                <label>جنوب غرب <span class="required">*</span></label>
-                <input 
-                  type="number" 
-                  formControlName="southWest"
-                  [class.error]="buildingForm.get('southWest')?.invalid && buildingForm.get('southWest')?.touched"
-                  placeholder="أدخل طول الضلع (متر)"
-                />
-                @if (buildingForm.get('southWest')?.invalid && buildingForm.get('southWest')?.touched) {
-                  <span class="error-message">جنوب غرب مطلوب</span>
-                }
-              </div>
+            <div class="form-group">
+              <label>جنوب غرب <span class="required">*</span></label>
+              <input type="number" formControlName="southWest"
+                [class.error]="buildingForm.get('southWest')?.invalid && buildingForm.get('southWest')?.touched"
+                placeholder="أدخل طول الضلع (متر)" />
+              @if (buildingForm.get('southWest')?.invalid && buildingForm.get('southWest')?.touched) {
+              <span class="error-message">جنوب غرب مطلوب</span>
+              }
             </div>
           </div>
+        </div>
 
-          <!-- Coordinates Section -->
-          <div class="form-section">
-            <h2 class="section-title">الإحداثيات</h2>
-            <div class="form-row">
-              <div class="form-group">
-                <label>X <span class="required">*</span></label>
-                <input 
-                  type="number" 
-                  step="any"
-                  formControlName="coordinateX"
-                  [class.error]="buildingForm.get('coordinateX')?.invalid && buildingForm.get('coordinateX')?.touched"
-                  placeholder="أدخل إحداثي X"
-                />
-                @if (buildingForm.get('coordinateX')?.invalid && buildingForm.get('coordinateX')?.touched) {
-                  <span class="error-message">إحداثي X مطلوب</span>
-                }
-              </div>
+        <!-- Coordinates Section -->
+        <div class="form-section">
+          <h2 class="section-title">الإحداثيات</h2>
+          <div class="form-row">
+            <div class="form-group">
+              <label>X <span class="required">*</span></label>
+              <input type="number" step="any" formControlName="coordinateX"
+                [class.error]="buildingForm.get('coordinateX')?.invalid && buildingForm.get('coordinateX')?.touched"
+                placeholder="أدخل إحداثي X" />
+              @if (buildingForm.get('coordinateX')?.invalid && buildingForm.get('coordinateX')?.touched) {
+              <span class="error-message">إحداثي X مطلوب</span>
+              }
+            </div>
 
-              <div class="form-group">
-                <label>Y <span class="required">*</span></label>
-                <input 
-                  type="number" 
-                  step="any"
-                  formControlName="coordinateY"
-                  [class.error]="buildingForm.get('coordinateY')?.invalid && buildingForm.get('coordinateY')?.touched"
-                  placeholder="أدخل إحداثي Y"
-                />
-                @if (buildingForm.get('coordinateY')?.invalid && buildingForm.get('coordinateY')?.touched) {
-                  <span class="error-message">إحداثي Y مطلوب</span>
-                }
-              </div>
+            <div class="form-group">
+              <label>Y <span class="required">*</span></label>
+              <input type="number" step="any" formControlName="coordinateY"
+                [class.error]="buildingForm.get('coordinateY')?.invalid && buildingForm.get('coordinateY')?.touched"
+                placeholder="أدخل إحداثي Y" />
+              @if (buildingForm.get('coordinateY')?.invalid && buildingForm.get('coordinateY')?.touched) {
+              <span class="error-message">إحداثي Y مطلوب</span>
+              }
+            </div>
 
-              <div class="form-group">
-                <label>Z <span class="required">*</span></label>
-                <input 
-                  type="number" 
-                  step="any"
-                  formControlName="coordinateZ"
-                  [class.error]="buildingForm.get('coordinateZ')?.invalid && buildingForm.get('coordinateZ')?.touched"
-                  placeholder="أدخل إحداثي Z"
-                />
-                @if (buildingForm.get('coordinateZ')?.invalid && buildingForm.get('coordinateZ')?.touched) {
-                  <span class="error-message">إحداثي Z مطلوب</span>
-                }
-              </div>
+            <div class="form-group">
+              <label>Z <span class="required">*</span></label>
+              <input type="number" step="any" formControlName="coordinateZ"
+                [class.error]="buildingForm.get('coordinateZ')?.invalid && buildingForm.get('coordinateZ')?.touched"
+                placeholder="أدخل إحداثي Z" />
+              @if (buildingForm.get('coordinateZ')?.invalid && buildingForm.get('coordinateZ')?.touched) {
+              <span class="error-message">إحداثي Z مطلوب</span>
+              }
             </div>
           </div>
+        </div>
 
-          <!-- Environmental Impact Section -->
-          <div class="form-section">
-            <h2 class="section-title">محيطات مؤثرة</h2>
-            <div class="form-row">
-              <div class="form-group">
-                <label>الإيجابي <span class="required">*</span></label>
-                <select 
-                  formControlName="positiveEnvironment"
-                  [class.error]="buildingForm.get('positiveEnvironment')?.invalid && buildingForm.get('positiveEnvironment')?.touched"
-                >
-                  <option value="">-- اختر --</option>
-                  @for (env of positiveEnvironments; track env.code) {
-                    <option [value]="env.name">{{ env.name }}</option>
-                  }
-                </select>
-                @if (buildingForm.get('positiveEnvironment')?.invalid && buildingForm.get('positiveEnvironment')?.touched) {
-                  <span class="error-message">المحيط الإيجابي مطلوب</span>
+        <!-- Environmental Impact Section -->
+        <div class="form-section">
+          <h2 class="section-title">محيطات مؤثرة</h2>
+          <div class="form-row">
+            <div class="form-group">
+              <label>الإيجابي <span class="required">*</span></label>
+              <select formControlName="positiveEnvironment"
+                [class.error]="buildingForm.get('positiveEnvironment')?.invalid && buildingForm.get('positiveEnvironment')?.touched">
+                <option value="">-- اختر --</option>
+                @for (env of positiveEnvironments; track env.code) {
+                <option [value]="env.name">{{ env.name }}</option>
                 }
-              </div>
+              </select>
+              @if (buildingForm.get('positiveEnvironment')?.invalid && buildingForm.get('positiveEnvironment')?.touched)
+              {
+              <span class="error-message">المحيط الإيجابي مطلوب</span>
+              }
+            </div>
 
-              <div class="form-group">
-                <label>السلبي <span class="required">*</span></label>
-                <select 
-                  formControlName="negativeEnvironment"
-                  [class.error]="buildingForm.get('negativeEnvironment')?.invalid && buildingForm.get('negativeEnvironment')?.touched"
-                >
-                  <option value="">-- اختر --</option>
-                  @for (env of negativeEnvironments; track env.code) {
-                    <option [value]="env.name">{{ env.name }}</option>
-                  }
-                </select>
-                @if (buildingForm.get('negativeEnvironment')?.invalid && buildingForm.get('negativeEnvironment')?.touched) {
-                  <span class="error-message">المحيط السلبي مطلوب</span>
+            <div class="form-group">
+              <label>السلبي <span class="required">*</span></label>
+              <select formControlName="negativeEnvironment"
+                [class.error]="buildingForm.get('negativeEnvironment')?.invalid && buildingForm.get('negativeEnvironment')?.touched">
+                <option value="">-- اختر --</option>
+                @for (env of negativeEnvironments; track env.code) {
+                <option [value]="env.name">{{ env.name }}</option>
                 }
-              </div>
+              </select>
+              @if (buildingForm.get('negativeEnvironment')?.invalid && buildingForm.get('negativeEnvironment')?.touched)
+              {
+              <span class="error-message">المحيط السلبي مطلوب</span>
+              }
             </div>
           </div>
+        </div>
 
-          <div class="form-actions">
-            <button type="submit" class="btn btn-primary">
-              <span>💾</span>
-              {{ viewMode() === 'create' ? 'حفظ' : 'تحديث' }}
-            </button>
-            <button type="button" class="btn btn-secondary" (click)="onCancel()">
-              <span>✖️</span>
-              إلغاء
-            </button>
-          </div>
-        </form>
-      </div>
+        <div class="form-actions">
+          <button type="submit" class="btn btn-primary">
+            <span>💾</span>
+            {{ viewMode() === 'create' ? 'حفظ' : 'تحديث' }}
+          </button>
+          <button type="button" class="btn btn-secondary" (click)="onCancel()">
+            <span>✖️</span>
+            إلغاء
+          </button>
+        </div>
+      </form>
+    </div>
     }
   </div>
 </div>
 
 <!-- Search Results Modal -->
 @if (showModal()) {
-  <div class="modal-overlay" (click)="closeModal()">
-    <div class="modal-content" (click)="$event.stopPropagation()">
-      <div class="modal-header">
-        <h2>نتائج البحث</h2>
-        <button class="modal-close" (click)="closeModal()">×</button>
-      </div>
+<div class="modal-overlay" (click)="closeModal()">
+  <div class="modal-content" (click)="$event.stopPropagation()">
+    <div class="modal-header">
+      <h2>نتائج البحث</h2>
+      <button class="modal-close" (click)="closeModal()">×</button>
+    </div>
 
-      <div class="modal-body">
-        @if (searchResults().length > 0) {
-          <div class="table-container">
-            <table class="data-table">
-              <thead>
-                <tr>
-                  <th>#</th>
-                  <th>رقم المبنى</th>
-                  <th>موقف الاستخدام</th>
-                  <th>الشارع</th>
-                  <th>ملكية المبنى</th>
-                  <th>الإجراء</th>
-                </tr>
-              </thead>
-              <tbody>
-                @for (building of searchResults(); track building.id) {
-                  <tr>
-                    <td>{{ $index + 1 }}</td>
-                    <td>{{ building.buildingNumber }}</td>
-                    <td>{{ building.usageStatus }}</td>
-                    <td>{{ building.street }}</td>
-                    <td>{{ building.buildingOwnership }}</td>
-                    <td>
-                      <button class="btn btn-sm btn-primary" (click)="onSelectBuilding(building)">
-                        عرض
-                      </button>
-                    </td>
-                  </tr>
-                }
-              </tbody>
-            </table>
-          </div>
-        } @else {
-          <div class="empty-state">
-            <p>لا توجد نتائج</p>
-          </div>
-        }
+    <div class="modal-body">
+      @if (searchResults().length > 0) {
+      <div class="table-container">
+        <table class="data-table">
+          <thead>
+            <tr>
+              <th>#</th>
+              <th>رقم المبنى</th>
+              <th>موقف الاستخدام</th>
+              <th>الشارع</th>
+              <th>ملكية المبنى</th>
+              <th>الإجراء</th>
+            </tr>
+          </thead>
+          <tbody>
+            @for (building of searchResults(); track building.id) {
+            <tr>
+              <td>{{ $index + 1 }}</td>
+              <td>{{ building.buildingNumber }}</td>
+              <td>{{ building.usageStatus }}</td>
+              <td>{{ building.street }}</td>
+              <td>{{ building.buildingOwnership }}</td>
+              <td>
+                <button class="btn btn-sm btn-primary" (click)="onSelectBuilding(building)">
+                  عرض
+                </button>
+              </td>
+            </tr>
+            }
+          </tbody>
+        </table>
       </div>
+      } @else {
+      <div class="empty-state">
+        <p>لا توجد نتائج</p>
+      </div>
+      }
+    </div>
 
-      <div class="modal-footer">
-        <button type="button" class="btn btn-primary" (click)="closeModal()">إغلاق</button>
-      </div>
+    <div class="modal-footer">
+      <button type="button" class="btn btn-primary" (click)="closeModal()">إغلاق</button>
     </div>
   </div>
+</div>
 }

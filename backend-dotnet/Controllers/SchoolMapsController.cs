@@ -44,7 +44,7 @@ public class SchoolMapsController : ControllerBase
     public async Task<ActionResult<StudyPeriod>> AddStudyPeriod(StudyPeriod period)
     {
         period.Id = Guid.NewGuid();
-        period.CreatedAt = period.UpdatedAt = DateTime.UtcNow;
+        period.CreatedAt = period.UpdatedAt = DateTime.Now;
         _context.StudyPeriods.Add(period);
         await _context.SaveChangesAsync();
         return CreatedAtAction(nameof(GetStudyPeriods), new { buildingNumber = period.BuildingNumber }, period);
@@ -54,7 +54,7 @@ public class SchoolMapsController : ControllerBase
     public async Task<ActionResult<SchoolRoad>> AddSchoolRoad(SchoolRoad road)
     {
         road.Id = Guid.NewGuid();
-        road.CreatedAt = DateTime.UtcNow;
+        road.CreatedAt = DateTime.Now;
         _context.SchoolRoads.Add(road);
         await _context.SaveChangesAsync();
         return CreatedAtAction(nameof(GetSchoolRoads), new { buildingId = road.BuildingId }, road);
@@ -64,7 +64,7 @@ public class SchoolMapsController : ControllerBase
     public async Task<ActionResult<SchoolAnnex>> AddSchoolAnnex(SchoolAnnex annex)
     {
         annex.Id = Guid.NewGuid();
-        annex.CreatedAt = annex.UpdatedAt = DateTime.UtcNow;
+        annex.CreatedAt = annex.UpdatedAt = DateTime.Now;
         _context.SchoolAnnexes.Add(annex);
         await _context.SaveChangesAsync();
         return CreatedAtAction(nameof(GetSchoolAnnexes), new { buildingId = annex.BuildingId }, annex);
@@ -74,33 +74,80 @@ public class SchoolMapsController : ControllerBase
     public async Task<ActionResult<SchoolSpace>> AddSchoolSpace(SchoolSpace space)
     {
         space.Id = Guid.NewGuid();
-        space.CreatedAt = space.UpdatedAt = DateTime.UtcNow;
+        space.CreatedAt = space.UpdatedAt = DateTime.Now;
         _context.SchoolSpaces.Add(space);
         await _context.SaveChangesAsync();
         return CreatedAtAction(nameof(GetSchoolSpaces), new { buildingId = space.BuildingId }, space);
     }
 
+    // Plan (pseudocode):
+    // 1. Generate new Guid for the incoming `building` and set CreatedAt/UpdatedAt timestamps.
+    // 2. Add the `building` to the DbContext.
+    // 3. Create a new `Land` entity that references the created building:
+    //    - Generate new Guid for `Land`.
+    //    - Set `BuildingId` to the created building's Id.
+    //    - Set owner/area fields from the `building` where applicable.
+    //    - Set CreatedAt/UpdatedAt timestamps for the land record.
+    // 4. Add the `Land` entity to the DbContext.
+    // 5. Save changes once to persist both records in a single transaction.
+    // 6. Return CreatedAtAction for the created building.
+    //
+    // Notes:
+    // - The Land entity and its DbSet are assumed to exist in the project (named `Land` in the DbContext).
+    // - Adjust `OwnerName` / `Area` / other Land properties to match your actual `Land` model if names differ.
+
     [HttpPost("educational-buildings")]
     public async Task<ActionResult<EducationalBuilding>> CreateEducationalBuilding(EducationalBuilding building)
     {
         // Removed ModelState validation since frontend handles validation
-        // if (!ModelState.IsValid)
-        // {
-        //     var errors = ModelState.Values.SelectMany(v => v.Errors).Select(e => e.ErrorMessage).ToList();
-        //     return BadRequest(new { message = "بيانات غير صحيحة", errors = errors });
-        // }
+        if (!ModelState.IsValid)
+        {
+            var errors = ModelState.Values.SelectMany(v => v.Errors).Select(e => e.ErrorMessage).ToList();
+            return BadRequest(new { message = "بيانات غير صحيحة", errors });
+        }
 
-        building.Id = Guid.NewGuid();
-        building.CreatedAt = building.UpdatedAt = DateTime.UtcNow;
-        _context.EducationalBuildings.Add(building);
+        // Insert related Land record
         try
         {
-            await _context.SaveChangesAsync();
-            return CreatedAtAction(nameof(GetEducationalBuilding), new { buildingNumber = building.BuildingNumber }, building);
+            // Create a new Land record that links to the educational building.
+            // Safely parse LandOwnership, handle null or invalid values
+            if (string.IsNullOrWhiteSpace(building.LandOwnership) || !int.TryParse(building.LandOwnership, out var landOwnerId))
+            {
+                return BadRequest(new { message = "LandOwnership is required and must be a valid integer." });
+            }
+
+            var landOwner = await _context.LandOwner.SingleAsync(l => l.Id == landOwnerId);
+
+            var land = new Land
+            {
+                Id = Guid.NewGuid(),
+                LandCode = int.Parse(building.BuildingNumber), // Assuming BuildingNumber can be parsed to int for LandCode
+                CurrentOwner = landOwner.Name,
+                TotalArea = building.TotalArea,
+                ReferenceNumber = int.Parse(building.BuildingNumber),
+                CreatedAt = DateTime.UtcNow,
+                UpdatedAt = DateTime.UtcNow
+            };
+
+            // Add the land record to the context.
+            _context.Lands.Add(land);
+
+            building.Id = Guid.NewGuid();
+            building.CreatedAt = building.UpdatedAt = DateTime.Now;
+            _context.EducationalBuildings.Add(building);
+            try
+            {
+                await _context.SaveChangesAsync();
+                return CreatedAtAction(nameof(GetEducationalBuilding), new { buildingNumber = building.BuildingNumber }, building);
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(new { message = "خطأ في حفظ البيانات", error = ex.Message });
+            }
         }
         catch (Exception ex)
         {
-            return BadRequest(new { message = "خطأ في حفظ البيانات", error = ex.Message });
+            return BadRequest(new { message = "خطأ في حفظ بيانات الأرض المرتبطة", error = ex.Message });
         }
     }
 
@@ -108,10 +155,10 @@ public class SchoolMapsController : ControllerBase
     public async Task<ActionResult<EducationalBuilding>> UpdateEducationalBuilding(Guid id, EducationalBuilding building)
     {
         if (id != building.Id) return BadRequest("معرف المبنى غير متطابق");
-        
+
         var existingBuilding = await _context.EducationalBuildings.FindAsync(id);
         if (existingBuilding == null) return NotFound("المبنى غير موجود");
-        
+
         // Update all fields
         existingBuilding.BuildingNumber = building.BuildingNumber;
         existingBuilding.UsageStatus = building.UsageStatus;
@@ -137,18 +184,18 @@ public class SchoolMapsController : ControllerBase
         existingBuilding.CoordinateZ = building.CoordinateZ;
         existingBuilding.PositiveEnvironment = building.PositiveEnvironment;
         existingBuilding.NegativeEnvironment = building.NegativeEnvironment;
-        existingBuilding.UpdatedAt = DateTime.UtcNow;
-        
-        try 
-        { 
-            await _context.SaveChangesAsync(); 
+        existingBuilding.UpdatedAt = DateTime.Now;
+
+        try
+        {
+            await _context.SaveChangesAsync();
             return Ok(existingBuilding);
         }
-        catch (DbUpdateConcurrencyException) 
-        { 
-            if (!_context.EducationalBuildings.Any(e => e.Id == id)) 
+        catch (DbUpdateConcurrencyException)
+        {
+            if (!_context.EducationalBuildings.Any(e => e.Id == id))
                 return NotFound("المبنى غير موجود");
-            throw; 
+            throw;
         }
     }
 
@@ -207,8 +254,8 @@ public class SchoolMapsController : ControllerBase
             VillageId = dto.VillageNum,
             VillagesContinueId = dto.VillagesContinueNumber,
             LandOwnership = landOwner.Name,
-            CreatedAt = DateTime.UtcNow,
-            UpdatedAt = DateTime.UtcNow
+            CreatedAt = DateTime.Now,
+            UpdatedAt = DateTime.Now
         };
 
         _context.EducationalBuildings.Add(building);

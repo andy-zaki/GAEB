@@ -47,8 +47,8 @@ public class Building
   [MaxLength(50)]
   public string? EducationType { get; set; }
 
-  public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
-  public DateTime UpdatedAt { get; set; } = DateTime.UtcNow;
+  public DateTime CreatedAt { get; set; } = DateTime.Now;
+  public DateTime UpdatedAt { get; set; } = DateTime.Now;
 
   [ForeignKey("EducationalBuilding")]
   public Guid? EducationalBuildingId { get; set; }
@@ -151,8 +151,8 @@ public class BuildingBasicData
 
   public int? ComplementarySpacesCount { get; set; }
 
-  public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
-  public DateTime UpdatedAt { get; set; } = DateTime.UtcNow;
+  public DateTime CreatedAt { get; set; } = DateTime.Now;
+  public DateTime UpdatedAt { get; set; } = DateTime.Now;
 
   // Navigation property
   public Building? Building { get; set; }
@@ -180,7 +180,7 @@ public class BuildingAnnex
   [MaxLength(255)]
   public string? Purpose { get; set; }
 
-  public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
+  public DateTime CreatedAt { get; set; } = DateTime.Now;
 
   // Navigation property
   [ForeignKey("BuildingId")]
@@ -213,8 +213,8 @@ public class NetworkCost
   [MaxLength(100)]
   public string? ContractNumber { get; set; }
 
-  public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
-  public DateTime UpdatedAt { get; set; } = DateTime.UtcNow;
+  public DateTime CreatedAt { get; set; } = DateTime.Now;
+  public DateTime UpdatedAt { get; set; } = DateTime.Now;
 
   // Navigation property
   [ForeignKey("BuildingId")]
