@@ -1,10 +1,11 @@
+using AngularProjectApi;
 using AngularProjectApi.Data;
 using Microsoft.AspNetCore.Localization;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.FileProviders;
 using System.Globalization;
 using System.Text.Encodings.Web;
 using System.Text.Json.Serialization;
-using AngularProjectApi;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -32,10 +33,9 @@ builder.Services.AddCors(options =>
 {
   options.AddPolicy("AllowAngular", policy =>
   {
-    policy.WithOrigins("http://localhost:4200")
+    policy.AllowAnyOrigin()
             .AllowAnyHeader()
-            .AllowAnyMethod()
-            .AllowCredentials();
+            .AllowAnyMethod();
   });
 });
 
@@ -81,4 +81,18 @@ using (var scope = app.Services.CreateScope())
   }
 }
 
+if (app.Environment.IsProduction())
+{
+    app.UseHsts();
+
+    app.UseStaticFiles();// Enables serving static files from wwwroot
+    app.UseStaticFiles(new StaticFileOptions
+    {
+        FileProvider = new PhysicalFileProvider(Path.Combine(Directory.GetCurrentDirectory(), "wwwroot")),
+        RequestPath = ""
+    });
+
+    app.UseDefaultFiles();
+    //app.MapStaticAssets();
+}
 app.Run();

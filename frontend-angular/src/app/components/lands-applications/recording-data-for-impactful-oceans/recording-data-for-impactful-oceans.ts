@@ -23,7 +23,7 @@ export class RecordingDataForImpactfulOceans {
   }
 
   protected goBack(): void {
-    this.router.navigate(['/lands']);
+    this.router.navigate(['/lands-main-menu']);
   }
 
   protected goHome(): void {
