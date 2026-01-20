@@ -64,6 +64,8 @@ public class ApplicationDbContext : DbContext
     {
         base.OnModelCreating(modelBuilder);
 
+        modelBuilder.Entity<LandOwnership>().ToTable("LandOwnership");
+
         // Ensure Arabic-aware comparisons/sorting at the model level
         // Note: This does not change existing column collations, but applies to EF Core queries it generates
         modelBuilder.UseCollation("Arabic_CI_AS");

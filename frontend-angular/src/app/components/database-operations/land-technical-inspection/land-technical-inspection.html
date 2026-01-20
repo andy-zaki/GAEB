@@ -34,7 +34,7 @@
               <label for="governorateCode">كود المحافظة:<span class="required">*</span></label>
               <select formControlName="governorateCode"
                 [class.error]="form.get('governorateCode')?.invalid && form.get('governorateCode')?.touched">
-                <option value="">-- اختر --</option>
+                <option value="">--اختر المحافظة--</option>
                 @for (gov of governorates; track gov.id) {
                 <option [value]="gov.id">{{ gov.name }}</option>
                 }
@@ -96,7 +96,7 @@
             <!-- مساحة الأرض -->
             <div class="form-group">
               <label for="totalArea">مساحة الأرض:<span class="required">*</span></label>
-              <input id="totalArea" formControlName="totalArea" type="text" placeholder="ادخل مساحة الأرض"
+              <input id="totalArea" formControlName="totalArea" type="text" placeholder="(م²) ادخل مساحة الأرض"
                 [class.error]="form.get('totalArea')?.touched && form.get('landOwnerAddress')?.invalid" />
               @if (form.get('totalArea')?.invalid && form.get('landOwnerAddress')?.touched)
               {
@@ -164,7 +164,7 @@
             <div class="form-group">
               <label for="northernBoundaryLength">طول الحد الشمالي<span class="required">*</span></label>
               <input id="northernBoundaryLength" formControlName="northernBoundaryLength" type="text"
-                placeholder="أدخل طول الحد الشمالي"
+                placeholder="(م²) أدخل طول الحد الشمالي"
                 [class.error]="form.get('northernBoundaryLength')?.touched && form.get('northernBoundaryLength')?.invalid" />
               @if (form.get('northernBoundaryLength')?.invalid && form.get('northernBoundaryLength')?.touched)
               {
@@ -198,7 +198,7 @@
             <div class="form-group">
               <label for="southernBoundaryLength">طول الحد الجنوبي<span class="required">*</span></label>
               <input id="southernBoundaryLength" formControlName="southernBoundaryLength" type="text"
-                placeholder="أدخل طول الحد الجنوبي"
+                placeholder="أدخل طول الحد الجنوبي(م²)"
                 [class.error]="form.get('southernBoundaryLength')?.touched && form.get('southernBoundaryLength')?.invalid" />
               @if (form.get('southernBoundaryLength')?.invalid && form.get('southernBoundaryLength')?.touched)
               {
@@ -231,7 +231,7 @@
             <div class="form-group">
               <label for="easternBoundaryLength">طول الحد الشرقي<span class="required">*</span></label>
               <input id="easternBoundaryLength" formControlName="easternBoundaryLength" type="text"
-                placeholder="أدخل طول الحد الشرقي"
+                placeholder="أدخل طول الحد الشرقي(م²)"
                 [class.error]="form.get('easternBoundaryLength')?.touched && form.get('easternBoundaryLength')?.invalid" />
               @if (form.get('easternBoundaryLength')?.invalid && form.get('easternBoundaryLength')?.touched)
               {
@@ -264,7 +264,7 @@
             <div class="form-group">
               <label for="westernBoundaryLength">طول الحد الغربي<span class="required">*</span></label>
               <input id="westernBoundaryLength" formControlName="westernBoundaryLength" type="text"
-                placeholder="أدخل طول الحد الغربي"
+                placeholder="(م²)أدخل طول الحد الغربي"
                 [class.error]="form.get('westernBoundaryLength')?.touched && form.get('westernBoundaryLength')?.invalid" />
               @if (form.get('westernBoundaryLength')?.invalid && form.get('westernBoundaryLength')?.touched)
               {
@@ -298,7 +298,7 @@
             <div class="form-group">
               <label for="northeastBoundaryLength">طول الحد الشمال الشرقي<span class="required">*</span></label>
               <input id="northeastBoundaryLength" formControlName="northeastBoundaryLength" type="text"
-                placeholder="أدخل طول الحد الشمال الشرقي"
+                placeholder="أدخل طول الحد الشمال الشرقي(م²)"
                 [class.error]="form.get('northeastBoundaryLength')?.touched && form.get('northeastBoundaryLength')?.invalid" />
               @if (form.get('northeastBoundaryLength')?.invalid && form.get('northeastBoundaryLength')?.touched)
               {
@@ -332,7 +332,7 @@
             <div class="form-group">
               <label for="northwestBoundaryLength">طول الحد الشمال الغربي<span class="required">*</span></label>
               <input id="northwestBoundaryLength" formControlName="northwestBoundaryLength" type="text"
-                placeholder="أدخل طول الحد الشمال الغربي"
+                placeholder="أدخل طول الحد الشمال الغربي(م²)"
                 [class.error]="form.get('northwestBoundaryLength')?.touched && form.get('northwestBoundaryLength')?.invalid" />
               @if (form.get('northwestBoundaryLength')?.invalid && form.get('northwestBoundaryLength')?.touched)
               {
@@ -366,7 +366,7 @@
             <div class="form-group">
               <label for="southeastBoundaryLength">طول الحد الجنوب الشرقي<span class="required">*</span></label>
               <input id="southeastBoundaryLength" formControlName="southeastBoundaryLength" type="text"
-                placeholder="أدخل طول الحد الجنوب الشرقي"
+                placeholder="أدخل طول الحد الجنوب الشرقي(م²)"
                 [class.error]="form.get('southeastBoundaryLength')?.touched && form.get('southeastBoundaryLength')?.invalid" />
               @if (form.get('southeastBoundaryLength')?.invalid && form.get('southeastBoundaryLength')?.touched)
               {
@@ -400,7 +400,7 @@
             <div class="form-group">
               <label for="southwestBoundaryLength">طول الحد الجنوب الغربي<span class="required">*</span></label>
               <input id="southwestBoundaryLength" formControlName="southwestBoundaryLength" type="text"
-                placeholder="أدخل طول الحد الجنوب الغربي"
+                placeholder="أدخل طول الحد الجنوب الغربي(م²)"
                 [class.error]="form.get('southwestBoundaryLength')?.touched && form.get('southwestBoundaryLength')?.invalid" />
               @if (form.get('southwestBoundaryLength')?.invalid && form.get('southwestBoundaryLength')?.touched)
               {
@@ -485,3 +485,29 @@
     </div>
   </div>
 </div>
+
+@if (showDialog()) {
+  <div class="modal-overlay" (click)="closeDialog()">
+    <div class="modal-content" (click)="$event.stopPropagation()">
+      <div class="modal-header">
+        <h2>{{ dialogTitle() }}</h2>
+        <button class="modal-close" (click)="closeDialog()">×</button>
+      </div>
+
+      <div class="modal-body">
+        @if (dialogVariant() === 'error') {
+          <div class="alert alert-error">
+            <strong>{{ dialogTitle() }}</strong>
+            <div style="white-space: pre-line;">{{ dialogMessage() }}</div>
+          </div>
+        } @else {
+          <div style="white-space: pre-line;">{{ dialogMessage() }}</div>
+        }
+      </div>
+
+      <div class="modal-footer">
+        <button type="button" class="btn btn-primary" (click)="closeDialog()">حسناً</button>
+      </div>
+    </div>
+  </div>
+}

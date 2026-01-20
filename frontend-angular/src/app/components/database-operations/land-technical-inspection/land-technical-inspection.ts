@@ -14,7 +14,7 @@ type ViewMode = 'search' | 'view' | 'create' | 'edit';
 @Component({
   selector: 'app-land-technical-inspection',
   standalone: true,
-  imports: [CommonModule, FormsModule, ReactiveFormsModule, FormsModule, HeaderComponent],
+  imports: [CommonModule, FormsModule, ReactiveFormsModule, HeaderComponent],
   templateUrl: './land-technical-inspection.html',
   styleUrl: './land-technical-inspection.css'
 })
@@ -27,6 +27,11 @@ export class LandTechnicalInspectionComponent {
 
   selectedLandTechnicalInspection = signal<LandTechnicalInspection | null>(null);
   viewMode = signal<ViewMode>('search');
+  showDialog = signal<boolean>(false);
+  dialogTitle = signal<string>('');
+  dialogMessage = signal<string>('');
+  dialogVariant = signal<'success' | 'error'>('success');
+  private dialogRedirectToHomeAfterClose = false;
   technicalResponsiblePersonNameAndId: string;
   loggedInUser = JSON.parse(localStorage.getItem("currentUser") || '""');
 
@@ -52,6 +57,23 @@ export class LandTechnicalInspectionComponent {
 
   protected logout(): void {
     this.router.navigate(['/login']);
+  }
+
+  protected closeDialog(): void {
+    this.showDialog.set(false);
+
+    if (this.dialogRedirectToHomeAfterClose) {
+      this.dialogRedirectToHomeAfterClose = false;
+      this.goHome();
+    }
+  }
+
+  private openDialog(variant: 'success' | 'error', title: string, message: string, redirectToHomeAfterClose = false): void {
+    this.dialogVariant.set(variant);
+    this.dialogTitle.set(title);
+    this.dialogMessage.set(message);
+    this.dialogRedirectToHomeAfterClose = redirectToHomeAfterClose;
+    this.showDialog.set(true);
   }
 
   constructor() {
@@ -116,7 +138,7 @@ export class LandTechnicalInspectionComponent {
           error,
           'تحميل المحافظات'
         );
-        alert(errorMessage);
+        this.openDialog('error', 'خطأ', errorMessage);
       }
     });
   }
@@ -136,7 +158,7 @@ export class LandTechnicalInspectionComponent {
           error,
           'تحميل المحافظات'
         );
-        alert(errorMessage);
+        this.openDialog('error', 'خطأ', errorMessage);
       }
     });
   }
@@ -154,8 +176,8 @@ export class LandTechnicalInspectionComponent {
 
         // Send form data to backend -- currently logging and clearing form
         console.log('Land inspection data submitted', this.form.value);
-        alert('✅ تم حفظ بيانات المعاينة الفنية للأرض بنجاح!');
         this.form.reset();
+        this.openDialog('success', 'تم الحفظ', 'تم حفظ بيانات المعاينة الفنية للأرض بنجاح!', true);
       },
       error: (error) => {
         console.error('Error creating building:', error);
@@ -163,7 +185,7 @@ export class LandTechnicalInspectionComponent {
           error,
           'إضافة معاينة فنية للأرض'
         );
-        alert(`❌ فشل في  إضافة معاينة فنية للأرض:\n${errorMessage}`);
+        this.openDialog('error', 'فشل الحفظ', `فشل في إضافة معاينة فنية للأرض:\n${errorMessage}`);
       }
     });
   }

@@ -7,7 +7,6 @@ namespace AngularProjectApi.Models
     [Key]
     public int Id { get; set; }
     public int LandId { get; set; }
-
     public int SchoolReferenceNumber { get; set; }
   }
 }

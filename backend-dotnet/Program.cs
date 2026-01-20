@@ -1,5 +1,6 @@
 using AngularProjectApi;
 using AngularProjectApi.Data;
+using FluentValidation;
 using Microsoft.AspNetCore.Localization;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.FileProviders;
@@ -18,6 +19,7 @@ builder.Services.AddControllers().AddJsonOptions(options =>
   options.JsonSerializerOptions.PropertyNamingPolicy = System.Text.Json.JsonNamingPolicy.CamelCase;
   options.JsonSerializerOptions.ReferenceHandler = ReferenceHandler.IgnoreCycles;
 });
+builder.Services.AddValidatorsFromAssemblyContaining<Program>();
 
 // Register AutoMapper - only once is enough!
 builder.Services.AddAutoMapper(typeof(Program).Assembly); // This scans the assembly containing MappingProfile

@@ -4,3 +4,5 @@
 
 /backend-dotnet/.vs
 /backend-dotnet/obj
+/backend-dotnet/bin
+

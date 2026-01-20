@@ -1,10 +1,12 @@
 ﻿using AngularProjectApi.Data;
 using AngularProjectApi.Models;
 using AutoMapper;
+using FluentValidation;
 using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.ModelBinding;
 using Microsoft.EntityFrameworkCore;
+using System.Text.Json;
 
 namespace AngularProjectApi.Controllers;
 
@@ -14,11 +16,13 @@ public class LandTechnicalInspectionController : ControllerBase
 {
     private readonly ApplicationDbContext _context;
     protected readonly IMapper _mapper;
+    private readonly IValidator<LandTechnicalInspection> _validator;
 
-    public LandTechnicalInspectionController(ApplicationDbContext context, IMapper mapper)
+    public LandTechnicalInspectionController(ApplicationDbContext context, IMapper mapper, IValidator<LandTechnicalInspection> validator)
     {
         _context = context;
         _mapper = mapper;
+        _validator = validator;
     }
 
     // GET: api/lands
@@ -80,6 +84,24 @@ public class LandTechnicalInspectionController : ControllerBase
     [HttpPost]
     public async Task<ActionResult<LandTechnicalInspection>> Create(LandTechnicalInspection landTechnicalInspection)
     {
+        Console.WriteLine("this is the land ownership code:");
+        Console.WriteLine(JsonSerializer.Serialize(landTechnicalInspection, new JsonSerializerOptions { WriteIndented = true }));
+        if (landTechnicalInspection == null)
+        {
+            return BadRequest();
+        }
+
+        var validationResult = await _validator.ValidateAsync(landTechnicalInspection);
+        if (!validationResult.IsValid)
+        {
+            foreach (var error in validationResult.Errors)
+            {
+                ModelState.AddModelError(error.PropertyName, error.ErrorMessage);
+            }
+
+            return ValidationProblem(ModelState);
+        }
+
         if (await _context.LandTechnicalInspection.AnyAsync(l => l.LandCode == landTechnicalInspection.LandCode))
         {
             return Conflict("يوجد بالفعل فحص فني للأرض بنفس كود قطعة الأرض.");
@@ -89,6 +111,21 @@ public class LandTechnicalInspectionController : ControllerBase
         if (!await _context.Lands.AnyAsync(l => l.LandCode == landTechnicalInspection.LandCode))
         {
             return BadRequest("لا توجد قطعة أرض بهذا الكود في جدول الأراضي.");
+        }
+
+        if (!await _context.Governorates.AnyAsync(g => g.Id == landTechnicalInspection.GovernorateCode))
+        {
+            return BadRequest("كود المحافظة غير موجود.");
+        }
+
+        if (!await _context.LandOwner.AnyAsync(o => o.Id == landTechnicalInspection.LandOwnershipCode))
+        {
+            return BadRequest("كود الملكية غير موجود.");
+        }
+
+        if (!await _context.Users.AnyAsync(u => u.Id == landTechnicalInspection.TechnicalResponsiblePersonId))
+        {
+            return BadRequest("المسؤول الفني غير موجود.");
         }
 
         landTechnicalInspection.CreatedAt = DateTime.Now;
