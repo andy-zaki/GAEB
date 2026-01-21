@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 using Microsoft.EntityFrameworkCore;
+using System.Text.Json.Serialization;
 
 namespace AngularProjectApi.Models;
 
@@ -17,4 +18,7 @@ public partial class District
     [Required]
     [StringLength(50)]
     public string Name { get; set; }
+
+    [JsonIgnore]
+    public virtual ICollection<Village> Villages { get; set; } = new List<Village>();
 }

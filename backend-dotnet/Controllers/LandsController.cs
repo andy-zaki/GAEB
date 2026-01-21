@@ -25,6 +25,20 @@ public class LandsController : ControllerBase
         .ToListAsync();
   }
 
+  // GET: api/lands/legal-land-ids
+  [HttpGet("legal-land-ids")]
+  public async Task<ActionResult<IEnumerable<int>>> GetLegalLandIds()
+  {
+    var ids = await _context.LandTechnicalInspection
+        .AsNoTracking()
+        .Select(x => x.LandCode)
+        .Distinct()
+        .OrderBy(x => x)
+        .ToListAsync();
+
+    return ids;
+  }
+
   // GET: api/lands/{id}
   [HttpGet("{id}")]
   public async Task<ActionResult<Land>> GetLand(Guid id)
@@ -212,7 +226,7 @@ public class LandsController : ControllerBase
   }
 
   [HttpPost("ConnectLandAndLegal")]
-  public async Task<ActionResult<IActionResult>> ConnectLandAndLegal(LandAndLegalConnectionDTO landAndLegalConnectionDTO)
+  public async Task<IActionResult> ConnectLandAndLegal(LandAndLegalConnectionDTO landAndLegalConnectionDTO)
   {
     for (int i = 0; i < landAndLegalConnectionDTO?.schoolIds.Count; i++)
     {

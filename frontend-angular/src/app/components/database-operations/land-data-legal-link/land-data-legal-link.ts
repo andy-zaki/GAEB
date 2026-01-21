@@ -5,6 +5,8 @@ import { HeaderComponent } from '../../shared/header/header';
 import { ReactiveFormsModule, FormBuilder, FormGroup, FormArray, Validators } from '@angular/forms';
 import { LandApiService } from '../../../services/land-api.service';
 import { ErrorHandlerService } from '../../../services/error-handler.service';
+import { SchoolMapApiService } from '../../../services/school-map-api.service';
+import { EducationalBuildingData } from '../../../models/school-map.model';
 
 @Component({
   selector: 'app-land-data-legal-link',
@@ -18,11 +20,20 @@ export class LandDataLegalLink {
   private readonly fb = inject(FormBuilder);
   private landApiService = inject(LandApiService);
   private errorHandler = inject(ErrorHandlerService);
+  private schoolMapService = inject(SchoolMapApiService);
+
+  legalLandIds: number[] = [];
+  educationalBuildings: EducationalBuildingData[] = [];
 
   form: FormGroup = this.fb.group({
     landSerialLegal: ['', Validators.required],
     schoolIds: this.fb.array([this.fb.control('', Validators.required)])
   });
+
+  constructor() {
+    this.loadLegalLandIds();
+    this.loadEducationalBuildings();
+  }
 
   get schoolIds(): FormArray {
     return this.form.get('schoolIds') as FormArray;
@@ -58,6 +69,38 @@ export class LandDataLegalLink {
     this.router.navigate(['/link-lands-legal']);
   }
 
+  private loadLegalLandIds(): void {
+    this.landApiService.getLegalLandIds().subscribe({
+      next: (ids) => {
+        this.legalLandIds = Array.isArray(ids) ? ids : [];
+      },
+      error: (error) => {
+        const errorMessage = this.errorHandler.getUserFriendlyMessage(
+          error,
+          'تحميل مسلسل الارض بالشئون القانونية'
+        );
+        alert(errorMessage);
+        this.legalLandIds = [];
+      }
+    });
+  }
+
+  private loadEducationalBuildings(): void {
+    this.schoolMapService.getAllEducationalBuildings().subscribe({
+      next: (buildings) => {
+        this.educationalBuildings = Array.isArray(buildings) ? buildings : [];
+      },
+      error: (error) => {
+        const errorMessage = this.errorHandler.getUserFriendlyMessage(
+          error,
+          'تحميل المدارس'
+        );
+        alert(errorMessage);
+        this.educationalBuildings = [];
+      }
+    });
+  }
+
   submit(): void {
     if (this.form.invalid) {
       this.form.markAllAsTouched();
@@ -72,9 +115,11 @@ export class LandDataLegalLink {
         this.form.reset();
       },
       error: (error) => {
-        console.log('Land inspection data submitted', this.form.value);
-        alert('✅ تم ربط بيانات الأرض بالشؤوون القانونية بنجاح!');
-        this.form.reset();
+        const errorMessage = this.errorHandler.getUserFriendlyMessage(
+          error,
+          'ربط بيانات الأرض بالشئون القانونية'
+        );
+        alert(errorMessage);
       }
     });
 

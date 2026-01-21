@@ -13,22 +13,22 @@
       <div class="form-group">
         <label>رقم قطعه الارض <span class="required">*</span></label>
         <input type="text" formControlName="buildingNumber" />
-        <div class="error" *ngIf="landForm.get('buildingNumber')?.touched && landForm.get('buildingNumber')?.invalid">
-          يرجى ادخال رقم قطعة الأرض
-        </div>
+        @if (getControlErrorMessage('buildingNumber')) {
+        <div class="error">{{ getControlErrorMessage('buildingNumber') }}</div>
+        }
       </div>
 
       <div class="form-group">
         <label>مسمي قطعه الارض <span class="required">*</span></label>
         <input type="text" formControlName="buildingName" />
-        <div class="error" *ngIf="landForm.get('buildingName')?.touched && landForm.get('buildingName')?.invalid">
-          يرجى ادخال مسمى قطعة الأرض
-        </div>
+        @if (getControlErrorMessage('buildingName')) {
+        <div class="error">{{ getControlErrorMessage('buildingName') }}</div>
+        }
       </div>
 
       <div class="form-group">
         <label>مركز/قسم <span class="required">*</span></label>
-        <select formControlName="districtId" (change)="getVillagesByDistrictNumber(+$any($event.target).value)"
+        <select formControlName="districtId" (change)="onDistrictChange($event)"
           [class.error]="landForm.get('districtId')?.invalid && landForm.get('districtId')?.touched">
           <option value="">-- اختر --</option>
           @for (dis of districts; track dis.number) {
@@ -63,9 +63,9 @@
       <div class="form-group">
         <label>المساحة الكلية <span class="required">*</span></label>
         <input type="number" formControlName="totalArea" />
-        <div class="error" *ngIf="landForm.get('totalArea')?.touched && landForm.get('totalArea')?.invalid">
-          يرجى ادخال المساحة الكلية
-        </div>
+        @if (getControlErrorMessage('totalArea')) {
+        <div class="error">{{ getControlErrorMessage('totalArea') }}</div>
+        }
       </div>
 
       <div class="form-group">

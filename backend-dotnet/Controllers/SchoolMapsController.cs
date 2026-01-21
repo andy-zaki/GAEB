@@ -2,6 +2,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using AngularProjectApi.Data;
 using AngularProjectApi.Models;
+using FluentValidation;
 
 namespace AngularProjectApi.Controllers;
 
@@ -10,8 +11,13 @@ namespace AngularProjectApi.Controllers;
 public class SchoolMapsController : ControllerBase
 {
     private readonly ApplicationDbContext _context;
+    private readonly IValidator<EducationalBuilding> _educationalBuildingValidator;
 
-    public SchoolMapsController(ApplicationDbContext context) => _context = context;
+    public SchoolMapsController(ApplicationDbContext context, IValidator<EducationalBuilding> educationalBuildingValidator)
+    {
+        _context = context;
+        _educationalBuildingValidator = educationalBuildingValidator;
+    }
 
     [HttpGet("study-periods/{buildingNumber}")]
     public async Task<ActionResult<IEnumerable<StudyPeriod>>> GetStudyPeriods(string buildingNumber)
@@ -99,55 +105,51 @@ public class SchoolMapsController : ControllerBase
     [HttpPost("educational-buildings")]
     public async Task<ActionResult<EducationalBuilding>> CreateEducationalBuilding(EducationalBuilding building)
     {
-        // Removed ModelState validation since frontend handles validation
-        if (!ModelState.IsValid)
+        if (building == null)
         {
-            var errors = ModelState.Values.SelectMany(v => v.Errors).Select(e => e.ErrorMessage).ToList();
-            return BadRequest(new { message = "بيانات غير صحيحة", errors });
+            return BadRequest(new { message = "بيانات غير صحيحة" });
         }
 
-        // Insert related Land record
-        try
+        var validationResult = await _educationalBuildingValidator.ValidateAsync(building);
+        if (!validationResult.IsValid)
         {
-            // Create a new Land record that links to the educational building.
-            // Safely parse LandOwnership, handle null or invalid values
-            if (string.IsNullOrWhiteSpace(building.LandOwnership) || !int.TryParse(building.LandOwnership, out var landOwnerId))
+            foreach (var error in validationResult.Errors)
             {
-                return BadRequest(new { message = "LandOwnership is required and must be a valid integer." });
+                ModelState.AddModelError(error.PropertyName, error.ErrorMessage);
             }
 
-            var landOwner = await _context.LandOwner.SingleAsync(l => l.Id == landOwnerId);
+            return ValidationProblem(ModelState);
+        }
 
+        var buildingNumberAsInt = int.Parse(building.BuildingNumber);
+        var landOwnerId = int.Parse(building.LandOwnership);
+        var landOwner = await _context.LandOwner.AsNoTracking().FirstAsync(l => l.Id == landOwnerId);
+
+        try
+        {
             var land = new Land
             {
                 Id = Guid.NewGuid(),
-                LandCode = int.Parse(building.BuildingNumber), // Assuming BuildingNumber can be parsed to int for LandCode
+                LandCode = buildingNumberAsInt,
                 CurrentOwner = landOwner.Name,
                 TotalArea = building.TotalArea,
-                ReferenceNumber = int.Parse(building.BuildingNumber),
+                ReferenceNumber = buildingNumberAsInt,
                 CreatedAt = DateTime.UtcNow,
                 UpdatedAt = DateTime.UtcNow
             };
 
-            // Add the land record to the context.
             _context.Lands.Add(land);
 
             building.Id = Guid.NewGuid();
             building.CreatedAt = building.UpdatedAt = DateTime.Now;
             _context.EducationalBuildings.Add(building);
-            try
-            {
-                await _context.SaveChangesAsync();
-                return CreatedAtAction(nameof(GetEducationalBuilding), new { buildingNumber = building.BuildingNumber }, building);
-            }
-            catch (Exception ex)
-            {
-                return BadRequest(new { message = "خطأ في حفظ البيانات", error = ex.Message });
-            }
+
+            await _context.SaveChangesAsync();
+            return CreatedAtAction(nameof(GetEducationalBuilding), new { buildingNumber = building.BuildingNumber }, building);
         }
         catch (Exception ex)
         {
-            return BadRequest(new { message = "خطأ في حفظ بيانات الأرض المرتبطة", error = ex.Message });
+            return BadRequest(new { message = "خطأ في حفظ البيانات", error = ex.Message });
         }
     }
 

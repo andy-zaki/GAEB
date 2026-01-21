@@ -112,6 +112,13 @@ public class ApplicationDbContext : DbContext
             .IsUnique();
 
         // Configure relationships
+        modelBuilder.Entity<Village>()
+            .HasOne(v => v.District)
+            .WithMany(d => d.Villages)
+            .HasForeignKey(v => v.DistrictNumber)
+            .HasPrincipalKey(d => d.Number)
+            .OnDelete(DeleteBehavior.Restrict);
+
         modelBuilder.Entity<Land>()
             .HasMany(l => l.Coordinates)
             .WithOne(c => c.Land)
@@ -123,6 +130,13 @@ public class ApplicationDbContext : DbContext
             .WithOne(b => b.Land)
             .HasForeignKey(b => b.LandId)
             .OnDelete(DeleteBehavior.Cascade);
+
+        modelBuilder.Entity<LandTechnicalInspection>()
+            .HasMany(lti => lti.LandAndLegalConnections)
+            .WithOne(lc => lc.LandTechnicalInspection)
+            .HasForeignKey(lc => lc.LandId)
+            .HasPrincipalKey(lti => lti.LandCode)
+            .OnDelete(DeleteBehavior.Restrict);
 
         modelBuilder.Entity<Building>()
             .HasMany(b => b.Annexes)

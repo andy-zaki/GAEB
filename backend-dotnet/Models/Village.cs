@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 using Microsoft.EntityFrameworkCore;
+using System.Text.Json.Serialization;
 
 namespace AngularProjectApi.Models;
 
@@ -16,4 +17,11 @@ public partial class Village
     [Required]
     [StringLength(50)]
     public string Name { get; set; }
+
+    [Column("District_Number")]
+    public int DistrictNumber { get; set; }
+
+    [ForeignKey(nameof(DistrictNumber))]
+    [JsonIgnore]
+    public virtual District District { get; set; }
 }

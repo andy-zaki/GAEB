@@ -22,6 +22,12 @@ export class LandApiService {
   private readonly errorHandler = inject(ErrorHandlerService);
   private readonly baseUrl = `${environment.apiUrl}/api/lands`;
 
+  getLegalLandIds(): Observable<number[]> {
+    return this.http.get<number[]>(`${this.baseUrl}/legal-land-ids`).pipe(
+      catchError(error => this.errorHandler.handleError(error, 'تحميل مسلسل الارض بالشئون القانونية'))
+    );
+  }
+
   /**
    * Get all lands
    * Backend: GET api/lands

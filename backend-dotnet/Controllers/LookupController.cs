@@ -41,24 +41,31 @@ public class LookupController : ControllerBase
         return await _context.LandOwner.AsNoTracking().OrderBy(l => l.Name).ToListAsync();
     }
 
+
+    // GET: api/GetLandOwnerships
+    [HttpGet("GetLandOwnerships")]
+    public async Task<ActionResult<IEnumerable<LandOwnership>>> GetLandOwnerships()
+    {
+        return await _context.LandOwnerships.AsNoTracking().OrderBy(l => l.Name).ToListAsync();
+    }
+
     // GET: api/lookup/GetVillagesByDistrict/{districtNumber}
     [HttpGet("GetVillagesByDistrictNumber/{districtNumber}")]
     public async Task<ActionResult<IEnumerable<Village>>> GetVillagesByDistrict(int districtNumber)
     {
-        int villageLength = 5;
-
-        if (districtNumber.ToString().Length > 3)
-            villageLength = 6;
-
-            // Get villages where the village number starts with the district number
-            // For example, district 101 has villages 10101, 10102, 10103, etc.
-            var villages = await _context.Villages
-                .AsNoTracking()
-                .Where(v => v.Number.ToString().StartsWith(districtNumber.ToString()) && v.Number.ToString().Length == villageLength)
-                .OrderBy(v => v.Number)
-                .ToListAsync();
+        var villages = await _context.Villages
+            .AsNoTracking()
+            .Where(v => v.DistrictNumber == districtNumber)
+            .OrderBy(v => v.Number)
+            .ToListAsync();
 
         return villages;
+    }
+
+    [HttpGet("GetVillages")]
+    public async Task<ActionResult<IEnumerable<Village>>> GetVillages()
+    {
+        return await _context.Villages.AsNoTracking().OrderBy(v => v.Number).ToListAsync();
     }
 
     // GET: api/lookup/GetVillagesContinue

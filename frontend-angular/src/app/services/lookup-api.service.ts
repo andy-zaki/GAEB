@@ -2,7 +2,7 @@ import { Injectable, inject } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { catchError, tap } from 'rxjs/operators';
-import { GovernorateData, LandOwnerData, DistrictData, VillageData } from '../models/Lookup.Model';
+import { GovernorateData, LandOwnerData, DistrictData, VillageData, LandOwnershipData } from '../models/Lookup.Model';
 import { environment } from '../../environments/environment.development';
 import { ErrorHandlerService } from './error-handler.service';
 
@@ -55,6 +55,13 @@ export class LookupApiService {
     );
   }
 
+  getVillages(): Observable<VillageData | null> {
+    return this.http.get<VillageData | null>(`${this.baseUrl}/GetVillages`).pipe(
+      tap(data => console.log(`Fetched villages data`)),
+      catchError(error => this.errorHandler.handleError(error, `فشل تحميل القرى`))
+    );
+  }
+
    /**
    * Get all governorates in the database
    * Backend: GET api/lookup/getGovernorates
@@ -63,6 +70,13 @@ export class LookupApiService {
     return this.http.get<LandOwnerData | null>(`${this.baseUrl}/GetLandOwners`).pipe(
       tap(data => console.log(`Fetched landOwner data`)),
       catchError(error => this.errorHandler.handleError(error, `فشل تحميل المحافظات`))
+    );
+  }
+
+  getLandOwnerships(): Observable<LandOwnershipData | null> {
+    return this.http.get<LandOwnershipData | null>(`${this.baseUrl}/GetLandOwnerships`).pipe(
+      tap(data => console.log(`Fetched landOwnership data`)),
+      catchError(error => this.errorHandler.handleError(error, `فشل تحميل أنواع الملكية`))
     );
   }
 }

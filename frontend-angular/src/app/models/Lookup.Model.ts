@@ -14,6 +14,7 @@ export interface GovernorateData {
 export interface VillageData {
   name: string;
   number: number;
+  districtNumber?: number;
 }
 
 /**
@@ -29,6 +30,11 @@ export interface DistrictData {
  * Represents buildings on a land parcel
  */
 export interface LandOwnerData {
+  id: number;
+  name: string;
+}
+
+export interface LandOwnershipData {
   id: number;
   name: string;
 }

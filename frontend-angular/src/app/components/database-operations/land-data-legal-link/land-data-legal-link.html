@@ -19,7 +19,10 @@
 				<form [formGroup]="form" (ngSubmit)="submit()" class="link-form">
 					<div class="form-row">
 						<label for="landSerialLegal">مسلسل الارض بالشئون القانونية:<span class="required">*</span></label>
-						<input id="landSerialLegal" formControlName="landSerialLegal" type="text" />
+						<select id="landSerialLegal" formControlName="landSerialLegal">
+							<option value="">-- اختر --</option>
+							<option *ngFor="let id of legalLandIds" [value]="id">{{ id }}</option>
+						</select>
 						<div class="error" *ngIf="form.get('landSerialLegal')?.invalid && form.get('landSerialLegal')?.touched">هذا الحقل مطلوب</div>
 					</div>
 
@@ -35,7 +38,12 @@
 							<tbody formArrayName="schoolIds">
 								<tr *ngFor="let ctrl of schoolIds.controls; let i = index">
 									<td>
-										<input [formControlName]="i" />
+										<select [formControlName]="i">
+											<option value="">-- اختر --</option>
+											<option *ngFor="let b of educationalBuildings" [value]="b.buildingNumber">
+												{{ b.buildingNumber }} - {{ b.buildingName }}
+											</option>
+										</select>
 										<div class="error" *ngIf="schoolIds.at(i).invalid && schoolIds.at(i).touched">مطلوب</div>
 									</td>
 									<td class="actions-cell">
