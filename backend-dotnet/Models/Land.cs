@@ -37,16 +37,17 @@ public class Land
     [MaxLength(100)]
     public string? Housing { get; set; }
     
-    [MaxLength(18)]
+    [Column(TypeName = "decimal(18,2)")]
     public decimal? CommitteePricing { get; set; }
     
-    [MaxLength(18)]
+    [Column(TypeName = "decimal(18,2)")]
     public decimal? PurchasePrice { get; set; }
     
     [MaxLength(255)]
     public string? SaleNegotiations { get; set; }
     
-    public int? LandCode { get; set; }
+    [Required]
+    public int LandCode { get; set; }
     
     [MaxLength(100)]
     public string? Village { get; set; }
@@ -119,9 +120,12 @@ public class Land
     
     [ForeignKey("EducationalBuilding")]
     public Guid? EducationalBuildingId { get; set; }
+
+    public virtual EducationalBuilding? EducationalBuilding { get; set; }
+
+    public virtual LandTechnicalInspection? LandTechnicalInspection { get; set; }
     
     // Navigation properties
-    public EducationalBuilding? EducationalBuilding { get; set; }
     public ICollection<LandCoordinate> Coordinates { get; set; } = new List<LandCoordinate>();
     public ICollection<BuildingLocation> BuildingLocations { get; set; } = new List<BuildingLocation>();
 }

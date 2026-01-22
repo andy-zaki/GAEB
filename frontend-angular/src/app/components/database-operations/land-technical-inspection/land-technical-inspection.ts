@@ -8,6 +8,7 @@ import { GovernorateData, LandOwnerData } from '../../../models/Lookup.Model';
 import { LandTechnicalInspection } from '../../../models/landtechnicalinspection.model';
 import { ErrorHandlerService } from '../../../services/error-handler.service';
 import { LandTechnicalInspectionApiService } from '../../../services/land-technical-inspection-api.service';
+import { LandApiService } from '../../../services/land-api.service';
 
 type ViewMode = 'search' | 'view' | 'create' | 'edit';
 
@@ -20,10 +21,12 @@ type ViewMode = 'search' | 'view' | 'create' | 'edit';
 })
 
 export class LandTechnicalInspectionComponent {
+
   private router = inject(Router);
   private lookupApiService = inject(LookupApiService);
   private errorHandler = inject(ErrorHandlerService);
   private landTechnicalInspectionApiService = inject(LandTechnicalInspectionApiService);
+  private landApiService = inject(LandApiService);
 
   selectedLandTechnicalInspection = signal<LandTechnicalInspection | null>(null);
   viewMode = signal<ViewMode>('search');
@@ -38,6 +41,8 @@ export class LandTechnicalInspectionComponent {
   //Lookup
   governorates: GovernorateData[] = []; // Declare an empty array of MyObject
   landOwners: LandOwnerData[] = []; // Declare an empty array of MyObject
+  landCodes: number[] = [];
+  landCodeNotFound = false;
 
   get boundariesGroup() {
     return this.form.get('boundaries') as FormGroup;
@@ -79,19 +84,20 @@ export class LandTechnicalInspectionComponent {
   constructor() {
     this.loadGovernorates();
     this.loadLandOwners();
+    this.loadLandCodes();
 
     this.technicalResponsiblePersonNameAndId = this.loggedInUser.id + ' ' + this.loggedInUser.fullName
   }
 
   form: FormGroup = this.fb.group({
-    landCode: ['', Validators.required],
-    governorateCode: ['', Validators.required],
-    landAddress: ['', Validators.required],
-    landOwnerName: ['', Validators.required],
+    landCode: ['', [Validators.required, Validators.min(1)]],
+    governorateCode: ['', [Validators.required, Validators.min(1)]],
+    landAddress: ['', [Validators.required, Validators.maxLength(500)]],
+    landOwnerName: ['', [Validators.required, Validators.minLength(3), Validators.maxLength(200)]],
     landOwnerAddress: ['', Validators.required],
-    totalArea: ['', Validators.required],
+    totalArea: ['', [Validators.required, Validators.min(1)]],
     landNature: ['مباني', Validators.required],
-    landOwnershipCode: ['', Validators.required],
+    landOwnershipCode: ['', [Validators.required, Validators.min(1)]],
 
     // الحدود
     northernBoundary: ['', Validators.required],
@@ -100,10 +106,10 @@ export class LandTechnicalInspectionComponent {
     westernBoundary: ['', Validators.required],
 
     // الأطوال
-    northernBoundaryLength: ['', Validators.required],
-    southernBoundaryLength: ['', Validators.required],
-    easternBoundaryLength: ['', Validators.required],
-    westernBoundaryLength: ['', Validators.required],
+    northernBoundaryLength: ['', [Validators.required, Validators.min(1)]],
+    southernBoundaryLength: ['', [Validators.required, Validators.min(1)]],
+    easternBoundaryLength: ['', [Validators.required, Validators.min(1)]],
+    westernBoundaryLength: ['', [Validators.required, Validators.min(1)]],
 
     // الزوايا
     northeastBoundary: ['', Validators.required],
@@ -112,16 +118,80 @@ export class LandTechnicalInspectionComponent {
     southwestBoundary: ['', Validators.required],
 
     // أطوال الزوايا
-    northeastBoundaryLength: ['', Validators.required],
-    northwestBoundaryLength: ['', Validators.required],
-    southeastBoundaryLength: ['', Validators.required],
-    southwestBoundaryLength: ['', Validators.required],
+    northeastBoundaryLength: ['', [Validators.required, Validators.min(1)]],
+    northwestBoundaryLength: ['', [Validators.required, Validators.min(1)]],
+    southeastBoundaryLength: ['', [Validators.required, Validators.min(1)]],
+    southwestBoundaryLength: ['', [Validators.required, Validators.min(1)]],
 
     technicalResponsiblePersonId: [this.loggedInUser.id, Validators.required],
-    legalResponsiblePersonId: ['', Validators.required],
+    legalResponsiblePersonId: ['', [Validators.required, Validators.min(1)]],
     needsCommitteeDate: ['', Validators.required],
     technicalInspectionDate: ['', Validators.required]
   });
+
+  private loadLandCodes(): void {
+    this.landApiService.getAvailableLandCodes().subscribe({
+      next: (codes) => {
+        this.landCodes = codes || [];
+      },
+      error: (error) => {
+        const errorMessage = this.errorHandler.getUserFriendlyMessage(error, 'تحميل أكواد الأراضي المتاحة');
+        this.openDialog('error', 'خطأ', errorMessage);
+      }
+    });
+  }
+
+  protected onLandCodeChanged(): void {
+    const raw = this.form.get('landCode')?.value;
+    const landCode = Number(raw);
+    if (!landCode || Number.isNaN(landCode)) {
+      this.landCodeNotFound = false;
+      return;
+    }
+
+    if (this.landCodes.length > 0 && !this.landCodes.includes(landCode)) {
+      this.landCodeNotFound = true;
+      return;
+    }
+
+    this.landCodeNotFound = false;
+  }
+
+  private applyServerValidationErrors(error: any): void {
+    const errors = error?.error?.errors;
+    if (!errors || typeof errors !== 'object') {
+      return;
+    }
+
+    Object.keys(errors).forEach((key) => {
+      const messages = Array.isArray(errors[key]) ? errors[key] : [errors[key]];
+      const message = messages.find((m: any) => typeof m === 'string' && m.trim().length > 0) ?? null;
+      if (!message) {
+        return;
+      }
+
+      const normalizedKey = (key ?? '').toString();
+      const candidateNames = [
+        normalizedKey,
+        normalizedKey.length > 0 ? normalizedKey[0].toLowerCase() + normalizedKey.slice(1) : '',
+        normalizedKey.toLowerCase()
+      ].filter(Boolean);
+
+      const formControls = Object.keys(this.form.controls);
+      const matchedControlName = formControls.find(c => candidateNames.some(k => k === c || k.toLowerCase() === c.toLowerCase()));
+      if (!matchedControlName) {
+        return;
+      }
+
+      const control = this.form.get(matchedControlName);
+      if (!control) {
+        return;
+      }
+
+      control.setErrors({ ...(control.errors ?? {}), server: message });
+      control.markAsTouched();
+    });
+  }
 
   private loadLandOwners() {
     this.lookupApiService.getLandOwners().subscribe({
@@ -136,7 +206,7 @@ export class LandTechnicalInspectionComponent {
       error: (error) => {
         const errorMessage = this.errorHandler.getUserFriendlyMessage(
           error,
-          'تحميل المحافظات'
+          'تحميل أصحاب الأراضي'
         );
         this.openDialog('error', 'خطأ', errorMessage);
       }
@@ -164,6 +234,24 @@ export class LandTechnicalInspectionComponent {
   }
 
   protected submit(): void {
+    this.form.setErrors(null);
+
+    Object.keys(this.form.controls).forEach((k) => {
+      const c = this.form.get(k);
+      if (!c || !c.errors || !c.errors['server']) {
+        return;
+      }
+      const { server, ...rest } = c.errors;
+      c.setErrors(Object.keys(rest).length > 0 ? rest : null);
+    });
+
+    this.onLandCodeChanged();
+    if (this.landCodeNotFound) {
+      this.form.get('landCode')?.setErrors({ ...(this.form.get('landCode')?.errors ?? {}), server: 'لا توجد قطعة أرض بهذا الكود في جدول الأراضي.' });
+      this.form.get('landCode')?.markAsTouched();
+      return;
+    }
+
     if (this.form.invalid) {
       this.form.markAllAsTouched();
       return;
@@ -181,6 +269,9 @@ export class LandTechnicalInspectionComponent {
       },
       error: (error) => {
         console.error('Error creating building:', error);
+
+        this.applyServerValidationErrors(error);
+
         const errorMessage = this.errorHandler.getUserFriendlyMessage(
           error,
           'إضافة معاينة فنية للأرض'

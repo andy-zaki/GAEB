@@ -46,6 +46,22 @@ public class SchoolMapsController : ControllerBase
     public async Task<ActionResult<IEnumerable<EducationalBuilding>>> GetEducationalBuildings()
         => await _context.EducationalBuildings.OrderBy(e => e.BuildingNumber).ToListAsync();
 
+    [HttpGet("educational-buildings/available")]
+    public async Task<ActionResult<IEnumerable<EducationalBuilding>>> GetAvailableEducationalBuildings()
+    {
+        var linkedBuildingNumbersQuery = _context.LandAndLegalConnection
+            .AsNoTracking()
+            .Select(x => x.SchoolReferenceNumber.ToString());
+
+        var buildings = await _context.EducationalBuildings
+            .AsNoTracking()
+            .Where(b => !linkedBuildingNumbersQuery.Contains(b.BuildingNumber))
+            .OrderBy(e => e.BuildingNumber)
+            .ToListAsync();
+
+        return buildings;
+    }
+
     [HttpPost("study-periods")]
     public async Task<ActionResult<StudyPeriod>> AddStudyPeriod(StudyPeriod period)
     {
@@ -149,6 +165,60 @@ public class SchoolMapsController : ControllerBase
         }
         catch (Exception ex)
         {
+            return BadRequest(new { message = "خطأ في حفظ البيانات", error = ex.Message });
+        }
+    }
+
+    [HttpPost("educational-buildings/create-with-building")]
+    public async Task<ActionResult<object>> CreateEducationalBuildingWithBuilding(EducationalBuilding educationalBuilding)
+    {
+        if (educationalBuilding == null)
+        {
+            return BadRequest(new { message = "بيانات غير صحيحة" });
+        }
+
+        var validationResult = await _educationalBuildingValidator.ValidateAsync(educationalBuilding);
+        if (!validationResult.IsValid)
+        {
+            foreach (var error in validationResult.Errors)
+            {
+                ModelState.AddModelError(error.PropertyName, error.ErrorMessage);
+            }
+
+            return ValidationProblem(ModelState);
+        }
+
+        if (string.IsNullOrWhiteSpace(educationalBuilding.BuildingName))
+        {
+            return BadRequest(new { message = "مسمى قطعة الأرض مطلوب." });
+        }
+
+        await using var transaction = await _context.Database.BeginTransactionAsync();
+        try
+        {
+            educationalBuilding.Id = Guid.NewGuid();
+            educationalBuilding.CreatedAt = educationalBuilding.UpdatedAt = DateTime.Now;
+            _context.EducationalBuildings.Add(educationalBuilding);
+
+            var building = new Building
+            {
+                Id = Guid.NewGuid(),
+                BuildingNumber = educationalBuilding.BuildingNumber,
+                SchoolName = educationalBuilding.BuildingName,
+                EducationalBuildingId = educationalBuilding.Id,
+                CreatedAt = DateTime.Now,
+                UpdatedAt = DateTime.Now
+            };
+            _context.Buildings.Add(building);
+
+            await _context.SaveChangesAsync();
+            await transaction.CommitAsync();
+
+            return Ok(new { educationalBuilding, building });
+        }
+        catch (Exception ex)
+        {
+            await transaction.RollbackAsync();
             return BadRequest(new { message = "خطأ في حفظ البيانات", error = ex.Message });
         }
     }

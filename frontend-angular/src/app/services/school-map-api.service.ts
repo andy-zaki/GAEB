@@ -129,6 +129,13 @@ export class SchoolMapApiService {
     );
   }
 
+  getAvailableEducationalBuildings(): Observable<EducationalBuildingData[]> {
+    return this.http.get<EducationalBuildingData[]>(`${this.baseUrl}/educational-buildings/available`).pipe(
+      tap(data => console.log(`Fetched ${data.length} available educational buildings`)),
+      catchError(error => this.errorHandler.handleError(error))
+    );
+  }
+
   /**
    * Add study period
    * Backend: POST api/schoolmaps/study-periods
@@ -180,6 +187,13 @@ export class SchoolMapApiService {
   createEducationalBuilding(data: Omit<EducationalBuildingData, 'id'>): Observable<EducationalBuildingData> {
     return this.http.post<EducationalBuildingData>(`${this.baseUrl}/educational-buildings`, data).pipe(
       tap(result => console.log('Created educational building:', result)),
+      catchError(error => this.errorHandler.handleError(error))
+    );
+  }
+
+  createEducationalBuildingWithBuilding(data: Omit<EducationalBuildingData, 'id'>): Observable<any> {
+    return this.http.post<any>(`${this.baseUrl}/educational-buildings/create-with-building`, data).pipe(
+      tap(result => console.log('Created educational building + building:', result)),
       catchError(error => this.errorHandler.handleError(error))
     );
   }

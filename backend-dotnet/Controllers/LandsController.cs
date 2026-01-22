@@ -39,6 +39,36 @@ public class LandsController : ControllerBase
     return ids;
   }
 
+  // GET: api/lands/land-codes
+  [HttpGet("land-codes")]
+  public async Task<ActionResult<IEnumerable<int>>> GetLandCodes()
+  {
+    var codes = await _context.Lands
+        .AsNoTracking()
+        .Select(x => x.LandCode)
+        .Distinct()
+        .OrderBy(x => x)
+        .ToListAsync();
+
+    return codes;
+  }
+
+  // GET: api/lands/available-land-codes
+  // Returns LandCodes that exist in Lands but do NOT have a LandTechnicalInspection yet
+  [HttpGet("available-land-codes")]
+  public async Task<ActionResult<IEnumerable<int>>> GetAvailableLandCodes()
+  {
+    var codes = await _context.Lands
+        .AsNoTracking()
+        .Where(l => !_context.LandTechnicalInspection.Any(ti => ti.LandCode == l.LandCode))
+        .Select(x => x.LandCode)
+        .Distinct()
+        .OrderBy(x => x)
+        .ToListAsync();
+
+    return codes;
+  }
+
   // GET: api/lands/{id}
   [HttpGet("{id}")]
   public async Task<ActionResult<Land>> GetLand(Guid id)
@@ -106,12 +136,17 @@ public class LandsController : ControllerBase
   [HttpPost("CreateLandDataInsertion")]
   public async Task<ActionResult<Land>> CreateLandDataInsertion(LandDataInsertionDTO land)
   {
+    if (!land.LandCode.HasValue || land.LandCode.Value <= 0)
+    {
+      return BadRequest("كود قطعة الأرض مطلوب.");
+    }
+
     Land land1 = new()
     {
       Id = Guid.NewGuid(),
       TotalArea = land.TotalArea,
       ReferenceNumber = land.LandCode,
-      LandCode = land.LandCode,
+      LandCode = land.LandCode.Value,
       CurrentOwner = land.OwnerName
     };
     _context.Lands.Add(land1);
@@ -228,18 +263,75 @@ public class LandsController : ControllerBase
   [HttpPost("ConnectLandAndLegal")]
   public async Task<IActionResult> ConnectLandAndLegal(LandAndLegalConnectionDTO landAndLegalConnectionDTO)
   {
-    for (int i = 0; i < landAndLegalConnectionDTO?.schoolIds.Count; i++)
+    if (landAndLegalConnectionDTO == null)
+    {
+      return BadRequest("بيانات غير صحيحة.");
+    }
+
+    if (string.IsNullOrWhiteSpace(landAndLegalConnectionDTO.LandSerialLegal))
+    {
+      return BadRequest("مسلسل الارض بالشئون القانونية مطلوب.");
+    }
+
+    if (!int.TryParse(landAndLegalConnectionDTO.LandSerialLegal, out var landSerialLegal))
+    {
+      return BadRequest("مسلسل الارض بالشئون القانونية غير صحيح.");
+    }
+
+    var hasInspection = await _context.LandTechnicalInspection
+        .AsNoTracking()
+        .AnyAsync(x => x.LandCode == landSerialLegal);
+
+    if (!hasInspection)
+    {
+      return BadRequest("لا يمكن ربط الشئون القانونية قبل عمل المعاينة الفنية (الفحص الفني) للأرض.");
+    }
+
+    if (landAndLegalConnectionDTO.schoolIds == null || landAndLegalConnectionDTO.schoolIds.Count == 0)
+    {
+      return BadRequest("الرقم التعريفي للمدرسة مطلوب.");
+    }
+
+    var requestedSchoolIds = landAndLegalConnectionDTO.schoolIds
+        .Where(x => !string.IsNullOrWhiteSpace(x))
+        .Distinct()
+        .ToList();
+
+    var parsedSchoolIds = new List<int>();
+    foreach (var schoolId in requestedSchoolIds)
+    {
+      if (!int.TryParse(schoolId, out var schoolRef))
+      {
+        return BadRequest("الرقم التعريفي للمدرسة غير صحيح.");
+      }
+      parsedSchoolIds.Add(schoolRef);
+    }
+
+    var alreadyLinked = await _context.LandAndLegalConnection
+        .AsNoTracking()
+        .Where(x => parsedSchoolIds.Contains(x.SchoolReferenceNumber))
+        .Select(x => x.SchoolReferenceNumber)
+        .Distinct()
+        .ToListAsync();
+
+    if (alreadyLinked.Count > 0)
+    {
+      return BadRequest($"لا يمكن ربط هذه المدرسة لأنها مرتبطة بالفعل: {string.Join(", ", alreadyLinked)}");
+    }
+
+    foreach (var schoolRef in parsedSchoolIds)
     {
       LandAndLegalConnection landAndLegalConnection = new()
       {
-        LandId = int.Parse(landAndLegalConnectionDTO.LandSerialLegal),
-        SchoolReferenceNumber = int.Parse(landAndLegalConnectionDTO.schoolIds[i])
+        LandId = landSerialLegal,
+        SchoolReferenceNumber = schoolRef
       };
 
       _context.Add(landAndLegalConnection);
     }
+
     await _context.SaveChangesAsync();
-    return Created();// AtAction(nameof(GetLand), new { id = landAndLegalConnectionDTO.LandSerialLegal }, landAndLegalConnectionDTO);
+    return Created();
 
   }
 

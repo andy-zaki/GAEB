@@ -7,19 +7,28 @@
 
 	<main class="applications-menu-main">
 		<div class="menu-container">
-			<h2 class="menu-title">تسجيل بيانات المستندات</h2>
+			<div class="page-title-row">
+				<h2 class="menu-title">تسجيل بيانات المستندات</h2>
+				<button type="button" class="btn-admin-toggle" (click)="toggleDocumentsAdmin()">إدارة المستندات</button>
+			</div>
 
 			<section class="link-form-container">
 				<form [formGroup]="form" (ngSubmit)="submit()" class="link-form">
 					<div class="form-row">
-						<label for="landCode">كود الأرض:<span class="required">*</span></label>
-						<input id="landCode" formControlName="landCode" type="text" />
-						<div class="error" *ngIf="form.get('landCode')?.invalid && form.get('landCode')?.touched">هذا
+						<label for="buildingNumber">رقم المبنى:<span class="required">*</span></label>
+						<select id="buildingNumber" formControlName="buildingNumber" (change)="onBuildingNumberChanged()">
+							<option value="">-- اختر رقم المبنى --</option>
+							<option *ngFor="let item of buildingNumbers" [value]="item.buildingNumber">
+								{{ item.buildingNumber }} - {{ item.schoolName }}
+							</option>
+						</select>
+						<div class="error" *ngIf="form.get('buildingNumber')?.invalid && form.get('buildingNumber')?.touched">هذا
 							الحقل مطلوب</div>
+						<div class="error" *ngIf="buildingNumberNotFound">رقم المبنى غير موجود</div>
 					</div>
 
 					<div class="form-row">
-						<table class="school-table">
+						<table class="school-table" *ngIf="availableDocuments.length > 0">
 							<thead>
 								<tr>
 									<th>اسم الموافقة</th>
@@ -28,7 +37,7 @@
 									<th>غير مطلوب</th>
 								</tr>
 							</thead>
-							<tbody formArrayName="availableDocuments">
+							<tbody>
 								<tr *ngFor="let doc of availableDocuments; let i = index">
 									<td>
 										{{ doc.name }}
@@ -58,6 +67,52 @@
 						<button type="submit" class="btn-submit">حفظ</button>
 					</div>
 				</form>
+			</section>
+
+			<section class="link-form-container" *ngIf="showDocumentsAdmin">
+				<div class="menu-title">إدارة المستندات (إضافة / تعديل / حذف)</div>
+
+				<div class="admin-form-grid">
+					<label class="admin-label">اسم المستند:<span class="required">*</span></label>
+					<input class="admin-input" type="text" [(ngModel)]="newMasterName" name="newMasterName" />
+
+					<label class="admin-label">كود المستند:</label>
+					<input class="admin-input" type="text" [(ngModel)]="newMasterCode" name="newMasterCode" />
+				</div>
+
+				<div class="form-actions">
+					<button type="button" class="btn-submit" (click)="createMasterDocument()">إضافة</button>
+				</div>
+
+				<table class="school-table" *ngIf="masterDocuments.length > 0">
+					<thead>
+						<tr>
+							<th>الرقم</th>
+							<th>اسم المستند</th>
+							<th>كود المستند</th>
+							<th>إجراءات</th>
+						</tr>
+					</thead>
+					<tbody>
+						<tr *ngFor="let doc of masterDocuments">
+							<td>{{ doc.id }}</td>
+							<td>
+								<span *ngIf="editingMasterId !== doc.id">{{ doc.name }}</span>
+								<input *ngIf="editingMasterId === doc.id" class="admin-input" type="text" [(ngModel)]="editingMasterName" name="editingMasterName" />
+							</td>
+							<td>
+								<span *ngIf="editingMasterId !== doc.id">{{ doc.documentCode }}</span>
+								<input *ngIf="editingMasterId === doc.id" class="admin-input" type="text" [(ngModel)]="editingMasterCode" name="editingMasterCode" />
+							</td>
+							<td>
+								<button type="button" class="btn-submit" *ngIf="editingMasterId !== doc.id" (click)="startEditMaster(doc)">تعديل</button>
+								<button type="button" class="btn-submit" *ngIf="editingMasterId === doc.id" (click)="saveEditMaster()">حفظ</button>
+								<button type="button" class="btn-submit" *ngIf="editingMasterId === doc.id" (click)="cancelEditMaster()">إلغاء</button>
+								<button type="button" class="btn-submit" (click)="deleteMasterDocument(doc.id)">حذف</button>
+							</td>
+						</tr>
+					</tbody>
+				</table>
 			</section>
 		</div>
 	</main>

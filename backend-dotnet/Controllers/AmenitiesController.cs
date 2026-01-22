@@ -27,6 +27,28 @@ public class AmenitiesController : ControllerBase
             .ToListAsync();
     }
 
+    [HttpPost]
+    public async Task<ActionResult<Amenity>> CreateAmenity([FromBody] Amenity amenity)
+    {
+        if (amenity == null)
+        {
+            return BadRequest("Amenity is required");
+        }
+
+        if (string.IsNullOrWhiteSpace(amenity.Name))
+        {
+            return BadRequest("Amenity name is required");
+        }
+
+        amenity.Id = Guid.NewGuid();
+        amenity.Description ??= string.Empty;
+
+        _context.Amenity.Add(amenity);
+        await _context.SaveChangesAsync();
+
+        return CreatedAtAction(nameof(GetAllAmenities), new { id = amenity.Id }, amenity);
+    }
+
     // GET: api/amenities/by-building/{buildingId}
     [HttpGet("by-building/{buildingId:guid}")]
     public async Task<ActionResult<IEnumerable<Amenity>>> GetAmenitiesByBuildingId(Guid buildingId)
@@ -37,13 +59,26 @@ public class AmenitiesController : ControllerBase
             .Where(a => a.BuildingAmenities.Any(ba => ba.BuildingId == buildingId))
             .ToListAsync();
 
-        if (!amenities.Any())
-        {
-            return NotFound($"No amenities found for building {buildingId}");
-        }
-
         return Ok(amenities);
     }
+
+    [HttpDelete("by-building/{buildingId:guid}/{amenityId:guid}")]
+    public async Task<IActionResult> DeleteBuildingAmenity(Guid buildingId, Guid amenityId)
+    {
+        var relations = await _context.BuildingAmenity
+            .Where(ba => ba.BuildingId == buildingId && ba.AmenityId == amenityId)
+            .ToListAsync();
+
+        if (relations.Count == 0)
+        {
+            return NotFound();
+        }
+
+        _context.BuildingAmenity.RemoveRange(relations);
+        await _context.SaveChangesAsync();
+        return NoContent();
+    }
+
     // POST: api/amenities/create-building-amenity
     [HttpPost("create-building-amenity")]
     public async Task<ActionResult<CreateBuildingAmenityResponse>> CreateBuildingAmenity([FromBody] CreateBuildingAmenityDTO request)

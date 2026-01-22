@@ -22,6 +22,18 @@ public class BuildingsController : ControllerBase
         return await _context.Buildings.OrderByDescending(b => b.CreatedAt).ToListAsync();
     }
 
+    [HttpGet("building-numbers")]
+    public async Task<ActionResult<IEnumerable<string>>> GetBuildingNumbers()
+    {
+        var numbers = await _context.Buildings
+            .AsNoTracking()
+            .Select(b => b.BuildingNumber)
+            .OrderBy(x => x)
+            .ToListAsync();
+
+        return Ok(numbers);
+    }
+
     [HttpGet("{id}")]
     public async Task<ActionResult<Building>> GetBuilding(Guid id)
     {

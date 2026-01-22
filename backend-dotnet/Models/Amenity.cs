@@ -10,6 +10,6 @@ namespace AngularProjectApi.Models
         public string Name { get; set; }
 
         public string Description { get; set; }
-        public ICollection<BuildingAmenity> BuildingAmenities { get; set; } 
+        public ICollection<BuildingAmenity> BuildingAmenities { get; set; } = new List<BuildingAmenity>();
     }
 }

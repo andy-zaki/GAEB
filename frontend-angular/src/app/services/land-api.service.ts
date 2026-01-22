@@ -22,6 +22,18 @@ export class LandApiService {
   private readonly errorHandler = inject(ErrorHandlerService);
   private readonly baseUrl = `${environment.apiUrl}/api/lands`;
 
+  getLandCodes(): Observable<number[]> {
+    return this.http.get<number[]>(`${this.baseUrl}/land-codes`).pipe(
+      catchError(error => this.errorHandler.handleError(error, 'تحميل أكواد الأراضي'))
+    );
+  }
+
+  getAvailableLandCodes(): Observable<number[]> {
+    return this.http.get<number[]>(`${this.baseUrl}/available-land-codes`).pipe(
+      catchError(error => this.errorHandler.handleError(error, 'تحميل أكواد الأراضي المتاحة'))
+    );
+  }
+
   getLegalLandIds(): Observable<number[]> {
     return this.http.get<number[]>(`${this.baseUrl}/legal-land-ids`).pipe(
       catchError(error => this.errorHandler.handleError(error, 'تحميل مسلسل الارض بالشئون القانونية'))

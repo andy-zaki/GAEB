@@ -78,6 +78,8 @@ public partial class LandTechnicalInspection
     [Required(ErrorMessage = "كود الأرض مطلوب")]
     public int LandCode { get; set; }
 
+    public virtual Land? Land { get; set; }
+
     public ICollection<LandAndLegalConnection> LandAndLegalConnections { get; set; } = new List<LandAndLegalConnection>();
 
     [Required(ErrorMessage = "كود المحافظة مطلوب")]

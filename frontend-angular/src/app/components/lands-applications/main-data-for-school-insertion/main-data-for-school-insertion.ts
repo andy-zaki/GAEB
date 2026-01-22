@@ -204,8 +204,8 @@ export class MainDataForSchoolInsertion {
       return;
     }
 
-    this.schoolMapService.createEducationalBuilding(this.landForm.value).subscribe({
-      next: (landTechnicalInspection) => {
+    this.schoolMapService.createEducationalBuildingWithBuilding(this.landForm.value).subscribe({
+      next: () => {
 
         // Send form data to backend -- currently logging and clearing form
         console.log('Land inspection data submitted', this.landForm.value);

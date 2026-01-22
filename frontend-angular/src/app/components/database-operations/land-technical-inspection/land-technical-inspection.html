@@ -19,12 +19,23 @@
             <!-- كود قطعة الأرض -->
             <div class="form-group">
               <label for="landCode">كود قطعة الأرض:<span class="required">*</span></label>
-              <input id="landCode" formControlName="landCode" type="text" placeholder="ادخل كود قطعة الأرض"
-                [class.error]="form.get('landCode')?.touched && form.get('landCode')?.invalid" />
+              <input id="landCode" formControlName="landCode" type="text" placeholder="ادخل كود قطعة الأرض" list="landCodes"
+                (input)="onLandCodeChanged()" [class.error]="form.get('landCode')?.touched && form.get('landCode')?.invalid" />
+              <datalist id="landCodes">
+                @for (code of landCodes; track code) {
+                <option [value]="code"></option>
+                }
+              </datalist>
               @if (form.get('landCode')?.invalid && form.get('landCode')?.touched)
               {
               @if (form.get('landCode')?.hasError('required')) {
               <span class="error-message">كود قطعة الأرض مطلوب</span>
+              }
+              @if (form.get('landCode')?.hasError('min')) {
+              <span class="error-message">كود قطعة الأرض مطلوب.</span>
+              }
+              @if (form.get('landCode')?.hasError('server')) {
+              <span class="error-message">{{ form.get('landCode')?.getError('server') }}</span>
               }
               }
             </div>
@@ -48,14 +59,17 @@
             <div class="form-group">
               <label for="landAddress">عنوان قطعة الأرض:<span class="required">*</span></label>
               <input id="landAddress" formControlName="landAddress" type="text" placeholder="ادخل عنوان قطعة الأرض"
-                [class.error]="form.get('landAddress')?.touched && form.get('landCode')?.invalid" />
+                [class.error]="form.get('landAddress')?.touched && form.get('landAddress')?.invalid" />
               @if (form.get('landAddress')?.invalid && form.get('landAddress')?.touched)
               {
               @if (form.get('landAddress')?.hasError('required')) {
               <span class="error-message">عنوان قطعة الأرض مطلوب</span>
               }
               @if (form.get('landAddress')?.hasError('maxlength')) {
-              <span class="error-message">عنوان قطعة الأرض يجب أن يكون أقل من 250 حرف</span>
+              <span class="error-message">عنوان قطعة الأرض يجب أن يكون أقل من 500 حرف</span>
+              }
+              @if (form.get('landAddress')?.hasError('server')) {
+              <span class="error-message">{{ form.get('landAddress')?.getError('server') }}</span>
               }
               }
             </div>
@@ -70,8 +84,14 @@
               @if (form.get('landOwnerName')?.hasError('required')) {
               <span class="error-message">اسم مالك الأرض مطلوب</span>
               }
+              @if (form.get('landOwnerName')?.hasError('minlength')) {
+              <span class="error-message">الاسم يجب أن يكون 3 أحرف على الأقل</span>
+              }
               @if (form.get('landOwnerName')?.hasError('maxlength')) {
-              <span class="error-message">اسم مالك الأرض يجب أن يكون أقل من 100 حرف</span>
+              <span class="error-message">اسم مالك الأرض يجب أن يكون أقل من 200 حرف</span>
+              }
+              @if (form.get('landOwnerName')?.hasError('server')) {
+              <span class="error-message">{{ form.get('landOwnerName')?.getError('server') }}</span>
               }
               }
             </div>
@@ -87,8 +107,8 @@
               @if (form.get('landOwnerAddress')?.hasError('required')) {
               <span class="error-message">عنوان مالك الأرض مطلوب</span>
               }
-              @if (form.get('landOwnerAddress')?.hasError('maxlength')) {
-              <span class="error-message">عنوان مالك الأرض يجب أن يكون أقل من 100 حرف</span>
+              @if (form.get('landOwnerAddress')?.hasError('server')) {
+              <span class="error-message">{{ form.get('landOwnerAddress')?.getError('server') }}</span>
               }
               }
             </div>
@@ -97,11 +117,17 @@
             <div class="form-group">
               <label for="totalArea">مساحة الأرض:<span class="required">*</span></label>
               <input id="totalArea" formControlName="totalArea" type="text" placeholder="(م²) ادخل مساحة الأرض"
-                [class.error]="form.get('totalArea')?.touched && form.get('landOwnerAddress')?.invalid" />
-              @if (form.get('totalArea')?.invalid && form.get('landOwnerAddress')?.touched)
+                [class.error]="form.get('totalArea')?.touched && form.get('totalArea')?.invalid" />
+              @if (form.get('totalArea')?.invalid && form.get('totalArea')?.touched)
               {
               @if (form.get('totalArea')?.hasError('required')) {
-              <span class="error-message">مساحة الأرض الكلية مطلوبه</span>
+              <span class="error-message">مساحة الأرض مطلوبة.</span>
+              }
+              @if (form.get('totalArea')?.hasError('min')) {
+              <span class="error-message">مساحة الأرض مطلوبة.</span>
+              }
+              @if (form.get('totalArea')?.hasError('server')) {
+              <span class="error-message">{{ form.get('totalArea')?.getError('server') }}</span>
               }
               }
             </div>
@@ -302,8 +328,14 @@
                 [class.error]="form.get('northeastBoundaryLength')?.touched && form.get('northeastBoundaryLength')?.invalid" />
               @if (form.get('northeastBoundaryLength')?.invalid && form.get('northeastBoundaryLength')?.touched)
               {
-              @if (form.get('westernBoundaryLength')?.hasError('required')) {
+              @if (form.get('northeastBoundaryLength')?.hasError('required')) {
               <span class="error-message">طول الحد الشمال الشرقي مطلوب</span>
+              }
+              @if (form.get('northeastBoundaryLength')?.hasError('min')) {
+              <span class="error-message">طول الحد الشمال الشرقي مطلوب</span>
+              }
+              @if (form.get('northeastBoundaryLength')?.hasError('server')) {
+              <span class="error-message">{{ form.get('northeastBoundaryLength')?.getError('server') }}</span>
               }
               }
             </div>
@@ -336,8 +368,14 @@
                 [class.error]="form.get('northwestBoundaryLength')?.touched && form.get('northwestBoundaryLength')?.invalid" />
               @if (form.get('northwestBoundaryLength')?.invalid && form.get('northwestBoundaryLength')?.touched)
               {
-              @if (form.get('westernBoundaryLength')?.hasError('required')) {
+              @if (form.get('northwestBoundaryLength')?.hasError('required')) {
               <span class="error-message">طول الحد الشمال الغربي مطلوب</span>
+              }
+              @if (form.get('northwestBoundaryLength')?.hasError('min')) {
+              <span class="error-message">طول الحد الشمال الغربي مطلوب</span>
+              }
+              @if (form.get('northwestBoundaryLength')?.hasError('server')) {
+              <span class="error-message">{{ form.get('northwestBoundaryLength')?.getError('server') }}</span>
               }
               }
             </div>
@@ -370,8 +408,14 @@
                 [class.error]="form.get('southeastBoundaryLength')?.touched && form.get('southeastBoundaryLength')?.invalid" />
               @if (form.get('southeastBoundaryLength')?.invalid && form.get('southeastBoundaryLength')?.touched)
               {
-              @if (form.get('westernBoundaryLength')?.hasError('required')) {
+              @if (form.get('southeastBoundaryLength')?.hasError('required')) {
               <span class="error-message">طول الحد الجنوب الشرقي مطلوب</span>
+              }
+              @if (form.get('southeastBoundaryLength')?.hasError('min')) {
+              <span class="error-message">طول الحد الجنوب الشرقي مطلوب</span>
+              }
+              @if (form.get('southeastBoundaryLength')?.hasError('server')) {
+              <span class="error-message">{{ form.get('southeastBoundaryLength')?.getError('server') }}</span>
               }
               }
             </div>
@@ -404,8 +448,14 @@
                 [class.error]="form.get('southwestBoundaryLength')?.touched && form.get('southwestBoundaryLength')?.invalid" />
               @if (form.get('southwestBoundaryLength')?.invalid && form.get('southwestBoundaryLength')?.touched)
               {
-              @if (form.get('westernBoundaryLength')?.hasError('required')) {
+              @if (form.get('southwestBoundaryLength')?.hasError('required')) {
               <span class="error-message">طول الحد الجنوب الغربي مطلوب</span>
+              }
+              @if (form.get('southwestBoundaryLength')?.hasError('min')) {
+              <span class="error-message">طول الحد الجنوب الغربي مطلوب</span>
+              }
+              @if (form.get('southwestBoundaryLength')?.hasError('server')) {
+              <span class="error-message">{{ form.get('southwestBoundaryLength')?.getError('server') }}</span>
               }
               }
             </div>
@@ -437,8 +487,14 @@
               @if (form.get('legalResponsiblePersonId')?.invalid &&
               form.get('legalResponsiblePersonId')?.touched)
               {
-              @if (form.get('legalResponsiblePersonId')?.hasError('legalResponsiblePersonId')) {
-              <span class="error-message">رقم المسؤول القانوني مطلوب</span>
+              @if (form.get('legalResponsiblePersonId')?.hasError('required')) {
+              <span class="error-message">رقم المسؤول القانوني مطلوب.</span>
+              }
+              @if (form.get('legalResponsiblePersonId')?.hasError('min')) {
+              <span class="error-message">رقم المسؤول القانوني مطلوب.</span>
+              }
+              @if (form.get('legalResponsiblePersonId')?.hasError('server')) {
+              <span class="error-message">{{ form.get('legalResponsiblePersonId')?.getError('server') }}</span>
               }
               }
             </div>
@@ -453,11 +509,15 @@
               @if (form.get('technicalInspectionDate')?.invalid &&
               form.get('technicalInspectionDate')?.touched)
               {
-              @if (form.get('technicalInspectionDate')?.hasError('technicalInspectionDate')) {
-              <span class="error-message">تاريخ المعاينة الفنية مطلوب</span>
+              @if (form.get('technicalInspectionDate')?.hasError('required')) {
+              <span class="error-message">تاريخ المعاينة الفنية مطلوب.</span>
+              }
+              @if (form.get('technicalInspectionDate')?.hasError('server')) {
+              <span class="error-message">{{ form.get('technicalInspectionDate')?.getError('server') }}</span>
               }
               }
             </div>
+
             <!-- تاريخ لجنة الاحتياج -->
             <div class="form-group">
               <label for="needsCommitteeDate">تاريخ لجنة الاحتياج:<span class="required">*</span></label>
@@ -467,8 +527,11 @@
               @if (form.get('needsCommitteeDate')?.invalid &&
               form.get('needsCommitteeDate')?.touched)
               {
-              @if (form.get('needsCommitteeDate')?.hasError('needsCommitteeDate')) {
-              <span class="error-message">تاريخ لجنة الاحتياج مطلوب</span>
+              @if (form.get('needsCommitteeDate')?.hasError('required')) {
+              <span class="error-message">تاريخ لجنة الاحتياج مطلوب.</span>
+              }
+              @if (form.get('needsCommitteeDate')?.hasError('server')) {
+              <span class="error-message">{{ form.get('needsCommitteeDate')?.getError('server') }}</span>
               }
               }
             </div>

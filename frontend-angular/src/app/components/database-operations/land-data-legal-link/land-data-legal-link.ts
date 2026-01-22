@@ -86,7 +86,7 @@ export class LandDataLegalLink {
   }
 
   private loadEducationalBuildings(): void {
-    this.schoolMapService.getAllEducationalBuildings().subscribe({
+    this.schoolMapService.getAvailableEducationalBuildings().subscribe({
       next: (buildings) => {
         this.educationalBuildings = Array.isArray(buildings) ? buildings : [];
       },
@@ -113,6 +113,7 @@ export class LandDataLegalLink {
         console.log('Land inspection data submitted', this.form.value);
         alert('✅ تم ربط بيانات الأرض بالشؤوون القانونية بنجاح!');
         this.form.reset();
+        this.loadEducationalBuildings();
       },
       error: (error) => {
         const errorMessage = this.errorHandler.getUserFriendlyMessage(

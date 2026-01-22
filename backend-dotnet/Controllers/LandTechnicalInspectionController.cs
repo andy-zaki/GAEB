@@ -32,6 +32,19 @@ public class LandTechnicalInspectionController : ControllerBase
         return await _context.LandTechnicalInspection.OrderByDescending(l => l.CreatedAt).ToListAsync();
     }
 
+    [HttpGet("land-codes")]
+    public async Task<ActionResult<IEnumerable<int>>> GetAllLandCodes()
+    {
+        var landCodes = await _context.LandTechnicalInspection
+            .AsNoTracking()
+            .Select(x => x.LandCode)
+            .Distinct()
+            .OrderBy(x => x)
+            .ToListAsync();
+
+        return Ok(landCodes);
+    }
+
     // GET: api/lands/{id}
     [HttpGet("{id}")]
     public async Task<ActionResult<LandTechnicalInspection>> Get(int id)

@@ -19,11 +19,16 @@
     <input 
       type="text" 
       [(ngModel)]="buildingNumber" 
+      list="buildingsList"
       placeholder="أدخل رقم المبنى" 
       class="search-input"
       (keyup.enter)="searchAmenities()">
 
-    <button class="search-btn" (click)="searchAmenities()">
+    <datalist id="buildingsList">
+      <option *ngFor="let b of buildingsLookup" [value]="b.buildingNumber">{{ b.display }}</option>
+    </datalist>
+
+    <button class="search-btn" (click)="searchAmenities()" [disabled]="isLoading">
       🔎 <span>بحث</span>
     </button>
   </div>
@@ -31,15 +36,17 @@
   <!-- Results Section -->
   <div *ngIf="hasSearched" class="results-section">
 
+    <div *ngIf="isLoading" class="no-results">جاري التحميل...</div>
+
     <!-- Add Button -->
     <div class="add-button-container">
-      <button (click)="openAddModal()" class="add-btn-large">
+      <button (click)="openAddModal()" class="add-btn-large" [disabled]="isLoading">
         ➕ إضافة مرفق جديد
       </button>
     </div>
 
     <!-- Table -->
-    <table class="amenities-table" *ngIf="amenities.length > 0">
+    <table class="amenities-table" *ngIf="!isLoading && amenities.length > 0">
       <thead>
         <tr>
           <th>اسم المبنى</th>
@@ -63,12 +70,12 @@
     </table>
 
     <!-- Empty State -->
-    <div *ngIf="amenities.length === 0" class="empty-state">
+    <div *ngIf="!isLoading && amenities.length === 0" class="empty-state">
       <div class="empty-icon">❓❓</div>
       <p>لا توجد مرافق مسجلة لرقم المبنى: <strong>{{ buildingNumber }}</strong></p>
-      <button (click)="openAddModal()" class="add-btn-large mt-4">
+      <!-- <button (click)="openAddModal()" class="add-btn-large mt-4" [disabled]="isLoading">
         add_circle_outline إضافة مرفق جديد لهذا المبنى
-      </button>
+      </button> -->
     </div>
 
   </div>
@@ -83,6 +90,24 @@
     </div>
 
     <div class="modal-body">
+      <div class="search-box">
+        <input
+          type="text"
+          [(ngModel)]="newAmenityName"
+          placeholder="اسم المرفق الجديد"
+          class="search-input">
+
+        <input
+          type="text"
+          [(ngModel)]="newAmenityDescription"
+          placeholder="وصف المرفق الجديد"
+          class="search-input">
+
+        <button class="search-btn" (click)="createNewAmenity()" [disabled]="isLoading">
+          ➕ <span>إضافة مرفق</span>
+        </button>
+      </div>
+
       <table class="modal-table">
         <thead>
           <tr>
@@ -111,7 +136,7 @@
     <div class="modal-footer">
       <button class="btn-cancel" (click)="closeModal()">إلغاء</button>
       <button class="btn-confirm" 
-              [disabled]="!hasSelectedAmenities()"
+              [disabled]="isLoading || !hasSelectedAmenities()"
               (click)="confirmAddAmenities()">
         💾 إضافة المرافق المحددة
       </button>

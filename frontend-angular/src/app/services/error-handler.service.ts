@@ -265,10 +265,17 @@ export class ErrorHandlerService {
     if (error && typeof error === 'object' && 'message' in error) {
       const details = error as ErrorDetails;
 
-      if (typeof (details.error) == 'object')
-        message += details.message;
-      else
+      if (typeof (details.error) == 'object') {
+        const validationErrors = (details.error as any)?.errors;
+        if (validationErrors && typeof validationErrors === 'object') {
+          const errorMessages = Object.values(validationErrors).flat().join('\n');
+          message += `${details.message}\n${errorMessages}`;
+        } else {
+          message += details.message;
+        }
+      } else {
         message += `\n${details.error}`;
+      }
 
       if (details.suggestion) {
         message += `\n\n💡 ${details.suggestion}`;

@@ -58,6 +58,7 @@ public class Building
   public BuildingBasicData? BasicData { get; set; }
   public ICollection<BuildingAnnex> Annexes { get; set; } = new List<BuildingAnnex>();
   public ICollection<NetworkCost> NetworkCosts { get; set; } = new List<NetworkCost>();
+  public ICollection<BuildingAmenity> BuildingAmenities { get; set; } = new List<BuildingAmenity>();
 }
 
 public class BuildingBasicData

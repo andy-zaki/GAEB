@@ -59,6 +59,8 @@ public class ApplicationDbContext : DbContext
     public DbSet<UserLibrary> Libraries { get; set; }
     public DbSet<Amenity> Amenity { get; set; }
     public DbSet<BuildingAmenity> BuildingAmenity { get; set; }
+    public DbSet<DocumentsData> DocumentsData { get; set; }
+    public DbSet<BuildingDocumentsData> BuildingDocumentsData { get; set; }
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
@@ -85,6 +87,14 @@ public class ApplicationDbContext : DbContext
         // Configure unique indexes
         modelBuilder.Entity<Land>()
             .HasIndex(l => l.ReferenceNumber)
+            .IsUnique();
+
+        modelBuilder.Entity<Land>()
+            .HasIndex(l => l.LandCode)
+            .IsUnique();
+
+        modelBuilder.Entity<LandTechnicalInspection>()
+            .HasIndex(lti => lti.LandCode)
             .IsUnique();
 
         modelBuilder.Entity<Building>()
@@ -138,10 +148,46 @@ public class ApplicationDbContext : DbContext
             .HasPrincipalKey(lti => lti.LandCode)
             .OnDelete(DeleteBehavior.Restrict);
 
+        modelBuilder.Entity<LandTechnicalInspection>()
+            .HasOne(lti => lti.Land)
+            .WithOne(l => l.LandTechnicalInspection)
+            .HasForeignKey<LandTechnicalInspection>(lti => lti.LandCode)
+            .HasPrincipalKey<Land>(l => l.LandCode)
+            .OnDelete(DeleteBehavior.Restrict);
+
+        modelBuilder.Entity<BuildingDocumentsData>()
+            .HasIndex(d => new { d.BuildingNumber, d.DocumentId })
+            .IsUnique();
+
+        modelBuilder.Entity<Building>()
+            .HasMany<BuildingDocumentsData>()
+            .WithOne(d => d.Building)
+            .HasForeignKey(d => d.BuildingNumber)
+            .HasPrincipalKey(b => b.BuildingNumber)
+            .OnDelete(DeleteBehavior.Cascade);
+
+        modelBuilder.Entity<DocumentsData>()
+            .HasMany<BuildingDocumentsData>()
+            .WithOne(d => d.Document)
+            .HasForeignKey(d => d.DocumentId)
+            .OnDelete(DeleteBehavior.Cascade);
+
         modelBuilder.Entity<Building>()
             .HasMany(b => b.Annexes)
             .WithOne(a => a.Building)
             .HasForeignKey(a => a.BuildingId)
+            .OnDelete(DeleteBehavior.Cascade);
+
+        modelBuilder.Entity<BuildingAmenity>()
+            .HasOne(x => x.Building)
+            .WithMany(b => b.BuildingAmenities)
+            .HasForeignKey(x => x.BuildingId)
+            .OnDelete(DeleteBehavior.Cascade);
+
+        modelBuilder.Entity<BuildingAmenity>()
+            .HasOne(x => x.Amenity)
+            .WithMany(a => a.BuildingAmenities)
+            .HasForeignKey(x => x.AmenityId)
             .OnDelete(DeleteBehavior.Cascade);
 
         modelBuilder.Entity<Building>()

@@ -1,10 +1,10 @@
 import { CommonModule } from '@angular/common';
-import { Component, signal, inject } from '@angular/core';
-import { FormArray, FormsModule, ReactiveFormsModule, FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { Component, inject } from '@angular/core';
+import { FormsModule, ReactiveFormsModule, FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { HeaderComponent } from '../../shared/header/header';
 import { Router } from '@angular/router';
-import { LandApiService } from '../../../services/land-api.service';
 import { ErrorHandlerService } from '../../../services/error-handler.service';
+import { DocumentsDataApiService, BuildingDocumentRowDto, BuildingLookupDto, MasterDocumentDto } from '../../../services/documents-data-api.service';
 
 @Component({
   selector: 'documentsData',
@@ -16,42 +16,187 @@ import { ErrorHandlerService } from '../../../services/error-handler.service';
 export class DocumentsData {
   private readonly router = inject(Router);
   private readonly fb = inject(FormBuilder);
-  private landApiService = inject(LandApiService);
+  private documentsDataApi = inject(DocumentsDataApiService);
   private errorHandler = inject(ErrorHandlerService);
 
   form: FormGroup = this.fb.group({
-    landCode: ['', Validators.required],
-    availableDocuments: this.fb.array([])
+    buildingNumber: ['', Validators.required]
   });
 
-  availableDocuments: any[] = [
-    { id: '1', name: 'موافقه وزارة الزراعة', exist: false, doesNotExist: false, notRequired: false },
-    { id: '2', name: 'موافقه الدفاع المدني على عرض الشوارع', exist: false, doesNotExist: false, notRequired: false },
-    { id: '3', name: 'قرار التخصيص', exist: false, doesNotExist: false, notRequired: false },
-    { id: '4', name: 'موافقة الوحدات المحلية على الحفر', exist: false, doesNotExist: false, notRequired: false },
-    { id: '5', name: 'موافقة هيئة الاثار', exist: false, doesNotExist: false, notRequired: false },
-    { id: '6', name: 'موافقة اللجنة الثلاثية على المواقع غير', exist: false, doesNotExist: false, notRequired: false },
-    { id: '7', name: 'مستندات الملكية', exist: false, doesNotExist: false, notRequired: false },
-    { id: '8', name: 'تراخيص البناء', exist: false, doesNotExist: false, notRequired: false },
-    { id: '9', name: 'مطلوب نقل ملكيتها', exist: false, doesNotExist: false, notRequired: false },
-    { id: '10', name: 'عقد تبرع (عقد الهبة)', exist: false, doesNotExist: false, notRequired: false },
-    { id: '11', name: 'مستند يفيد بخلو التبرع من شرط المرحلة', exist: false, doesNotExist: false, notRequired: false },
-    { id: '12', name: 'موافقة السكه الحديد', exist: false, doesNotExist: false, notRequired: false },
-    { id: '13', name: 'موافقة الموارد المائية', exist: false, doesNotExist: false, notRequired: false },
-    { id: '14', name: 'موافقة الطرق', exist: false, doesNotExist: false, notRequired: false },
-    { id: '15', name: 'موافقة الكهرباء', exist: false, doesNotExist: false, notRequired: false },
-    { id: '16', name: 'موافقة الطيران المدني', exist: false, doesNotExist: false, notRequired: false },
-    { id: '17', name: 'موافقة الصحة', exist: false, doesNotExist: false, notRequired: false },
-    { id: '18', name: 'موافقة القوات المسلحة', exist: false, doesNotExist: false, notRequired: false },
-    { id: '19', name: 'موافقة التيلفونات', exist: false, doesNotExist: false, notRequired: false },
-    { id: '20', name: 'موافقة مياه الشرب والصرف الصحي', exist: false, doesNotExist: false, notRequired: false },
-    { id: '21', name: 'موافقة البترول', exist: false, doesNotExist: false, notRequired: false },
-    { id: '22', name: 'طلب الشراء', exist: false, doesNotExist: false, notRequired: false },
-    { id: '23', name: 'الخريطة المساحية', exist: false, doesNotExist: false, notRequired: false },
-    { id: '24', name: 'موافقة البيئة', exist: false, doesNotExist: false, notRequired: false },];
+  buildingNumbers: BuildingLookupDto[] = [];
+  isLoadingBuildingNumbers = false;
+  isLoadingDocuments = false;
+  availableDocuments: BuildingDocumentRowDto[] = [];
+  buildingNumberNotFound = false;
+
+  masterDocuments: MasterDocumentDto[] = [];
+  isLoadingMasterDocuments = false;
+  newMasterName = '';
+  newMasterCode = '';
+  editingMasterId: number | null = null;
+  editingMasterName = '';
+  editingMasterCode = '';
+
+  showDocumentsAdmin = false;
 
   // per-row selection validation flags
   selectionErrors: boolean[] = [];
+
+  constructor() {
+    this.loadBuildingNumbers();
+    this.loadMasterDocuments();
+  }
+
+  protected toggleDocumentsAdmin(): void {
+    this.showDocumentsAdmin = !this.showDocumentsAdmin;
+  }
+
+  private loadMasterDocuments(): void {
+    this.isLoadingMasterDocuments = true;
+    this.documentsDataApi.getMasterDocuments().subscribe({
+      next: (docs) => {
+        this.masterDocuments = docs || [];
+        this.isLoadingMasterDocuments = false;
+      },
+      error: () => {
+        this.isLoadingMasterDocuments = false;
+      }
+    });
+  }
+
+  protected createMasterDocument(): void {
+    const name = (this.newMasterName || '').trim();
+    const documentCode = (this.newMasterCode || '').trim();
+    if (!name) {
+      alert('اسم المستند مطلوب');
+      return;
+    }
+
+    this.documentsDataApi.createMasterDocument({
+      name,
+      documentCode: documentCode ? documentCode : null
+    }).subscribe({
+      next: () => {
+        alert('✅ تم إضافة المستند بنجاح');
+        this.newMasterName = '';
+        this.newMasterCode = '';
+        this.loadMasterDocuments();
+        this.onBuildingNumberChanged();
+      },
+      error: () => {
+        alert('حدث خطأ أثناء إضافة المستند');
+      }
+    });
+  }
+
+  protected startEditMaster(doc: MasterDocumentDto): void {
+    this.editingMasterId = doc.id;
+    this.editingMasterName = doc.name;
+    this.editingMasterCode = doc.documentCode || '';
+  }
+
+  protected cancelEditMaster(): void {
+    this.editingMasterId = null;
+    this.editingMasterName = '';
+    this.editingMasterCode = '';
+  }
+
+  protected saveEditMaster(): void {
+    if (this.editingMasterId == null) {
+      return;
+    }
+
+    const name = (this.editingMasterName || '').trim();
+    const documentCode = (this.editingMasterCode || '').trim();
+    if (!name) {
+      alert('اسم المستند مطلوب');
+      return;
+    }
+
+    this.documentsDataApi.updateMasterDocument(this.editingMasterId, {
+      name,
+      documentCode: documentCode ? documentCode : null
+    }).subscribe({
+      next: () => {
+        alert('✅ تم تعديل المستند بنجاح');
+        this.cancelEditMaster();
+        this.loadMasterDocuments();
+        this.onBuildingNumberChanged();
+      },
+      error: () => {
+        alert('حدث خطأ أثناء تعديل المستند');
+      }
+    });
+  }
+
+  protected deleteMasterDocument(id: number): void {
+    const ok = confirm('هل أنت متأكد من حذف هذا المستند؟');
+    if (!ok) {
+      return;
+    }
+
+    this.documentsDataApi.deleteMasterDocument(id).subscribe({
+      next: () => {
+        alert('✅ تم حذف المستند بنجاح');
+        if (this.editingMasterId === id) {
+          this.cancelEditMaster();
+        }
+        this.loadMasterDocuments();
+        this.onBuildingNumberChanged();
+      },
+      error: () => {
+        alert('حدث خطأ أثناء حذف المستند');
+      }
+    });
+  }
+
+  private loadBuildingNumbers(): void {
+    this.isLoadingBuildingNumbers = true;
+    this.documentsDataApi.getBuildingNumbers().subscribe({
+      next: (numbers) => {
+        this.buildingNumbers = (numbers || []).filter(x => (x?.buildingNumber ?? '').toString().trim().length > 0);
+        this.isLoadingBuildingNumbers = false;
+      },
+      error: () => {
+        this.isLoadingBuildingNumbers = false;
+      }
+    });
+  }
+
+  protected onBuildingNumberChanged(): void {
+    const raw = (this.form.get('buildingNumber')?.value ?? '').toString().trim();
+    const buildingNumber = raw;
+    if (!buildingNumber) {
+      this.availableDocuments = [];
+      this.selectionErrors = [];
+      this.buildingNumberNotFound = false;
+      return;
+    }
+
+    const knownNumbers = this.buildingNumbers.map(x => x.buildingNumber);
+    if (knownNumbers.length > 0 && !knownNumbers.includes(buildingNumber)) {
+      this.availableDocuments = [];
+      this.selectionErrors = [];
+      this.buildingNumberNotFound = true;
+      return;
+    }
+
+    this.buildingNumberNotFound = false;
+
+    this.isLoadingDocuments = true;
+    this.documentsDataApi.getDocumentsByBuildingNumber(buildingNumber).subscribe({
+      next: (docs) => {
+        this.availableDocuments = docs || [];
+        this.selectionErrors = new Array(this.availableDocuments.length).fill(false);
+        this.isLoadingDocuments = false;
+      },
+      error: () => {
+        this.availableDocuments = [];
+        this.selectionErrors = [];
+        this.isLoadingDocuments = false;
+      }
+    });
+  }
 
   protected goBack(): void {
     this.router.navigate(['/recording-data-for-impactful-oceans']);
@@ -77,36 +222,30 @@ export class DocumentsData {
       return;
     }
 
-    // build payload: landCode + documents with selection value
-    const landCode = this.form.get('landCode')?.value;
-    const documentsPayload = this.availableDocuments.map(doc => ({
-      id: doc.id,
-      name: doc.name,
-      selection: doc.exist ? 'Exist' : doc.doesNotExist ? 'DoesNotExist' : doc.notRequired ? 'NotRequired' : null
-    }));
+    const buildingNumber = (this.form.get('buildingNumber')?.value ?? '').toString().trim();
+    if (!buildingNumber) {
+      return;
+    }
 
     const payload = {
-      landCode,
-      documents: documentsPayload
+      buildingNumber,
+      documents: this.availableDocuments.map(d => ({
+        documentId: d.documentId,
+        exist: d.exist,
+        doesNotExist: d.doesNotExist,
+        notRequired: d.notRequired
+      }))
     };
 
-//    this.landApiService.ConnectLandAndLegal(payload).subscribe({
-  //    next: () => {
-        console.log('Documents linked to land', payload);
-        alert('✅ تم حفظ بيانات المستندات وربطها بالأرض بنجاح!');
-        this.form.reset();
-        // reset model selections
-        this.availableDocuments.forEach(d => { d.exist = d.doesNotExist = d.notRequired = false; });
-        this.selectionErrors = [];
-    //   },
-    //   error: (error) => {
-    //     console.error('Error saving documents for land', error, payload);
-    //     alert('حدث خطأ أثناء حفظ بيانات المستندات. حاول مرة أخرى.');
-    //   }
-    // });
-
-    // For now, just log the values. Integrate with API as needed.
-    this.form.setControl('schoolIds', this.fb.array([this.fb.control('', Validators.required)]));
+    this.documentsDataApi.saveBuildingDocuments(payload).subscribe({
+      next: () => {
+        alert('✅ تم حفظ بيانات المستندات وربطها بالمبنى بنجاح!');
+        this.goHome();
+      },
+      error: () => {
+        alert('حدث خطأ أثناء حفظ بيانات المستندات. حاول مرة أخرى.');
+      }
+    });
   }
 
   validateDocumentSelections(): boolean {
