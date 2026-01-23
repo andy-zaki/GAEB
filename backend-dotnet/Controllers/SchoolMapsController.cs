@@ -265,4 +265,161 @@ public class SchoolMapsController : ControllerBase
 
         return CreatedAtAction(nameof(GetEducationalBuilding), new { buildingNumber = building.BuildingNumber }, building);
     }
+
+
+    // GET: api/EducationalBuilding/{buildingNumber}/details
+    [HttpGet("{buildingNumber}/details")]
+    public async Task<ActionResult<EducationalBuilding>> GetBuildingWithInfoAndBorders(string buildingNumber)
+    {
+        var building = await _context.EducationalBuildings
+            .Include(b => b.Infos)
+            .Include(b => b.Borders)
+            .FirstOrDefaultAsync(b => b.BuildingNumber == buildingNumber);
+
+        if (building == null)
+            return NotFound("لم يتم العثور على مبنى تعليمي بهذا الرقم.");
+
+        return building;
+    }
+
+    // PUT: api/EducationalBuilding/{buildingId}/info
+    [HttpPut("{buildingId}/info")]
+    public async Task<ActionResult<EducationalBuildingInfo>> UpdateInfo(
+        Guid buildingId,
+        [FromBody] EducationalBuildingInfo info)
+    {
+        if (info == null)
+            return BadRequest("بيانات منسوب الموقع غير صالحة.");
+
+        // Verify building exists
+        var buildingExists = await _context.EducationalBuildings.AnyAsync(b => b.Id == buildingId);
+        if (!buildingExists)
+            return NotFound("المبنى التعليمي غير موجود.");
+
+        var existingInfo = await _context.EducationalBuildingInfos
+            .FirstOrDefaultAsync(i => i.Id == info.Id && i.EducationalBuildingId == buildingId);
+
+        if (existingInfo == null)
+        {
+            // Create new info entity
+            var newInfo = new EducationalBuildingInfo
+            {
+                Id = Guid.NewGuid(),
+                AverageSiteLevel = info.AverageSiteLevel,
+                HighestPointLevel = info.HighestPointLevel,
+                ProposedCourtyardLevel = info.ProposedCourtyardLevel,
+                LowestPointLevel = info.LowestPointLevel,
+                EducationalBuildingId = buildingId
+            };
+            _context.EducationalBuildingInfos.Add(newInfo);
+            await _context.SaveChangesAsync();
+            return newInfo;
+        }
+        else
+        {
+            existingInfo.AverageSiteLevel = info.AverageSiteLevel;
+            existingInfo.HighestPointLevel = info.HighestPointLevel;
+            existingInfo.ProposedCourtyardLevel = info.ProposedCourtyardLevel;
+            existingInfo.LowestPointLevel = info.LowestPointLevel;
+            await _context.SaveChangesAsync();
+            return existingInfo;
+        }
+    }
+
+    // POST: api/EducationalBuilding/{buildingId}/borders
+    [HttpPost("{buildingId}/borders")]
+    public async Task<ActionResult<EducationalBuildingBorder>> AddBorder(
+        Guid buildingId,
+        [FromBody] EducationalBuildingBorder border)
+    {
+        if (border == null || string.IsNullOrWhiteSpace(border.BoundaryName))
+            return BadRequest("اسم الحد مطلوب ولا يمكن أن يكون فارغًا.");
+
+        // Verify building exists
+        var buildingExists = await _context.EducationalBuildings.AnyAsync(b => b.Id == buildingId);
+        if (!buildingExists)
+            return NotFound("المبنى التعليمي غير موجود.");
+
+        bool exists = await _context.EducationalBuildingBorders
+            .AnyAsync(b =>
+                b.EducationalBuildingId == buildingId &&
+                b.BoundaryName == border.BoundaryName);
+
+        if (exists)
+            return BadRequest($"يوجد حد بنفس الاسم ({border.BoundaryName}) لهذا المبنى مسبقًا.");
+
+        // Create new border entity and set properties
+        var newBorder = new EducationalBuildingBorder
+        {
+            Id = Guid.NewGuid(),
+            BoundaryName = border.BoundaryName,
+            Length = border.Length,
+            NeighborFound = border.NeighborFound,
+            NeighborLevel = border.NeighborLevel,
+            NeighborDescription = border.NeighborDescription ?? string.Empty,
+            HasFence = border.HasFence,
+            EducationalBuildingId = buildingId
+        };
+
+        _context.EducationalBuildingBorders.Add(newBorder);
+        await _context.SaveChangesAsync();
+
+        return newBorder;
+    }
+
+    // PUT: api/EducationalBuilding/{buildingId}/borders/{borderId}
+    [HttpPut("{buildingId}/borders/{borderId}")]
+    public async Task<ActionResult<EducationalBuildingBorder>> UpdateBorder(
+        Guid buildingId,
+        Guid borderId,
+        [FromBody] EducationalBuildingBorder border)
+    {
+        if (border == null)
+            return BadRequest("بيانات الحد غير صالحة.");
+
+        var existingBorder = await _context.EducationalBuildingBorders
+            .FirstOrDefaultAsync(b =>
+                b.Id == borderId &&
+                b.EducationalBuildingId == buildingId);
+
+        if (existingBorder == null)
+            return NotFound("لم يتم العثور على الحد المطلوب لهذا المبنى.");
+
+        bool nameExists = await _context.EducationalBuildingBorders
+            .AnyAsync(b =>
+                b.EducationalBuildingId == buildingId &&
+                b.BoundaryName == border.BoundaryName &&
+                b.Id != borderId);
+
+        if (nameExists)
+            return BadRequest($"لا يمكن حفظ الحد، يوجد حد آخر بنفس الاسم ({border.BoundaryName}).");
+
+        existingBorder.BoundaryName = border.BoundaryName;
+        existingBorder.Length = border.Length;
+        existingBorder.NeighborFound = border.NeighborFound;
+        existingBorder.NeighborLevel = border.NeighborLevel;
+        existingBorder.NeighborDescription = border.NeighborDescription ?? string.Empty;
+        existingBorder.HasFence = border.HasFence;
+
+        await _context.SaveChangesAsync();
+        return existingBorder;
+    }
+
+    // DELETE: api/EducationalBuilding/{buildingId}/borders/{borderId}
+    [HttpDelete("{buildingId}/borders/{borderId}")]
+    public async Task<ActionResult> DeleteBorder(Guid buildingId, Guid borderId)
+    {
+        var border = await _context.EducationalBuildingBorders
+            .FirstOrDefaultAsync(b =>
+                b.Id == borderId &&
+                b.EducationalBuildingId == buildingId);
+
+        if (border == null)
+            return NotFound("الحد المطلوب غير موجود أو تم حذفه مسبقًا.");
+
+        _context.EducationalBuildingBorders.Remove(border);
+        await _context.SaveChangesAsync();
+
+        return NoContent();
+    }
 }

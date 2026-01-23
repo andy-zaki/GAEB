@@ -1,86 +1,252 @@
-<app-header 
-  [pageTitle]="'تطبيق الاراضي - بيانات الحدود'"
+<app-header
+  [pageTitle]="'بيانات حدود المبنى التعليمي'"
   [showBackButton]="true"
   [showHomeButton]="true"
-  [backButtonLabel]="'العودة'"
-  [backButtonAriaLabel]="'العودة للقائمة الرئيسية'"
   (backClicked)="goBack()"
   (homeClicked)="goHome()"
   (logoutClicked)="logout()">
 </app-header>
 
 <div class="container">
-  <form [formGroup]="searchForm" (ngSubmit)="search()" class="search-form">
-    <label for="buildingNumber">رقم المبني</label>
-    <input id="buildingNumber" type="text" formControlName="buildingNumber" placeholder="ادخل رقم المبني">
-    <button type="submit">بحث</button>
-  </form>
+  <div class="page-content">
+    <!-- Search Section -->
+    <div class="search-section">
+      <div class="search-card">
+        <h2>البحث عن المبنى التعليمي</h2>
+        <form [formGroup]="searchForm" (ngSubmit)="search()" class="search-form">
+          <div class="search-group">
+            <label>رقم المبنى التعليمي:</label>
+            <div class="search-input-group">
+              <input 
+                formControlName="buildingNumber" 
+                placeholder="أدخل رقم المبنى التعليمي"
+                class="search-input"
+                [class.error]="searchForm.get('buildingNumber')?.invalid && searchForm.get('buildingNumber')?.touched">
+              <button type="submit" class="btn-search" [disabled]="loading">
+                {{ loading ? 'جاري البحث...' : '🔍 بحث' }}
+              </button>
+            </div>
+            @if (searchForm.get('buildingNumber')?.invalid && searchForm.get('buildingNumber')?.touched) {
+              <span class="error-message">رقم المبنى مطلوب</span>
+            }
+          </div>
+        </form>
+      </div>
+    </div>
 
-  <div *ngIf="borders.length > 0">
-    <button class="add-border-btn" (click)="openModal()">إضافة حد</button>
+    <!-- Building Info Section -->
+    @if (buildingData) {
+      <div class="building-info-section">
+        <div class="info-card">
+          <div class="info-header">
+            <h3>بيانات المبنى التعليمي</h3>
+            <button class="btn-edit" (click)="openBuildingInfoModal()">✏️ تعديل البيانات</button>
+          </div>
+          <div class="info-grid">
+            <div class="info-row">
+              <span class="info-label">اسم المبنى:</span>
+              <span class="info-value">{{ buildingData.buildingName || '-' }}</span>
+            </div>
+            <div class="info-row">
+              <span class="info-label">متوسط منسوب الموقع:</span>
+              <span class="info-value">{{ buildingInfo?.averageSiteLevel ?? '-' }}</span>
+            </div>
+            <div class="info-row">
+              <span class="info-label">منسوب أعلى نقطة:</span>
+              <span class="info-value">{{ buildingInfo?.highestPointLevel ?? '-' }}</span>
+            </div>
+            <div class="info-row">
+              <span class="info-label">متوسط منسوب الفناء المقترح:</span>
+              <span class="info-value">{{ buildingInfo?.proposedCourtyardLevel ?? '-' }}</span>
+            </div>
+            <div class="info-row">
+              <span class="info-label">منسوب أقل نقطة للموقع:</span>
+              <span class="info-value">{{ buildingInfo?.lowestPointLevel ?? '-' }}</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    }
 
-    <table class="borders-table">
-      <thead>
-        <tr>
-          <th>اسم الحد</th>
-          <th>طولة</th>
-          <th>متاح</th>
-          <th>منسوب الجار</th>
-          <th>وصف الجار</th>
-          <th>سور</th>
-          <th>إجراء</th>
-        </tr>
-      </thead>
-      <tbody>
-        <tr *ngFor="let border of borders; index as i">
-          <td>{{ border.name }}</td>
-          <td>{{ border.length }}</td>
-          <td>{{ border.available ? 'متاح' : 'غير متاح' }}</td>
-          <td>{{ border.neighborLevel }}</td>
-          <td>{{ border.neighborDescription }}</td>
-          <td>{{ border.fenceRequired ? 'مطلوب' : 'غير مطلوب' }}</td>
-          <td>
-            <button (click)="openModal(border, i)">تعديل</button>
-          </td>
-        </tr>
-      </tbody>
-    </table>
+    <!-- Borders Section -->
+    @if (buildingData && borders.length >= 0) {
+      <div class="borders-section">
+        <div class="section-header">
+          <h3>حدود المبنى</h3>
+          <button class="btn-add" (click)="openModal()">+ إضافة حد</button>
+        </div>
+
+        @if (borders.length === 0) {
+          <div class="empty-state">
+            <p>لا توجد حدود مسجلة. اضغط على "إضافة حد" لإضافة حدود جديدة.</p>
+          </div>
+        } @else {
+          <div class="table-wrapper">
+            <table class="borders-table">
+              <thead>
+                <tr>
+                  <th>اسم الحد</th>
+                  <th>الطول</th>
+                  <th>جار</th>
+                  <th>منسوب الجار</th>
+                  <th>وصف الجار</th>
+                  <th>سور</th>
+                  <!-- <th>إجراءات</th> -->
+                </tr>
+              </thead>
+              <tbody>
+                <tr *ngFor="let border of borders; index as i">
+                  <td>{{ border.boundaryName }}</td>
+                  <td>{{ border.length }}</td>
+                  <td>
+                    <span class="badge" [class.badge-yes]="border.neighborFound" [class.badge-no]="!border.neighborFound">
+                      {{ border.neighborFound ? 'يوجد' : 'لا يوجد' }}
+                    </span>
+                  </td>
+                  <td>{{ border.neighborLevel ?? '-' }}</td>
+                  <td>{{ border.neighborDescription || '-' }}</td>
+                  <td>
+                    <span class="badge" [class.badge-yes]="border.hasFence" [class.badge-no]="!border.hasFence">
+                      {{ border.hasFence ? 'مطلوب' : 'غير مطلوب' }}
+                    </span>
+                  </td>
+                  <!-- <td>
+                    <div class="action-buttons">
+                      <button class="btn-edit-small" (click)="openModal(border, i)">تعديل</button>
+                      <button class="btn-delete" (click)="deleteBorder(i)">حذف</button>
+                    </div>
+                  </td> -->
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        }
+      </div>
+    }
   </div>
 </div>
 
-<!-- Custom Modal -->
-<div class="modal-overlay" *ngIf="showModal">
-  <div class="modal-content">
+<!-- Border Modal -->
+<div class="modal-overlay" *ngIf="showModal" (click)="closeModal()">
+  <div class="modal-content" (click)="$event.stopPropagation()">
     <div class="modal-header">
-      <h3>بيانات الحد</h3>
+      <h3>{{ editingIndex !== null ? 'تعديل بيانات الحد' : 'إضافة حد جديد' }}</h3>
       <button class="close-btn" (click)="closeModal()">×</button>
     </div>
-    <div class="modal-body">
-      <form [formGroup]="borderForm">
-        <label>اسم الحد</label>
-        <select formControlName="name">
-          <option *ngFor="let name of borderNames" [value]="name">{{ name }}</option>
+
+    <form [formGroup]="borderForm" class="modal-body">
+      <div class="form-group">
+        <label>اسم الحد <span class="required">*</span></label>
+        <select 
+          formControlName="boundaryName" 
+          [class.error]="borderForm.get('boundaryName')?.invalid && borderForm.get('boundaryName')?.touched">
+          <option value="">اختر اسم الحد</option>
+          <option *ngFor="let name of getAvailableBorderNames()" [value]="name">
+            {{ name }}
+          </option>
         </select>
+        @if (borderForm.get('boundaryName')?.hasError('required') && borderForm.get('boundaryName')?.touched) {
+          <span class="error-message">اسم الحد مطلوب</span>
+        }
+        @if (borderForm.get('boundaryName')?.hasError('duplicateName')) {
+          <span class="error-message">⚠️ يوجد حد بنفس الاسم بالفعل</span>
+        }
+        @if (getAvailableBorderNames().length === 0 && editingIndex === null) {
+          <span class="error-message">⚠️ جميع الحدود تم إضافتها بالفعل</span>
+        }
+      </div>
 
-        <label>طولة</label>
-        <input type="number" formControlName="length">
+      <div class="form-group">
+        <label>الطول (متر) <span class="required">*</span></label>
+        <input 
+          type="number" 
+          formControlName="length"
+          [class.error]="borderForm.get('length')?.invalid && borderForm.get('length')?.touched"
+          min="0"
+          step="0.01">
+        @if (borderForm.get('length')?.invalid && borderForm.get('length')?.touched) {
+          <span class="error-message">الطول مطلوب ويجب أن يكون أكبر من أو يساوي صفر</span>
+        }
+      </div>
 
-        <label>متاح</label>
-        <input type="checkbox" formControlName="available">
+      <div class="form-group checkbox-group">
+        <label>
+          <input type="checkbox" formControlName="neighborFound">
+          يوجد جار
+        </label>
+      </div>
 
+      <div class="form-group">
         <label>منسوب الجار</label>
-        <input type="text" formControlName="neighborLevel">
+        <input 
+          type="number" 
+          formControlName="neighborLevel"
+          step="0.01">
+      </div>
 
+      <div class="form-group">
         <label>وصف الجار</label>
-        <input type="text" formControlName="neighborDescription">
+        <textarea 
+          formControlName="neighborDescription"
+          rows="3"
+          placeholder="أدخل وصف الجار"></textarea>
+      </div>
 
-        <label>سور</label>
-        <input type="checkbox" formControlName="fenceRequired">
-      </form>
-    </div>
+      <div class="form-group checkbox-group">
+        <label>
+          <input type="checkbox" formControlName="hasFence">
+          سور مطلوب
+        </label>
+      </div>
+    </form>
+
     <div class="modal-footer">
-      <button (click)="closeModal()">إلغاء</button>
-      <button (click)="submitBorder()">حفظ</button>
+      <button class="btn-cancel" (click)="closeModal()">إلغاء</button>
+      <button class="btn-save" (click)="submitBorder()" [disabled]="borderForm.invalid">
+        حفظ
+      </button>
+    </div>
+  </div>
+</div>
+
+<!-- Building Info Modal -->
+<div class="modal-overlay" *ngIf="showBuildingInfoModal" (click)="closeBuildingInfoModal()">
+  <div class="modal-content large-modal" (click)="$event.stopPropagation()">
+    <div class="modal-header">
+      <h3>تعديل بيانات المبنى التعليمي</h3>
+      <button class="close-btn" (click)="closeBuildingInfoModal()">×</button>
+    </div>
+
+    <form [formGroup]="buildingInfoForm" class="modal-body">
+      <div class="form-group">
+        <label>اسم المبنى</label>
+        <input type="text" formControlName="buildingName" placeholder="أدخل اسم المبنى">
+      </div>
+
+      <div class="form-group">
+        <label>متوسط منسوب الموقع</label>
+        <input type="number" formControlName="averageSiteLevel" step="0.01" placeholder="أدخل متوسط منسوب الموقع">
+      </div>
+
+      <div class="form-group">
+        <label>منسوب أعلى نقطة</label>
+        <input type="number" formControlName="highestPointLevel" step="0.01" placeholder="أدخل منسوب أعلى نقطة">
+      </div>
+
+      <div class="form-group">
+        <label>متوسط منسوب الفناء المقترح</label>
+        <input type="number" formControlName="proposedCourtyardLevel" step="0.01" placeholder="أدخل متوسط منسوب الفناء المقترح">
+      </div>
+
+      <div class="form-group">
+        <label>منسوب أقل نقطة للموقع</label>
+        <input type="number" formControlName="lowestPointLevel" step="0.01" placeholder="أدخل منسوب أقل نقطة للموقع">
+      </div>
+    </form>
+
+    <div class="modal-footer">
+      <button class="btn-cancel" (click)="closeBuildingInfoModal()">إلغاء</button>
+      <button class="btn-save" (click)="submitBuildingInfo()">حفظ</button>
     </div>
   </div>
 </div>

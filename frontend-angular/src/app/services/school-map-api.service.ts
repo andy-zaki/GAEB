@@ -201,4 +201,83 @@ export class SchoolMapApiService {
       catchError(error => this.errorHandler.handleError(error))
     );
   }
+
+/**
+   * Get educational building details by building number
+   * Backend: GET api/schoolmaps/{buildingId}/details
+   */
+  getEducationalBuildingDetails(buildingNumber: string): Observable<any> {
+    try {
+      this.errorHandler.validateString(buildingNumber, 'رقم المبنى التعليمي');
+    } catch (error: any) {
+      this.errorHandler.logAndShowError(error, 'getEducationalBuildingDetails');
+      return throwError(() => error);
+    }
+
+    return this.http.get(`${this.baseUrl}/${buildingNumber}/details`).pipe(
+      tap(data => console.log(`Fetched educational building details: ${buildingNumber}`, data)),
+      catchError(error => this.errorHandler.handleError(error, `تحميل بيانات المبنى التعليمي: ${buildingNumber}`))
+    );
+  }
+
+  /**
+   * Add educational building border
+   * Backend: POST api/schoolmaps/{buildingId}/borders
+   */
+  addEducationalBuildingBorder(buildingId: string, border: any): Observable<any> {
+    try {
+      this.errorHandler.validateGuid(buildingId, 'معرف المبنى التعليمي');
+    } catch (error: any) {
+      this.errorHandler.logAndShowError(error, 'addEducationalBuildingBorder');
+      return throwError(() => error);
+    }
+
+    return this.http.post(`${this.baseUrl}/${buildingId}/borders`, border).pipe(
+      tap(result => console.log('Added educational building border:', result)),
+      catchError(error => this.errorHandler.handleError(error, 'إضافة حد المبنى التعليمي'))
+    );
+  }
+  /**
+   * Update educational building border
+   * Backend: PUT api/schoolmaps/{buildingId}/borders/{borderId}
+   */
+  updateEducationalBuildingBorder(buildingId: string, borderId: string, border: any): Observable<any> {
+    try {
+      this.errorHandler.validateGuid(buildingId, 'معرف المبنى التعليمي');
+      this.errorHandler.validateGuid(borderId, 'معرف الحد');
+    } catch (error: any) {
+      this.errorHandler.logAndShowError(error, 'updateEducationalBuildingBorder');
+      return throwError(() => error);
+    }
+
+    return this.http.put(`${this.baseUrl}/${buildingId}/borders/${borderId}`, border).pipe(
+      tap(result => console.log('Updated educational building border:', result)),
+      catchError(error => this.errorHandler.handleError(error, 'تحديث حد المبنى التعليمي'))
+    );
+  }
+ /**
+   * Delete educational building border
+   * Backend: DELETE api/schoolmaps/{buildingId}/borders/{borderId}
+   */
+  deleteEducationalBuildingBorder(buildingId: string, borderId: string): Observable<any> {
+    return this.http.delete(`${this.baseUrl}/${buildingId}/borders/${borderId}`);
+  }
+
+  /**
+   * Update educational building info
+   * Backend: PUT api/schoolmaps/{buildingId}/info
+   */
+  updateEducationalBuildingInfo(buildingId: string, info: any): Observable<any> {
+    try {
+      this.errorHandler.validateGuid(buildingId, 'معرف المبنى التعليمي');
+    } catch (error: any) {
+      this.errorHandler.logAndShowError(error, 'updateEducationalBuildingInfo');
+      return throwError(() => error);
+    }
+
+    return this.http.put(`${this.baseUrl}/${buildingId}/info`, info).pipe(
+      tap(result => console.log('Updated educational building info:', result)),
+      catchError(error => this.errorHandler.handleError(error, 'تحديث بيانات منسوب الموقع'))
+    );
+  }
 }

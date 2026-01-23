@@ -1,18 +1,17 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { SchoolBordersDataInsertion } from './school-borders-data-insertion';
+import { SchoolBordersDataInsertionComponent } from './school-borders-data-insertion';
 
-describe('SchoolBordersDataInsertion', () => {
-  let component: SchoolBordersDataInsertion;
-  let fixture: ComponentFixture<SchoolBordersDataInsertion>;
-
+describe('SchoolBordersDataInsertionComponent', () => {
+  let component: SchoolBordersDataInsertionComponent;
+  let fixture: ComponentFixture<SchoolBordersDataInsertionComponent>;
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [SchoolBordersDataInsertion]
+      imports: [SchoolBordersDataInsertionComponent] 
     })
     .compileComponents();
 
-    fixture = TestBed.createComponent(SchoolBordersDataInsertion);
+    fixture = TestBed.createComponent(SchoolBordersDataInsertionComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });

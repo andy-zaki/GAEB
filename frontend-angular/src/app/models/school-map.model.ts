@@ -100,3 +100,42 @@ export interface EducationalBuildingData {
   totalArea?: number;
   buildingName?: string;
 }
+
+/**
+ * Educational Building Border
+ * Information about educational building borders/boundaries
+ */
+export interface Border {
+  id?: string;
+  boundaryName: string;
+  length: number;
+  neighborFound: boolean;
+  neighborLevel?: number | null;
+  neighborDescription: string;
+  hasFence: boolean;
+}
+
+/**
+ * Educational Building Info
+ * Information about site levels and elevations
+ */
+export interface EducationalBuildingInfo {
+  id?: string;
+  averageSiteLevel?: number;
+  highestPointLevel?: number;
+  proposedCourtyardLevel?: number;
+  lowestPointLevel?: number;
+  educationalBuildingId?: string;
+}
+
+/**
+ * Educational Building
+ * Educational building with borders and info
+ */
+export interface EducationalBuilding {
+  id?: string;
+  buildingNumber?: string;
+  buildingName?: string;
+  infos?: EducationalBuildingInfo[];
+  borders?: Border[];
+}

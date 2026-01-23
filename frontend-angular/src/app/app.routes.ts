@@ -19,7 +19,7 @@ export const routes: Routes = [
   },
   {
     path: 'school-borders-data-insertion',
-    loadComponent: () => import('./components/lands-applications/school-borders-data-insertion/school-borders-data-insertion').then(m => m.BordersComponent),
+    loadComponent: () => import('./components/lands-applications/school-borders-data-insertion/school-borders-data-insertion').then(m => m.SchoolBordersDataInsertionComponent),
     canActivate: [authGuard]
   },
   {

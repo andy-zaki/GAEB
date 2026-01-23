@@ -235,5 +235,7 @@ public class EducationalBuilding
     public ICollection<Land> Lands { get; set; } = new List<Land>();
     public ICollection<RentalBuilding> RentalBuildings { get; set; } = new List<RentalBuilding>();
     public ICollection<DisplacementRecord> DisplacementRecords { get; set; } = new List<DisplacementRecord>();
+    public ICollection<EducationalBuildingInfo> Infos { get; set; } = new List<EducationalBuildingInfo>();
+    public ICollection<EducationalBuildingBorder> Borders { get; set; } = new List<EducationalBuildingBorder>();
+    public ICollection<LandAndLegalConnection> LandAndLegalConnections { get; set; } = new List<LandAndLegalConnection>();
 }
-//

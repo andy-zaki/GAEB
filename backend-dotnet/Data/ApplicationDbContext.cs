@@ -46,7 +46,8 @@ public class ApplicationDbContext : DbContext
     public DbSet<SchoolAnnex> SchoolAnnexes { get; set; }
     public DbSet<SchoolSpace> SchoolSpaces { get; set; }
     public DbSet<EducationalBuilding> EducationalBuildings { get; set; }
-
+    public DbSet<EducationalBuildingBorder> EducationalBuildingBorders { get; set; }
+    public DbSet<EducationalBuildingInfo> EducationalBuildingInfos { get; set; }
     // Displacement entities
     public DbSet<DisplacementRecord> DisplacementRecords { get; set; }
     public DbSet<DisplacementCompensation> DisplacementCompensations { get; set; }
