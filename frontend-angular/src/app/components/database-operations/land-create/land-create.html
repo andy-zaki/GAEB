@@ -1,0 +1,250 @@
+<app-header [pageTitle]="'اضافة اراضي جديدة'" [pageSubtitle]="'إدخال بيانات قطعة أرض جديدة'" [showBackButton]="true"
+  [showHomeButton]="true" [backButtonLabel]="'العودة'" [backButtonAriaLabel]="'العودة للقائمة السابقة'"
+  (backClicked)="goBack()" (homeClicked)="goHome()" (logoutClicked)="logout()">
+</app-header>
+
+<div class="container">
+  <div class="page-content">
+    <h1>اضافة اراضي جديدة</h1>
+    <p class="subtitle">أدخل جميع البيانات المطلوبة ثم اضغط حفظ</p>
+
+    <div class="form-wrapper">
+      <form [formGroup]="form" (ngSubmit)="submit()">
+        <div class="form-section">
+          <h2 class="section-title">بيانات الأرض</h2>
+
+          <div class="form-row">
+            <div class="form-group">
+              <label for="landCode">كود الأرض<span class="required">*</span></label>
+              <input id="landCode" type="number" formControlName="landCode"
+                [class.error]="form.get('landCode')?.touched && form.get('landCode')?.invalid" />
+              @if (form.get('landCode')?.touched && form.get('landCode')?.invalid) {
+              <div class="error-message">كود الأرض مطلوب</div>
+              }
+            </div>
+
+            <div class="form-group">
+              <label for="referenceNumber">الرقم المرجعي</label>
+              <input id="referenceNumber" type="number" formControlName="referenceNumber" />
+            </div>
+
+            <div class="form-group">
+              <label for="usageStatus">حالة الاستخدام / موقف الاستخدام</label>
+              <input id="usageStatus" type="text" formControlName="usageStatus" />
+            </div>
+
+            <div class="form-group">
+              <label for="headquarters">المقر</label>
+              <input id="headquarters" type="text" formControlName="headquarters" />
+            </div>
+
+            <div class="form-group">
+              <label for="approvalStatus">حالة الموافقة</label>
+              <input id="approvalStatus" type="text" formControlName="approvalStatus" />
+            </div>
+
+            <div class="form-group">
+              <label for="identificationNumber">الرقم التعريفي</label>
+              <input id="identificationNumber" type="text" formControlName="identificationNumber" />
+            </div>
+
+            <div class="form-group">
+              <label for="centerDepartment">المركز/القسم</label>
+              <input id="centerDepartment" type="text" formControlName="centerDepartment" />
+            </div>
+
+            <div class="form-group">
+              <label for="totalArea">المساحة الكلية</label>
+              <input id="totalArea" type="number" formControlName="totalArea" />
+            </div>
+
+            <div class="form-group">
+              <label for="phase">المرحلة</label>
+              <input id="phase" type="text" formControlName="phase" />
+            </div>
+
+            <div class="form-group">
+              <label for="approval">الاعتماد</label>
+              <input id="approval" type="text" formControlName="approval" />
+            </div>
+
+            <div class="form-group">
+              <label for="housing">التسكين</label>
+              <input id="housing" type="text" formControlName="housing" />
+            </div>
+
+            <div class="form-group">
+              <label for="committeePricing">تسعير اللجنة</label>
+              <input id="committeePricing" type="number" formControlName="committeePricing" />
+            </div>
+
+            <div class="form-group">
+              <label for="purchasePrice">سعر الشراء</label>
+              <input id="purchasePrice" type="number" formControlName="purchasePrice" />
+            </div>
+
+            <div class="form-group">
+              <label for="saleNegotiations">مفاوضات البيع</label>
+              <input id="saleNegotiations" type="text" formControlName="saleNegotiations" />
+            </div>
+
+            <div class="form-group">
+              <label for="village">القرية</label>
+              <input id="village" type="text" formControlName="village" />
+            </div>
+
+            <div class="form-group">
+              <label for="currentOwner">المالك الحالي</label>
+              <input id="currentOwner" type="text" formControlName="currentOwner" />
+            </div>
+
+            <div class="form-group">
+              <label for="originalOwner">المالك الأصلي</label>
+              <input id="originalOwner" type="text" formControlName="originalOwner" />
+            </div>
+
+            <div class="form-group">
+              <label for="model">النموذج</label>
+              <input id="model" type="text" formControlName="model" />
+            </div>
+
+            <div class="form-group">
+              <label for="documents">الوثائق / المستندات</label>
+              <input id="documents" type="text" formControlName="documents" />
+            </div>
+
+            <div class="form-group">
+              <label for="plan">الخطة</label>
+              <input id="plan" type="text" formControlName="plan" />
+            </div>
+
+            <div class="form-group">
+              <label for="branchNotification">إخطار الفرع</label>
+              <input id="branchNotification" type="text" formControlName="branchNotification" />
+            </div>
+
+            <div class="form-group">
+              <label for="realEstateStatus">موقف العقارية</label>
+              <input id="realEstateStatus" type="text" formControlName="realEstateStatus" />
+            </div>
+
+            <div class="form-group">
+              <label for="buildingBoundaries">حدود قطعة الأرض</label>
+              <input id="buildingBoundaries" type="text" formControlName="buildingBoundaries" />
+            </div>
+
+            <div class="form-group">
+              <label for="networkData">بيانات الميزانية الشبكية</label>
+              <input id="networkData" type="text" formControlName="networkData" />
+            </div>
+
+            <div class="form-group">
+              <label for="networkObservations">ملاحظات الميزانية الشبكية</label>
+              <input id="networkObservations" type="text" formControlName="networkObservations" />
+            </div>
+
+            <div class="form-group">
+              <label for="landAreaFromTotal">مساحة الأرض من الإجمالي</label>
+              <input id="landAreaFromTotal" type="text" formControlName="landAreaFromTotal" />
+            </div>
+
+            <div class="form-group">
+              <label for="landUseDatabase">قاعدة بيانات استخدام الأراضي</label>
+              <input id="landUseDatabase" type="text" formControlName="landUseDatabase" />
+            </div>
+
+            <div class="form-group">
+              <label for="landInspectionDatabase">ملاحظات معاينة قطعة الارض</label>
+              <input id="landInspectionDatabase" type="text" formControlName="landInspectionDatabase" />
+            </div>
+
+            <div class="form-group">
+              <label for="landConstructionObstacles">معوقات البناء بالأرض</label>
+              <input id="landConstructionObstacles" type="text" formControlName="landConstructionObstacles" />
+            </div>
+
+            <div class="form-group">
+              <label for="landCreationObstacles">عوائق إنشاء قطعة الارض</label>
+              <input id="landCreationObstacles" type="text" formControlName="landCreationObstacles" />
+            </div>
+
+            <div class="form-group">
+              <label for="landConstructionData">مستندات قطعة الارض</label>
+              <input id="landConstructionData" type="text" formControlName="landConstructionData" />
+            </div>
+
+            <div class="form-group">
+              <label for="landReceiptDatabase">موقف استلام قطعة الارض</label>
+              <input id="landReceiptDatabase" type="text" formControlName="landReceiptDatabase" />
+            </div>
+
+            <div class="form-group">
+              <label for="paidAmountsDatabase">المبالغ المدفوعة للأرض</label>
+              <input id="paidAmountsDatabase" type="text" formControlName="paidAmountsDatabase" />
+            </div>
+
+            <div class="form-group">
+              <label for="decisionData">بيانات قرار التخصيص</label>
+              <input id="decisionData" type="text" formControlName="decisionData" />
+            </div>
+
+            <div class="form-group">
+              <label for="landCommittees">لجان قطعة الارض</label>
+              <input id="landCommittees" type="text" formControlName="landCommittees" />
+            </div>
+
+            <div class="form-group">
+              <label for="landFacilities">مرافق قطعة الارض</label>
+              <input id="landFacilities" type="text" formControlName="landFacilities" />
+            </div>
+
+            <div class="form-group">
+              <label for="landCoordinatesData">احداثيات قطعة الارض</label>
+              <input id="landCoordinatesData" type="text" formControlName="landCoordinatesData" />
+            </div>
+
+            <div class="form-group">
+              <label for="educationalStudies">الدراسات التربوية</label>
+              <input id="educationalStudies" type="text" formControlName="educationalStudies" />
+            </div>
+
+            <div class="form-group">
+              <label for="landReviewCommittees">لجان مراجعة قطعة الارض</label>
+              <input id="landReviewCommittees" type="text" formControlName="landReviewCommittees" />
+            </div>
+          </div>
+        </div>
+
+        <div class="form-actions">
+          <button type="submit" class="btn btn-primary">حفظ</button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+
+@if (showDialog()) {
+<div class="modal-overlay" (click)="closeDialog()">
+  <div class="modal-content" (click)="$event.stopPropagation()">
+    <div class="modal-header">
+      <h2>{{ dialogTitle() }}</h2>
+      <button class="modal-close" type="button" (click)="closeDialog()">×</button>
+    </div>
+
+    <div class="modal-body">
+      @if (dialogVariant() === 'error') {
+      <div class="alert alert-error">
+        <strong>{{ dialogTitle() }}</strong>
+        <div style="white-space: pre-line;">{{ dialogMessage() }}</div>
+      </div>
+      } @else {
+      <div style="white-space: pre-line;">{{ dialogMessage() }}</div>
+      }
+    </div>
+
+    <div class="modal-footer">
+      <button type="button" class="btn btn-primary" (click)="closeDialog()">حسناً</button>
+    </div>
+  </div>
+</div>
+}

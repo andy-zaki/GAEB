@@ -39,7 +39,7 @@ public class LandsController : ControllerBase
     return ids;
   }
 
-  // GET: api/lands/land-codes
+  
   [HttpGet("land-codes")]
   public async Task<ActionResult<IEnumerable<int>>> GetLandCodes()
   {
@@ -53,8 +53,7 @@ public class LandsController : ControllerBase
     return codes;
   }
 
-  // GET: api/lands/available-land-codes
-  // Returns LandCodes that exist in Lands but do NOT have a LandTechnicalInspection yet
+  
   [HttpGet("available-land-codes")]
   public async Task<ActionResult<IEnumerable<int>>> GetAvailableLandCodes()
   {
@@ -122,12 +121,35 @@ public class LandsController : ControllerBase
   [HttpPost]
   public async Task<ActionResult<Land>> CreateLand(Land land)
   {
+    if (!ModelState.IsValid)
+    {
+      return ValidationProblem(ModelState);
+    }
+
+    var landCodeExists = await _context.Lands
+        .AsNoTracking()
+        .AnyAsync(x => x.LandCode == land.LandCode);
+
+    if (landCodeExists)
+    {
+      ModelState.AddModelError(nameof(Land.LandCode), "كود الأرض موجود بالفعل");
+      return ValidationProblem(ModelState);
+    }
+
     land.Id = Guid.NewGuid();
     land.CreatedAt = DateTime.Now;
     land.UpdatedAt = DateTime.Now;
 
     _context.Lands.Add(land);
-    await _context.SaveChangesAsync();
+    try
+    {
+      await _context.SaveChangesAsync();
+    }
+    catch (DbUpdateException)
+    {
+      ModelState.AddModelError(nameof(Land.LandCode), "كود الأرض موجود بالفعل");
+      return ValidationProblem(ModelState);
+    }
 
     return CreatedAtAction(nameof(GetLand), new { id = land.Id }, land);
   }
@@ -344,6 +366,21 @@ public class LandsController : ControllerBase
       return BadRequest();
     }
 
+    if (!ModelState.IsValid)
+    {
+      return ValidationProblem(ModelState);
+    }
+
+    var landCodeExists = await _context.Lands
+        .AsNoTracking()
+        .AnyAsync(x => x.Id != id && x.LandCode == land.LandCode);
+
+    if (landCodeExists)
+    {
+      ModelState.AddModelError(nameof(Land.LandCode), "كود الأرض موجود بالفعل");
+      return ValidationProblem(ModelState);
+    }
+
     land.UpdatedAt = DateTime.Now;
     _context.Entry(land).State = EntityState.Modified;
 
@@ -358,6 +395,11 @@ public class LandsController : ControllerBase
         return NotFound();
       }
       throw;
+    }
+    catch (DbUpdateException)
+    {
+      ModelState.AddModelError(nameof(Land.LandCode), "كود الأرض موجود بالفعل");
+      return ValidationProblem(ModelState);
     }
 
     return NoContent();

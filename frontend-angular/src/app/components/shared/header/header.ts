@@ -1,6 +1,7 @@
-import { Component, input, output, computed, ChangeDetectionStrategy } from '@angular/core';
+import { Component, input, output, computed, ChangeDetectionStrategy, inject } from '@angular/core';
 import { Router } from '@angular/router';
 import { CommonModule } from '@angular/common';
+import { AuthService } from '../../../services/auth.service';
 
 export interface UserInfo {
   name: string;
@@ -40,6 +41,8 @@ export class HeaderComponent {
   homeClicked = output<void>();
   logoutClicked = output<void>();
   
+  private readonly authService = inject(AuthService);
+
   constructor(private router: Router) {}
   
   // Computed properties
@@ -54,6 +57,7 @@ export class HeaderComponent {
   }
   
   onLogoutClick(): void {
+    this.authService.logout();
     this.logoutClicked.emit();
   }
   

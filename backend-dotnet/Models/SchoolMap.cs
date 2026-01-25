@@ -232,7 +232,6 @@ public class EducationalBuilding
     public ICollection<SchoolAnnex> SchoolAnnexes { get; set; } = new List<SchoolAnnex>();
     public ICollection<SchoolSpace> SchoolSpaces { get; set; } = new List<SchoolSpace>();
     public ICollection<Building> Buildings { get; set; } = new List<Building>();
-    public ICollection<Land> Lands { get; set; } = new List<Land>();
     public ICollection<RentalBuilding> RentalBuildings { get; set; } = new List<RentalBuilding>();
     public ICollection<DisplacementRecord> DisplacementRecords { get; set; } = new List<DisplacementRecord>();
 }

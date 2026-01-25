@@ -9,6 +9,23 @@
 		<div class="menu-container">
 			<h2 class="menu-title"> قائمة برامج الإدخال</h2>
 			<div class="menu-grid">
+				<div class="menu-card" style="--card-color: #10b981" tabindex="0" role="button"
+					(click)="navigateToLandCreate()" (keydown.enter)="navigateToLandCreate()"
+					(keydown.space)="navigateToLandCreate()">
+					<div class="card-icon">
+						<span class="icon">🏞️</span>
+					</div>
+					<div class="card-content">
+						<h3 class="card-title">اضافة اراضي جديدة</h3>
+						<p class="card-description">إدخال بيانات قطعة أرض جديدة</p>
+					</div>
+					<div class="card-arrow">
+						<svg width="24" height="24" viewBox="0 0 24 24" fill="none">
+							<path d="M8 12L16 12M16 12L12 8M16 12L12 16" stroke="currentColor" stroke-width="2"
+								stroke-linecap="round" stroke-linejoin="round" />
+						</svg>
+					</div>
+				</div>
 				<div class="menu-card" style="--card-color: #3b82f6" tabindex="0" role="button"
 					(click)="navigateToLandTechnicalInspection()" (keydown.enter)="navigateToLandTechnicalInspection()"
 					(keydown.space)="navigateToLandTechnicalInspection()">

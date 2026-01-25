@@ -46,7 +46,8 @@ public class Land
     [MaxLength(255)]
     public string? SaleNegotiations { get; set; }
     
-    [Required]
+    [Required(ErrorMessage = "كود الأرض مطلوب")]
+    [Range(1, int.MaxValue, ErrorMessage = "كود الأرض يجب أن يكون أكبر من أو يساوي 1")]
     public int LandCode { get; set; }
     
     [MaxLength(100)]
@@ -117,11 +118,6 @@ public class Land
     
     public DateTime CreatedAt { get; set; } = DateTime.Now;
     public DateTime UpdatedAt { get; set; } = DateTime.Now;
-    
-    [ForeignKey("EducationalBuilding")]
-    public Guid? EducationalBuildingId { get; set; }
-
-    public virtual EducationalBuilding? EducationalBuilding { get; set; }
 
     public virtual LandTechnicalInspection? LandTechnicalInspection { get; set; }
     

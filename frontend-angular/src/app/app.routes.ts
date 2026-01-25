@@ -3,8 +3,21 @@ import { authGuard } from './guards/auth.guard';
 
 export const routes: Routes = [
   {
+    path: 'login',
+    loadComponent: () => import('./components/login/login').then(m => m.LoginComponent)
+  },
+  {
+    path: '',
+    canActivate: [authGuard],
+    children: [
+  {
     path: 'main-school-data-insertion',
     loadComponent: () => import('./components/lands-applications/main-data-for-school-insertion/main-data-for-school-insertion').then(m => m.MainDataForSchoolInsertion),
+    canActivate: [authGuard]
+  },
+  {
+    path: 'land-create',
+    loadComponent: () => import('./components/database-operations/land-create/land-create').then(m => m.LandCreateComponent),
     canActivate: [authGuard]
   },
   {
@@ -79,12 +92,8 @@ export const routes: Routes = [
   },
   {
     path: '',
-    redirectTo: '/login',
+    redirectTo: 'dashboard',
     pathMatch: 'full'
-  },
-  {
-    path: 'login',
-    loadComponent: () => import('./components/login/login').then(m => m.LoginComponent)
   },
   {
     path: 'dashboard',
@@ -287,6 +296,8 @@ export const routes: Routes = [
     path: 'rental-building-modify-status',
     loadComponent: () => import('./components/rental-building-modify-status/rental-building-modify-status').then(m => m.RentalBuildingModifyStatusComponent),
     canActivate: [authGuard]
+  },
+    ]
   },
   {
     path: '**',

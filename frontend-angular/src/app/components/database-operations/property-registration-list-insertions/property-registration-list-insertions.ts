@@ -31,4 +31,8 @@ export class PropertyRegistrationListInsertions {
   navigateToLinkLandsToMap(): void {
     this.router.navigate(['/map-integration-with-land-system']);
   }
+
+  navigateToLandCreate(): void {
+    this.router.navigate(['/land-create']);
+  }
 }

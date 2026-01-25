@@ -233,12 +233,6 @@ public class ApplicationDbContext : DbContext
             .OnDelete(DeleteBehavior.SetNull);
 
         modelBuilder.Entity<EducationalBuilding>()
-            .HasMany(e => e.Lands)
-            .WithOne(l => l.EducationalBuilding)
-            .HasForeignKey(l => l.EducationalBuildingId)
-            .OnDelete(DeleteBehavior.SetNull);
-
-        modelBuilder.Entity<EducationalBuilding>()
             .HasMany(e => e.RentalBuildings)
             .WithOne(r => r.EducationalBuilding)
             .HasForeignKey(r => r.EducationalBuildingId)
