@@ -271,6 +271,119 @@ public class SchoolMapsController : ControllerBase
         }
     }
 
+    [HttpPut("educational-buildings/by-number/{buildingNumber}")]
+    public async Task<ActionResult<EducationalBuilding>> UpsertEducationalBuildingByNumber(string buildingNumber, EducationalBuilding building)
+    {
+        if (building == null)
+        {
+            return BadRequest(new { message = "بيانات غير صحيحة" });
+        }
+
+        if (string.IsNullOrWhiteSpace(buildingNumber))
+        {
+            ModelState.AddModelError(nameof(buildingNumber), "رقم المبنى مطلوب");
+            return ValidationProblem(ModelState);
+        }
+
+        building.BuildingNumber = buildingNumber;
+
+        void ValidateMaxLength(string? value, int max, string fieldName)
+        {
+            if (value != null && value.Length > max)
+            {
+                ModelState.AddModelError(fieldName, $"يجب ألا يزيد طول الحقل عن {max} حرف");
+            }
+        }
+
+        void ValidateNonNegative(decimal? value, string fieldName)
+        {
+            if (value.HasValue && value.Value < 0)
+            {
+                ModelState.AddModelError(fieldName, "يجب ألا تكون القيمة سالبة");
+            }
+        }
+
+        ValidateMaxLength(building.BuildingNumber, 50, nameof(EducationalBuilding.BuildingNumber));
+        ValidateMaxLength(building.UsageStatus, 100, nameof(EducationalBuilding.UsageStatus));
+        ValidateMaxLength(building.AddressNumber, 50, nameof(EducationalBuilding.AddressNumber));
+        ValidateMaxLength(building.Street, 255, nameof(EducationalBuilding.Street));
+        ValidateMaxLength(building.PhoneNumber, 50, nameof(EducationalBuilding.PhoneNumber));
+        ValidateMaxLength(building.LandOwnership, 100, nameof(EducationalBuilding.LandOwnership));
+        ValidateMaxLength(building.BuildingOwnership, 100, nameof(EducationalBuilding.BuildingOwnership));
+        ValidateMaxLength(building.FenceCode, 50, nameof(EducationalBuilding.FenceCode));
+        ValidateMaxLength(building.FenceCondition, 100, nameof(EducationalBuilding.FenceCondition));
+        ValidateMaxLength(building.NorthSide, 255, nameof(EducationalBuilding.NorthSide));
+        ValidateMaxLength(building.SouthSide, 255, nameof(EducationalBuilding.SouthSide));
+        ValidateMaxLength(building.EastSide, 255, nameof(EducationalBuilding.EastSide));
+        ValidateMaxLength(building.WestSide, 255, nameof(EducationalBuilding.WestSide));
+        ValidateMaxLength(building.NorthEast, 255, nameof(EducationalBuilding.NorthEast));
+        ValidateMaxLength(building.SouthEast, 255, nameof(EducationalBuilding.SouthEast));
+        ValidateMaxLength(building.NorthWest, 255, nameof(EducationalBuilding.NorthWest));
+        ValidateMaxLength(building.SouthWest, 255, nameof(EducationalBuilding.SouthWest));
+        ValidateMaxLength(building.BuildingMaterial, 100, nameof(EducationalBuilding.BuildingMaterial));
+        ValidateMaxLength(building.PositiveEnvironment, 255, nameof(EducationalBuilding.PositiveEnvironment));
+        ValidateMaxLength(building.NegativeEnvironment, 255, nameof(EducationalBuilding.NegativeEnvironment));
+
+        ValidateNonNegative(building.FenceHeight, nameof(EducationalBuilding.FenceHeight));
+        ValidateNonNegative(building.CoordinateX, nameof(EducationalBuilding.CoordinateX));
+        ValidateNonNegative(building.CoordinateY, nameof(EducationalBuilding.CoordinateY));
+        ValidateNonNegative(building.CoordinateZ, nameof(EducationalBuilding.CoordinateZ));
+        ValidateNonNegative(building.TotalArea, nameof(EducationalBuilding.TotalArea));
+
+        if (!ModelState.IsValid)
+        {
+            return ValidationProblem(ModelState);
+        }
+
+        var existingBuilding = await _context.EducationalBuildings
+            .FirstOrDefaultAsync(e => e.BuildingNumber == buildingNumber);
+
+        if (existingBuilding == null)
+        {
+            building.Id = Guid.NewGuid();
+            building.CreatedAt = building.UpdatedAt = DateTime.Now;
+            _context.EducationalBuildings.Add(building);
+        }
+        else
+        {
+            existingBuilding.UsageStatus = building.UsageStatus;
+            existingBuilding.AddressNumber = building.AddressNumber;
+            existingBuilding.Street = building.Street;
+            existingBuilding.PhoneNumber = building.PhoneNumber;
+            existingBuilding.LandOwnership = building.LandOwnership;
+            existingBuilding.BuildingOwnership = building.BuildingOwnership;
+            existingBuilding.FenceCode = building.FenceCode;
+            existingBuilding.FenceHeight = building.FenceHeight;
+            existingBuilding.FenceCondition = building.FenceCondition;
+            existingBuilding.NorthSide = building.NorthSide;
+            existingBuilding.SouthSide = building.SouthSide;
+            existingBuilding.EastSide = building.EastSide;
+            existingBuilding.WestSide = building.WestSide;
+            existingBuilding.NorthEast = building.NorthEast;
+            existingBuilding.SouthEast = building.SouthEast;
+            existingBuilding.NorthWest = building.NorthWest;
+            existingBuilding.SouthWest = building.SouthWest;
+            existingBuilding.BuildingMaterial = building.BuildingMaterial;
+            existingBuilding.CoordinateX = building.CoordinateX;
+            existingBuilding.CoordinateY = building.CoordinateY;
+            existingBuilding.CoordinateZ = building.CoordinateZ;
+            existingBuilding.PositiveEnvironment = building.PositiveEnvironment;
+            existingBuilding.NegativeEnvironment = building.NegativeEnvironment;
+            existingBuilding.UpdatedAt = DateTime.Now;
+        }
+
+        try
+        {
+            await _context.SaveChangesAsync();
+        }
+        catch (DbUpdateException ex)
+        {
+            return BadRequest(new { message = "خطأ في حفظ البيانات", error = ex.Message });
+        }
+
+        return Ok(existingBuilding ?? building);
+    }
+
     // POST: api/school-maps/educational-buildings/create-with-location
     [HttpPost("educational-buildings/create-with-location")]
     public async Task<ActionResult<EducationalBuilding>> CreateEducationalBuildingWithLocation([FromBody] CreateBuildingWithLocationDTO dto)

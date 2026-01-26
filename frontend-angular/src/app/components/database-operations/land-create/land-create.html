@@ -15,7 +15,7 @@
 
           <div class="form-row">
             <div class="form-group">
-              <label for="landCode">كود الأرض<span class="required">*</span></label>
+              <label for="landCode">الرقم التسلسلي<span class="required">*</span></label>
               <input id="landCode" type="number" formControlName="landCode"
                 [class.error]="form.get('landCode')?.touched && form.get('landCode')?.invalid" />
               @if (form.get('landCode')?.touched && form.get('landCode')?.invalid) {

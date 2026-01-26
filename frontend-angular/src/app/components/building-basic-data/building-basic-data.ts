@@ -3,7 +3,7 @@ import { Router } from '@angular/router';
 import { CommonModule } from '@angular/common';
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { HeaderComponent } from '../shared/header/header';
-import { BuildingApiService } from '../../services/building-api.service';
+import { SchoolMapApiService } from '../../services/school-map-api.service';
 import { ErrorHandlerService } from '../../services/error-handler.service';
 
 @Component({
@@ -16,7 +16,7 @@ import { ErrorHandlerService } from '../../services/error-handler.service';
 export class BuildingBasicDataComponent {
   private router = inject(Router);
   private fb = inject(FormBuilder);
-  private buildingService = inject(BuildingApiService);
+  private schoolMapApiService = inject(SchoolMapApiService);
   private errorHandler = inject(ErrorHandlerService);
 
   buildingForm: FormGroup;
@@ -87,22 +87,36 @@ export class BuildingBasicDataComponent {
   onSubmit() {
     if (this.buildingForm.valid) {
       const formData = this.buildingForm.value;
-      
-      // Create a building record first
-      const buildingData = {
-        buildingNumber: formData.buildingNumber,
-        schoolName: 'مبنى تعليمي - ' + formData.buildingNumber,
+
+      const buildingNumber = (formData.buildingNumber ?? '').toString();
+      const payload = {
+        buildingNumber,
         usageStatus: formData.usageStatus,
+        addressNumber: formData.addressNumber,
+        street: formData.street,
+        phoneNumber: formData.phoneNumber,
+        landOwnership: formData.landOwnership,
         buildingOwnership: formData.buildingOwnership,
-        governorate: 'غير محدد',
-        regionalCenter: 'غير محدد',
-        educationalAdministration: 'غير محدد',
-        district: 'غير محدد',
-        neighborhood: formData.street || 'غير محدد'
+        fenceCode: formData.fenceCode,
+        fenceHeight: formData.fenceHeight === null || formData.fenceHeight === undefined || formData.fenceHeight === '' ? null : Number(formData.fenceHeight),
+        fenceCondition: formData.fenceCondition,
+        northSide: (formData.northSide ?? '').toString(),
+        southSide: (formData.southSide ?? '').toString(),
+        eastSide: (formData.eastSide ?? '').toString(),
+        westSide: (formData.westSide ?? '').toString(),
+        northEast: (formData.northEast ?? '').toString(),
+        southEast: (formData.southEast ?? '').toString(),
+        northWest: (formData.northWest ?? '').toString(),
+        southWest: (formData.southWest ?? '').toString(),
+        buildingMaterial: formData.buildingMaterial,
+        coordinateX: formData.coordinateX === null || formData.coordinateX === undefined || formData.coordinateX === '' ? null : Number(formData.coordinateX),
+        coordinateY: formData.coordinateY === null || formData.coordinateY === undefined || formData.coordinateY === '' ? null : Number(formData.coordinateY),
+        coordinateZ: formData.coordinateZ === null || formData.coordinateZ === undefined || formData.coordinateZ === '' ? null : Number(formData.coordinateZ),
+        positiveEnvironment: formData.positiveEnvironment,
+        negativeEnvironment: formData.negativeEnvironment,
       };
-      
-      // Save to database
-      this.buildingService.createBuilding(buildingData as any).subscribe({
+
+      this.schoolMapApiService.upsertEducationalBuildingByNumber(buildingNumber, payload as any).subscribe({
         next: (saved: any) => {
           console.log('Building basic data saved:', saved);
           alert('✅ تم حفظ البيانات الأساسية للمبنى بنجاح!');

@@ -215,4 +215,18 @@ export class SchoolMapApiService {
       catchError(error => this.errorHandler.handleError(error))
     );
   }
+
+  upsertEducationalBuildingByNumber(buildingNumber: string, data: Partial<EducationalBuildingData>): Observable<EducationalBuildingData> {
+    try {
+      this.errorHandler.validateString(buildingNumber, 'رقم المبنى');
+    } catch (error: any) {
+      this.errorHandler.logAndShowError(error, 'upsertEducationalBuildingByNumber');
+      return throwError(() => error);
+    }
+
+    return this.http.put<EducationalBuildingData>(`${this.baseUrl}/educational-buildings/by-number/${buildingNumber}`, data).pipe(
+      tap(result => console.log('Upserted educational building by number:', result)),
+      catchError(error => this.errorHandler.handleError(error))
+    );
+  }
 }
