@@ -24,9 +24,9 @@
               <select id="governorate" formControlName="governorate"
                 [class.error]="inquiryForm.get('governorate')?.invalid && inquiryForm.get('governorate')?.touched">
                 <option value="" disabled>اختر المحافظة</option>
-                <option value="cairo">القاهرة</option>
-                <option value="giza">الجيزة</option>
-                <option value="alex">الإسكندرية</option>
+                <option value="القاهرة">القاهرة</option>
+                <option value="الجيزة">الجيزة</option>
+                <option value="الإسكندرية">الإسكندرية</option>
               </select>
               @if (inquiryForm.get('governorate')?.invalid && inquiryForm.get('governorate')?.touched) {
                 <span class="error-message">المحافظة مطلوبة</span>
@@ -87,9 +87,9 @@
               <select id="stage" formControlName="stage"
                 [class.error]="inquiryForm.get('stage')?.invalid && inquiryForm.get('stage')?.touched">
                 <option value="" disabled>اختر المرحلة</option>
-                <option value="primary">ابتدائي</option>
-                <option value="preparatory">إعدادي</option>
-                <option value="secondary">ثانوي</option>
+                <option value="ابتدائي">ابتدائي</option>
+                <option value="إعدادي">إعدادي</option>
+                <option value="ثانوي">ثانوي</option>
               </select>
               @if (inquiryForm.get('stage')?.invalid && inquiryForm.get('stage')?.touched) {
                 <span class="error-message">المرحلة مطلوبة</span>
@@ -101,8 +101,8 @@
               <select id="affiliation" formControlName="affiliation"
                 [class.error]="inquiryForm.get('affiliation')?.invalid && inquiryForm.get('affiliation')?.touched">
                 <option value="" disabled>اختر التبعية</option>
-                <option value="government">حكومي</option>
-                <option value="private">خاص</option>
+                <option value="حكومي">حكومي</option>
+                <option value="خاص">خاص</option>
               </select>
               @if (inquiryForm.get('affiliation')?.invalid && inquiryForm.get('affiliation')?.touched) {
                 <span class="error-message">التبعية مطلوبة</span>
@@ -114,8 +114,8 @@
               <select id="educationType" formControlName="educationType"
                 [class.error]="inquiryForm.get('educationType')?.invalid && inquiryForm.get('educationType')?.touched">
                 <option value="" disabled>اختر نوعية التعليم</option>
-                <option value="general">عام</option>
-                <option value="technical">فني</option>
+                <option value="عام">عام</option>
+                <option value="فني">فني</option>
               </select>
               @if (inquiryForm.get('educationType')?.invalid && inquiryForm.get('educationType')?.touched) {
                 <span class="error-message">نوعية التعليم مطلوبة</span>
@@ -173,8 +173,8 @@
               <select id="usageStatus" formControlName="usageStatus"
                 [class.error]="inquiryForm.get('usageStatus')?.invalid && inquiryForm.get('usageStatus')?.touched">
                 <option value="" disabled>اختر موقف الاستخدام</option>
-                <option value="active">قيد الاستخدام</option>
-                <option value="inactive">غير مستخدم</option>
+                <option value="قيد الاستخدام">قيد الاستخدام</option>
+                <option value="غير مستخدم">غير مستخدم</option>
               </select>
               @if (inquiryForm.get('usageStatus')?.invalid && inquiryForm.get('usageStatus')?.touched) {
                 <span class="error-message">موقف الاستخدام مطلوب</span>
@@ -183,9 +183,9 @@
 
             <div class="form-group">
               <label for="buildingName">اسم المبنى <span class="required">*</span></label>
-              <input type="text" id="buildingName" formControlName="buildingName"
-                [class.error]="inquiryForm.get('buildingName')?.invalid && inquiryForm.get('buildingName')?.touched" />
-              @if (inquiryForm.get('buildingName')?.invalid && inquiryForm.get('buildingName')?.touched) {
+              <input type="text" id="buildingName" formControlName="schoolName"
+                [class.error]="inquiryForm.get('schoolName')?.invalid && inquiryForm.get('schoolName')?.touched" />
+              @if (inquiryForm.get('schoolName')?.invalid && inquiryForm.get('schoolName')?.touched) {
                 <span class="error-message">اسم المبنى مطلوب</span>
               }
             </div>

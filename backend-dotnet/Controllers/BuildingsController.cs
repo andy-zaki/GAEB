@@ -54,11 +54,13 @@ public class BuildingsController : ControllerBase
     public async Task<ActionResult<IEnumerable<Building>>> SearchBuildings([FromBody] BuildingSearchCriteria criteria)
     {
         var query = _context.Buildings.AsQueryable();
+
         if (!string.IsNullOrEmpty(criteria.Governorate)) query = query.Where(b => b.Governorate == criteria.Governorate);
         if (!string.IsNullOrEmpty(criteria.Stage)) query = query.Where(b => b.Stage == criteria.Stage);
         if (!string.IsNullOrEmpty(criteria.Affiliation)) query = query.Where(b => b.Affiliation == criteria.Affiliation);
         if (!string.IsNullOrEmpty(criteria.UsageStatus)) query = query.Where(b => b.UsageStatus == criteria.UsageStatus);
         if (!string.IsNullOrEmpty(criteria.EducationType)) query = query.Where(b => b.EducationType == criteria.EducationType);
+
         return await query.OrderByDescending(b => b.CreatedAt).ToListAsync();
     }
 

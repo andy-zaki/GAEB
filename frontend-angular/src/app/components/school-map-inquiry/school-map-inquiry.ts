@@ -79,7 +79,7 @@ export class SchoolMapInquiryComponent {
       landOwnership: ['', Validators.required],
       buildingOwnership: ['', Validators.required],
       usageStatus: ['', Validators.required],
-      buildingName: ['', Validators.required],
+      schoolName: ['', Validators.required],
       buildingNumber: ['', Validators.required]
     });
   }
@@ -87,9 +87,9 @@ export class SchoolMapInquiryComponent {
   onSearch() {
     if (this.inquiryForm.valid) {
       console.log('Search Data:', this.inquiryForm.value);
-      
+      const criteria: Partial<Building> = this.inquiryForm.value;
       // Use mock database service to search buildings
-      this.buildingDatabaseService.searchBuildings(this.inquiryForm.value).subscribe({
+      this.buildingDatabaseService.searchBuildings(criteria).subscribe({
         next: (results) => {
           this.searchResults.set(results);
           this.showModal.set(true);
