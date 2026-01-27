@@ -41,35 +41,35 @@ export class BuildingTemporaryFulfillmentComponent {
 
   protected submitForm(): void {
     if (this.validateForm()) {
-      const fulfillmentRecord = {
-        recordNumber: this.formData.governmentNumber,
-        propertyNumber: 'PROP-' + Date.now(),
-        landCode: 'غير محدد',
-        ownerName: 'غير محدد',
-        displacementType: 'temporary_fulfillment',
-        propertyValue: parseFloat(this.formData.propertyValue) || 0,
-        compensationAmount: parseFloat(this.formData.fulfillmentAmount) || 0,
-        paymentDate: this.formData.fulfillmentDate,
-        paymentMethod: 'غير محدد',
-        status: 'قيد المراجعة',
-        notes: this.formData.notes || 'استيفاء مؤقت'
-      };
+      // const fulfillmentRecord = {
+      //   recordNumber: this.formData.governmentNumber,
+      //   propertyNumber: 'PROP-' + Date.now(),
+      //   landCode: 'غير محدد',
+      //   ownerName: 'غير محدد',
+      //   displacementType: 'temporary_fulfillment',
+      //   propertyValue: parseFloat(this.formData.propertyValue) || 0,
+      //   compensationAmount: parseFloat(this.formData.fulfillmentAmount) || 0,
+      //   paymentDate: this.formData.fulfillmentDate,
+      //   paymentMethod: 'غير محدد',
+      //   status: 'قيد المراجعة',
+      //   notes: this.formData.notes || 'استيفاء مؤقت'
+      // };
       
-      this.displacementService.createDisplacement(fulfillmentRecord as any).subscribe({
-        next: (saved: any) => {
-          console.log('Fulfillment saved:', saved);
+      // this.displacementService.createDisplacement(fulfillmentRecord as any).subscribe({
+      //   next: (saved: any) => {
+      //     console.log('Fulfillment saved:', saved);
           alert('✅ تم حفظ بيانات الاستيفاء المؤقت بنجاح');
           this.goBack();
-        },
-        error: (error: any) => {
-          console.error('Error saving fulfillment:', error);
-          const errorMessage = this.errorHandler.getUserFriendlyMessage(
-            error,
-            'حفظ الاستيفاء المؤقت'
-          );
-          alert(errorMessage);
-        }
-      });
+        // },
+      //   error: (error: any) => {
+      //     console.error('Error saving fulfillment:', error);
+      //     const errorMessage = this.errorHandler.getUserFriendlyMessage(
+      //       error,
+      //       'حفظ الاستيفاء المؤقت'
+      //     );
+      //     alert(errorMessage);
+      //   }
+      // });
     }
   }
 

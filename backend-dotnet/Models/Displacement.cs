@@ -8,9 +8,8 @@ public class DisplacementRecord
     [Key]
     public Guid Id { get; set; } = Guid.NewGuid();
     
-    [Required]
     [MaxLength(50)]
-    public string ReferenceNumber { get; set; } = string.Empty;
+    public string? ReferenceNumber { get; set; } = string.Empty;
     
     [MaxLength(50)]
     public string? BuildingCode { get; set; }

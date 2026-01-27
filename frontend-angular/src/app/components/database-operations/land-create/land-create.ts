@@ -65,7 +65,27 @@ export class LandCreateComponent {
     landFacilities: [null],
     landCoordinatesData: [null],
     educationalStudies: [null],
-    landReviewCommittees: [null]
+    landReviewCommittees: [null],
+
+    north: [null],
+    south: [null],
+    east: [null],
+    west: [null],
+
+    lengthNorth: [null],
+    lengthSouth: [null],
+    lengthEast: [null],
+    lengthWest: [null],
+
+    ne: [null],
+    nw: [null],
+    se: [null],
+    sw: [null],
+
+    lengthNe: [null],
+    lengthNw: [null],
+    lengthSe: [null],
+    lengthSw: [null]
   });
 
   protected goBack(): void {
@@ -157,7 +177,21 @@ export class LandCreateComponent {
 
     const raw = { ...this.form.value };
 
-    const numericFields = ['landCode', 'referenceNumber', 'totalArea', 'committeePricing', 'purchasePrice'];
+    const numericFields = [
+      'landCode',
+      'referenceNumber',
+      'totalArea',
+      'committeePricing',
+      'purchasePrice',
+      'lengthNorth',
+      'lengthSouth',
+      'lengthEast',
+      'lengthWest',
+      'lengthNe',
+      'lengthNw',
+      'lengthSe',
+      'lengthSw'
+    ];
     for (const field of numericFields) {
       const value = raw[field];
       if (value === '' || value === null || value === undefined) {
@@ -175,7 +209,6 @@ export class LandCreateComponent {
     }
 
     const payload: any = {
-      landCode: raw.landCode,
       referenceNumber: raw.referenceNumber,
       usageStatus: raw.usageStatus,
       headquarters: raw.headquarters,
@@ -189,6 +222,7 @@ export class LandCreateComponent {
       committeePricing: raw.committeePricing,
       purchasePrice: raw.purchasePrice,
       saleNegotiations: raw.saleNegotiations,
+      landCode: raw.landCode,
       village: raw.village,
       currentOwner: raw.currentOwner,
       originalOwner: raw.originalOwner,
@@ -213,7 +247,24 @@ export class LandCreateComponent {
       landFacilities: raw.landFacilities,
       landCoordinatesData: raw.landCoordinatesData,
       educationalStudies: raw.educationalStudies,
-      landReviewCommittees: raw.landReviewCommittees
+      landReviewCommittees: raw.landReviewCommittees,
+
+      north: raw.north,
+      south: raw.south,
+      east: raw.east,
+      west: raw.west,
+      lengthNorth: raw.lengthNorth,
+      lengthSouth: raw.lengthSouth,
+      lengthEast: raw.lengthEast,
+      lengthWest: raw.lengthWest,
+      ne: raw.ne,
+      nw: raw.nw,
+      se: raw.se,
+      sw: raw.sw,
+      lengthNe: raw.lengthNe,
+      lengthNw: raw.lengthNw,
+      lengthSe: raw.lengthSe,
+      lengthSw: raw.lengthSw
     };
 
     this.landApiService.saveLand(payload).subscribe({

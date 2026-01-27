@@ -115,6 +115,44 @@ public class Land
     public string? EducationalStudies { get; set; }
     
     public string? LandReviewCommittees { get; set; }
+
+    // Boundaries
+    [MaxLength(255)]
+    public string? North { get; set; }
+
+    [MaxLength(255)]
+    public string? South { get; set; }
+
+    [MaxLength(255)]
+    public string? East { get; set; }
+
+    [MaxLength(255)]
+    public string? West { get; set; }
+
+    // Boundary lengths
+    public int? LengthNorth { get; set; }
+    public int? LengthSouth { get; set; }
+    public int? LengthEast { get; set; }
+    public int? LengthWest { get; set; }
+
+    // Corners
+    [MaxLength(255)]
+    public string? Ne { get; set; }
+
+    [MaxLength(255)]
+    public string? Nw { get; set; }
+
+    [MaxLength(255)]
+    public string? Se { get; set; }
+
+    [MaxLength(255)]
+    public string? Sw { get; set; }
+
+    // Corner lengths
+    public int? LengthNe { get; set; }
+    public int? LengthNw { get; set; }
+    public int? LengthSe { get; set; }
+    public int? LengthSw { get; set; }
     
     public DateTime CreatedAt { get; set; } = DateTime.Now;
     public DateTime UpdatedAt { get; set; } = DateTime.Now;

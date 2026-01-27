@@ -137,17 +137,139 @@ public class LandsController : ControllerBase
     }
 
     land.Id = Guid.NewGuid();
+    if (!land.ReferenceNumber.HasValue)
+    {
+      land.ReferenceNumber = land.LandCode;
+    }
     land.CreatedAt = DateTime.Now;
     land.UpdatedAt = DateTime.Now;
 
     _context.Lands.Add(land);
+
+    BuildingLocation buildingLocation = new()
+    {
+      LandId = land.Id,
+      Code = "01",
+      LocationName = "شمال",
+      NeighborDescription = land.North,
+      Coordinates = land.LengthNorth,
+      Status = "يوجد",
+      RequiredStatus = "مطلوب",
+      CreatedAt = DateTime.Now
+    };
+    _context.Add(buildingLocation);
+
+    buildingLocation = new()
+    {
+      LandId = land.Id,
+      Code = "02",
+      LocationName = "شمال شرق",
+      NeighborDescription = land.Ne,
+      Coordinates = land.LengthNe,
+      Status = "يوجد",
+      RequiredStatus = "مطلوب",
+      CreatedAt = DateTime.Now
+    };
+    _context.Add(buildingLocation);
+
+    buildingLocation = new()
+    {
+      LandId = land.Id,
+      Code = "03",
+      LocationName = "جنوب شرق",
+      NeighborDescription = land.Se,
+      Coordinates = land.LengthSe,
+      Status = "يوجد",
+      RequiredStatus = "مطلوب",
+      CreatedAt = DateTime.Now
+    };
+    _context.Add(buildingLocation);
+
+    buildingLocation = new()
+    {
+      LandId = land.Id,
+      Code = "04",
+      LocationName = "شمال غرب",
+      NeighborDescription = land.Nw,
+      Coordinates = land.LengthNw,
+      Status = "يوجد",
+      RequiredStatus = "مطلوب",
+      CreatedAt = DateTime.Now
+    };
+    _context.Add(buildingLocation);
+
+    buildingLocation = new()
+    {
+      LandId = land.Id,
+      Code = "05",
+      LocationName = "جنوب غرب",
+      NeighborDescription = land.Sw,
+      Coordinates = land.LengthSw,
+      Status = "يوجد",
+      RequiredStatus = "مطلوب",
+      CreatedAt = DateTime.Now
+    };
+    _context.Add(buildingLocation);
+
+    buildingLocation = new()
+    {
+      LandId = land.Id,
+      Code = "06",
+      LocationName = "جنوب",
+      NeighborDescription = land.South,
+      Coordinates = land.LengthSouth,
+      Status = "يوجد",
+      RequiredStatus = "مطلوب",
+      CreatedAt = DateTime.Now
+    };
+    _context.Add(buildingLocation);
+
+    buildingLocation = new()
+    {
+      LandId = land.Id,
+      Code = "07",
+      LocationName = "شرق",
+      NeighborDescription = land.East,
+      Coordinates = land.LengthEast,
+      Status = "يوجد",
+      RequiredStatus = "مطلوب",
+      CreatedAt = DateTime.Now
+    };
+    _context.Add(buildingLocation);
+
+    buildingLocation = new()
+    {
+      LandId = land.Id,
+      Code = "08",
+      LocationName = "غرب",
+      NeighborDescription = land.West,
+      Coordinates = land.LengthWest,
+      Status = "يوجد",
+      RequiredStatus = "مطلوب",
+      CreatedAt = DateTime.Now
+    };
+    _context.Add(buildingLocation);
+
     try
     {
       await _context.SaveChangesAsync();
     }
     catch (DbUpdateException)
     {
-      ModelState.AddModelError(nameof(Land.LandCode), "كود الأرض موجود بالفعل");
+      var message = "";
+      if (_context.Lands.AsNoTracking().Any(x => x.LandCode == land.LandCode))
+      {
+        ModelState.AddModelError(nameof(Land.LandCode), "كود الأرض موجود بالفعل");
+        return ValidationProblem(ModelState);
+      }
+
+      if (land.ReferenceNumber.HasValue && _context.Lands.AsNoTracking().Any(x => x.ReferenceNumber == land.ReferenceNumber))
+      {
+        ModelState.AddModelError(nameof(Land.ReferenceNumber), "الرقم المرجعي موجود بالفعل");
+        return ValidationProblem(ModelState);
+      }
+
+      ModelState.AddModelError("", "تعذر حفظ بيانات الأرض بسبب تعارض في البيانات");
       return ValidationProblem(ModelState);
     }
 
